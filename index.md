@@ -1,14 +1,19 @@
 ---
 layout: default
-title: Inicio
+title: Página Principal
 ---
 
-# Bienvenido a mi blog
+# Artículos por Categorías
 
-Aquí tienes los artículos recientes:
+{% assign categorias = site.articulos | map: 'categories' | uniq | flatten | uniq %}
 
-{% for post in site.posts %}
-  <h2>{{ post.data.title }}</h2>
-  <p>Publicado en: {{ post.data.categories | join: ', ' }}</p>
-  {{ post.content }}
+{% for categoria in categorias %}
+  <h2>{{ categoria }}</h2>
+  <ul>
+  {% for post in site.posts %}
+    {% if post.data.categories contains categoria %}
+      <li><a href="{{ post.url }}">{{ post.data.title }}</a></li>
+    {% endif %}
+  {% endfor %}
+  </ul>
 {% endfor %}
