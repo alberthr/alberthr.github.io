@@ -1,77 +1,49 @@
 ---
 layout: default
-title: "Inici"
 ---
 
-<div class="about">
-  <p>{{ site.description }}</p>
-</div>
+<div class="posts">
+  {% for post in paginator.posts %}
+    <article class="post">
+      <a href="{{ site.baseurl }}{{ post.url }}">
+        <h1>{{ post.title }}</h1>
 
-<div class="tags-filter-container">
-  <span class="filter-label">Filtrar per:</span>
-  <button class="tag-filter-btn active" onclick="filtrarTags('tots')">#tots</button>
-  
-  {% comment %}
-    Creem una llista buida per anar guardant les etiquetes úniques que trobem
-  {% endcomment %}
-  {% assign tags_detectats = "" | split: "," %}
-  
-  {% for post in site.posts %}
-    {% for tag in post.tags %}
-      {% unless tags_detectats contains tag %}
-        <button class="tag-filter-btn" onclick="filtrarTags('{{ tag }}')">#{{ tag }}</button>
-        {% capture tags_acumulats %}{{ tags_detectats | join: ',' }},{{ tag }}{% endcapture %}
-        {% assign tags_detectats = tags_acumulats | split: ',' %}
-      {% endunless %}
-    {% endfor %}
-  {% endfor %}
-</div>
-
-<section class="posts-list">
-  <h2>Anotacions i Recursos</h2>
-  <ul id="llista-posts">
-    {% for post in site.posts %}
-      <li class="post-item" data-tags="{{ post.tags | join: ',' }}">
-        <a href="{{ post.url | relative_url }}" class="post-link">{{ post.title }}</a>
-        <div class="list-tags">
-          {% for tag in post.tags %}
-            <span class="tag-sm">#{{ tag }}</span>
-          {% endfor %}
+        <div>
+          <p class="post_date">{{ post.date | date: "%B %e, %Y" }}</p>
         </div>
-      </li>
+      </a>
+      <div class="entry">
+        {{ post.excerpt }}
+      </div>
+
+      <a href="{{ site.baseurl }}{{ post.url }}" class="read-more">Read More</a>
+    </article>
+  {% endfor %}
+
+  <!-- pagination -->
+  {% if paginator.total_pages > 1 %}
+  <div class="pagination">
+    {% if paginator.previous_page %}
+      <a href="{{ paginator.previous_page_path | prepend: site.baseurl | replace: '//', '/' }}">&laquo; Prev</a>
+    {% else %}
+      <span>&laquo; Prev</span>
+    {% endif %}
+
+    {% for page in (1..paginator.total_pages) %}
+      {% if page == paginator.page %}
+        <span class="webjeda">{{ page }}</span>
+      {% elsif page == 1 %}
+        <a href="{{ '/' | prepend: site.baseurl | replace: '//', '/' }}">{{ page }}</a>
+      {% else %}
+        <a href="{{ site.paginate_path | prepend: site.baseurl | replace: '//', '/' | replace: ':num', page }}">{{ page }}</a>
+      {% endif %}
     {% endfor %}
-  </ul>
-</section>
 
-<script>
-function filtrarTags(tagSeleccionada) {
-  // 1. Canviar l'estat visual dels botons de filtre
-  document.querySelectorAll('.tag-filter-btn').forEach(btn => {
-    btn.classList.remove('active');
-    if(btn.textContent === '#' + tagSeleccionada || (tagSeleccionada === 'tots' && btn.textContent === '#tots')) {
-      btn.classList.add('active');
-    }
-  });
-
-  // 2. Amagar o mostrar els posts segons la selecció
-  document.querySelectorAll('.post-item').forEach(post => {
-    if (tagSeleccionada === 'tots') {
-      post.style.display = 'block';
-    } else {
-      const tagsDelPost = post.getAttribute('data-tags').split(',');
-      if (tagsDelPost.includes(tagSeleccionada)) {
-        post.style.display = 'block';
-      } else {
-        post.style.display = 'none';
-      }
-    }
-  });
-
-  // 3. Enviament de l'esdeveniment d'analítica a Google Analytics 4
-  if (typeof gtag === 'function') {
-    gtag('event', 'filtrar_contingut', {
-      'tag_seleccionada': tagSeleccionada
-    });
-  }
-}
-</script>
+    {% if paginator.next_page %}
+      <a href="{{ paginator.next_page_path | prepend: site.baseurl | replace: '//', '/' }}">Next &raquo;</a>
+    {% else %}
+      <span>Next &raquo;</span>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
