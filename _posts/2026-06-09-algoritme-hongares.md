@@ -14,7 +14,7 @@ En el dia a dia de l'anàlisi de dades i la investigació operativa, sovint ens 
 
 ## Què és l'Algoritme Hongarès?
 
-Desenvolupat originalment pel matemàtic Harold Kuhn l'any 1955 (qui el va anomenar així en honor als treballs previs dels matemàtics hongaresos Dénes Kőnig i Jenő Egerváry), és un mètode d'optimització combinatòria que resol el **problema de l'assignació** en un temps polinòmic $O(n^3)$. 
+Desenvolupat originalment pel matemàtic Harold Kuhn l'any 1955 (qui el va anomenar així en honor als treballs previs dels matemàtics hongaresos Dénes Kőnig i Jenő Egerváry), és un mètode d'optimització combinatòria que resol el **problema de l'assignació** en un temps polinòmic $O(n^3)$.
 
 Abans de la seva aparició, resoldre aquest problema per força bruta requeria calcular totes les permutacions possibles ($n!$), una bogeria inexecutable a mesura que la matriu de dades creixia.
 
