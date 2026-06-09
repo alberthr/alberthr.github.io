@@ -43,26 +43,6 @@ Aquest algoritme és un pilar fonamental en logística, gestió de projectes i c
 
 Avui en dia no cal fer aquestes restes a mà. Tant Python com R tenen llibreries optimitzades que resolen el problema en mil·lisegons. Suposem que tenim 3 treballadors i 3 tasques amb la següent matriu de costos:
 
-$$
-\begin{pmatrix}
-9 & 2 & 78 \\
-6 & 4 & 37 \\
-5 & 8 & 26
-\end{pmatrix}
-$$
-
-
-<div>
-$$
-\begin{matrix}
-9 & 2 & 78 \\
-6 & 4 & 37 \\
-5 & 8 & 26
-\end{matrix}
-$$
-</div>
-
-
 \begin{pmatrix} 9 & 2 & 78 \\\ 6 & 4 & 37 \\\ 5 & 8 & 26 \end{pmatrix}
 
 
