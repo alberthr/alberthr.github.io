@@ -51,6 +51,12 @@ $$
 \end{pmatrix}
 $$
 
+$$\begin{pmatrix}
+9 & 2 & 78 \\
+6 & 4 & 37 \\
+5 & 8 & 26
+\end{pmatrix}$$
+
 ### Exemple en Python
 
 A Python, utilitzem la funció `linear_sum_assignment` de la llibreria científica `scipy`.
