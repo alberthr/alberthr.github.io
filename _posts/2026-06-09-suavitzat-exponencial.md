@@ -55,8 +55,8 @@ Anem a simular una sèrie temporal de vendes i a aplicar-hi un suavitzat doble (
 A Python, la llibreria de referència per a models estadístics és `statsmodels`.
 
 ```python
-import numpy as np
 import pandas as pd
+import numpy as np
 from statsmodels.tsa.api import Holt
 
 # Simulem 12 mesos de vendes amb una tendència creixent
@@ -74,3 +74,4 @@ print("Valors ajustats interns del model:")
 print(model.fittedvalues.tail(3))
 print("\nPronòstic per als propers 3 mesos:")
 print(prediccio)
+```
