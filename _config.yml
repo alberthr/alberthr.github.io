@@ -1,3 +1,4 @@
-theme: minima
+# Configuración básica de Jekyll
 title: Mi Sitio Jekyll
-description: Un sitio estático generado con Jekyll en GitHub Pages
+description: Un sitio generado con Jekyll en GitHub Pages
+theme: minima  # Puedes usar otros temas si quieres
