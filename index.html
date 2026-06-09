@@ -10,22 +10,28 @@ title: "Inici"
 <div class="tags-filter-container">
   <span class="filter-label">Filtrar per:</span>
   <button class="tag-filter-btn active" onclick="filtrarTags('tots')">#tots</button>
-  <button class="tag-filter-btn" onclick="filtrarTags('python')">#python</button>
-  <button class="tag-filter-btn" onclick="filtrarTags('sql')">#sql</button>
-  <button class="tag-filter-btn" onclick="filtrarTags('outliers')">#outliers</button>
-  <button class="tag-filter-btn" onclick="filtrarTags('analitica-web')">#analitica-web</button>
+  
+  {% comment %} 
+    Aquest bucle agafa totes les etiquetes reals que llegeix dels posts, 
+    les endreça alfabèticament i crea els botons de forma dinàmica.
+  {% endcomment %}
+  {% assign etiquetes_endreçades = site.tags | sort %}
+  {% for etiqueta in etiquetes_endreçades %}
+    <button class="tag-filter-btn" onclick="filtrarTags('{{ etiqueta[0] }}')">#{{ etiqueta[0] }}</button>
+  {% endfor %}
 </div>
 
 <section class="posts-list">
-  <h2>Anotacions i Recursos</h2>
   <ul id="llista-posts">
     {% for post in site.posts %}
       <li class="post-item" data-tags="{{ post.tags | join: ',' }}">
-        <a href="{{ post.url | relative_url }}" class="post-link">{{ post.title }}</a>
-        <div class="list-tags">
-          {% for tag in post.tags %}
-            <span class="tag-sm">#{{ tag }}</span>
-          {% endfor %}
+        <div class="post-meta">
+          <a href="{{ post.url | relative_url }}" class="post-link">{{ post.title }}</a>
+          <div class="list-tags">
+            {% for tag in post.tags %}
+              <span class="tag-sm">#{{ tag }}</span>
+            {% endfor %}
+          </div>
         </div>
       </li>
     {% endfor %}
@@ -34,7 +40,7 @@ title: "Inici"
 
 <script>
 function filtrarTags(tagSeleccionada) {
-  // 1. Canviar l'estat visual dels botons
+  // 1. Estat visual dels botons
   document.querySelectorAll('.tag-filter-btn').forEach(btn => {
     btn.classList.remove('active');
     if(btn.textContent === '#' + tagSeleccionada || (tagSeleccionada === 'tots' && btn.textContent === '#tots')) {
@@ -42,26 +48,23 @@ function filtrarTags(tagSeleccionada) {
     }
   });
 
-  // 2. Filtrar els posts
+  // 2. Filtrar els posts amb transició suau
   document.querySelectorAll('.post-item').forEach(post => {
     if (tagSeleccionada === 'tots') {
-      post.style.display = 'block'; // Mostra tots
+      post.style.display = 'block';
     } else {
-      // Agafem les etiquetes del post i mirem si inclou la seleccionada
       const tagsDelPost = post.getAttribute('data-tags').split(',');
       if (tagsDelPost.includes(tagSeleccionada)) {
         post.style.display = 'block';
       } else {
-        post.style.display = 'none'; // Amaga el post
+        post.style.display = 'none';
       }
     }
   });
 
-  // 3. EXPERIMENT D'ANALÍTICA: Enviem el clic a Google Analytics (GA4)
+  // 3. Trackeig automàtic a Google Analytics
   if (typeof gtag === 'function') {
-    gtag('event', 'filtrar_contingut', {
-      'tag_seleccionada': tagSeleccionada
-    });
+    gtag('event', 'filtrar_contingut', { 'tag_seleccionada': tagSeleccionada });
   }
 }
 </script>
