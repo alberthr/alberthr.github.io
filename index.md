@@ -19,3 +19,4 @@ title: Página Principal
     {% endfor %}
   </ul>
 {% endfor %}
+<pre>{{ site.posts | jsonify }}</pre>
