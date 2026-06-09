@@ -1,4 +1,4 @@
-theme: jekyll-theme-minimal
+theme: minima
 title: Mi Sitio Jekyll
 description: Un sitio estático generado con Jekyll en GitHub Pages
 remote_theme: pages-themes/midnight@v0.2.0
