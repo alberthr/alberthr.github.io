@@ -18,9 +18,9 @@ El suavitzat exponencial és una tècnica de pronòstic de sèries temporals que
 
 Matemàticament, el model més bàsic (Suavitzat Exponencial Simple) es defineix amb la següent equació d'actualització:
 
-```math
+$$
 F_{t+1} = \alpha Y_t + (1 - \alpha) F_t
-```
+$$
 
 On:
 
