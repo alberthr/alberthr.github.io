@@ -52,13 +52,15 @@ $$
 $$
 
 
+<div>
 $$
-\begin
+\begin{matrix}
 9 & 2 & 78 \\
 6 & 4 & 37 \\
 5 & 8 & 26
-\end
+\end{matrix}
 $$
+</div>
 
 
 
