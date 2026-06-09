@@ -1,14 +1,14 @@
 :root {
   --bg-color: #fcfbf9;       /* Fons estil paper trencat, càlid i elegant */
-  --text-color: #2c3e50;     /* Blau fosc/gris carbó en lloc de negre pur */
+  --text-color: #2c3e50;     /* Blau fosc/gris carbó */
   --text-muted: #7f8c8d;
   --link-color: #2980b9;     /* Blau corporatiu polit */
   --border-color: #e2e8f0;
-  --code-bg: #1e293b;        /* Bloc de codi fosc (estil VS Code) per a millor contrast */
+  --code-bg: #1e293b;        /* Bloc de codi fosc (estil VS Code) */
   --code-text: #f8fafc;
 }
 
-/* Forcem que tota l'estructura de la web ocupi el 100% real de la finestra */
+/* Estructura global */
 html {
   height: 100%;
 }
@@ -17,39 +17,39 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Georgia, serif;
   color: var(--text-color);
   background-color: var(--bg-color);
-  line-height: 1.7;
+  line-height: 1.6;
   margin: 0;
   padding: 0;
   height: 100%;
 }
 
-/* Convertim el contenidor en un Grid vertical absolut per clavar el footer a baix */
+/* Contenidor Grid: Més ample i amb la meitat de marge als costats */
 .site-wrapper {
   display: grid;
-  grid-template-rows: auto 1fr auto; /* Capçalera, Contingut (creix), Footer */
-  min-height: 100vh;                 /* Mesura el 100% de la pantalla */
-  max-width: 720px;
+  grid-template-rows: auto 1fr auto; 
+  min-height: 100vh;                 
+  max-width: 840px;                  /* Abans 720px: ara el text té més espai */
   margin: 0 auto;
-  padding: 4rem 2rem 0 2rem;         /* CORREGIT: 0 espai extra a sota del footer */
+  padding: 3rem 1rem 0 1rem;         /* Reduït el marge lateral a 1rem (la meitat) */
   box-sizing: border-box;
 }
 
+/* Capçalera simplificada */
 header {
-  margin-bottom: 4rem;
-  border-bottom: 2px solid var(--text-color);
+  margin-bottom: 3rem;
+  border-bottom: 1px solid var(--border-color);
   padding-bottom: 1rem;
 }
 
 .site-title {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  font-weight: 800;
-  font-size: 1.8rem;
-  letter-spacing: -0.03em;
+  font-weight: 700;
+  font-size: 1.5rem;                 /* Títol de la web més discret */
+  letter-spacing: -0.02em;
   text-decoration: none;
   color: var(--text-color);
 }
 
-/* El contingut principal */
 .site-content {
   width: 100%;
 }
@@ -65,6 +65,7 @@ a:hover {
   text-decoration: underline;
 }
 
+/* Tipografia corregida (Mides més petites i elegants) */
 h1, h2, h3 {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color: #1a252f;
@@ -72,59 +73,58 @@ h1, h2, h3 {
   letter-spacing: -0.01em;
 }
 
-h1 { font-size: 2.2rem; margin-bottom: 1.5rem; }
-h2 { font-size: 1.5rem; margin-top: 3rem; }
+h1 { font-size: 1.8rem; margin-bottom: 1.2rem; } /* Abans 2.2rem */
+h2 { font-size: 1.3rem; margin-top: 2.5rem; }    /* Abans 1.5rem */
+h3 { font-size: 1.1rem; }
 
 .about {
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: var(--text-muted);
-  margin-bottom: 3rem;
-  line-height: 1.6;
+  margin-bottom: 2.5rem;
 }
 
-/* Llista de posts estructurada */
+/* Llistat de posts net i minimalista (SENSE CAIXES) */
 ul { 
   padding: 0; 
   list-style: none; 
 }
 
 .post-item {
-  background: #ffffff;
-  padding: 1.5rem;
-  margin-bottom: 1rem;
-  border-radius: 8px;
-  border: 1px solid var(--border-color);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background: transparent;           /* Eliminat el fons blanc */
+  padding: 0;                        /* Eliminat l'espaiat intern de la caixa */
+  margin-bottom: 1.8rem;             /* Espai net entre un post i el següent */
+  border-radius: 0;
+  border: none;                      /* Eliminat el voltant gris de la caixa */
+  box-shadow: none;                  /* Eliminada l'ombra */
+  transition: none;
 }
 
 .post-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  transform: none;
 }
 
 .post-link {
-  font-size: 1.3rem;
-  font-weight: 700;
+  font-size: 1.15rem;                /* Mida del títol del post més continguda */
+  font-weight: 600;
   color: var(--text-color);
 }
 
 .post-link:hover {
   color: var(--link-color);
-  text-decoration: none;
+  text-decoration: underline;
 }
 
 /* Filtres i Etiquetes */
 .tags-filter-container {
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6rem;
+  gap: 0.5rem;
   align-items: center;
 }
 
 .filter-label {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -132,20 +132,18 @@ ul {
 }
 
 .tag-filter-btn {
-  background: #ffffff;
+  background: transparent;
   border: 1px solid var(--border-color);
   color: var(--text-color);
-  padding: 0.4rem 0.9rem;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  font-weight: 500;
+  padding: 0.3rem 0.7rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .tag-filter-btn:hover {
   border-color: var(--text-color);
-  background: #f8fafc;
 }
 
 .tag-filter-btn.active {
@@ -155,17 +153,14 @@ ul {
 }
 
 .list-tags { 
-  margin-top: 0.5rem; 
+  margin-top: 0.2rem; 
   display: flex; 
-  gap: 0.5rem; 
+  gap: 0.4rem; 
 }
 
 .tag-sm {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--text-muted);
-  background: #f1f5f9;
-  padding: 0.1rem 0.4rem;
-  border-radius: 4px;
 }
 
 .post-tags {
@@ -174,24 +169,15 @@ ul {
   gap: 0.5rem;
 }
 
-.post-tags .tag {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  background: #e2e8f0;
-  padding: 0.2rem 0.6rem;
-  border-radius: 4px;
-}
-
-/* Blocs de codi avançats (Estil Dark Mode per a dades) */
+/* Blocs de codi */
 pre {
   background-color: var(--code-bg);
   color: var(--code-text);
-  padding: 1.25rem;
+  padding: 1rem;
   overflow-x: auto;
-  border-radius: 8px;
-  box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+  border-radius: 6px;
   font-family: "SFMono-Regular", Consolas, monospace;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   margin: 1.5rem 0;
 }
 
@@ -199,9 +185,9 @@ code {
   font-family: "SFMono-Regular", Consolas, monospace;
   background-color: #eaeade;
   color: #c0392b;
-  padding: 0.15rem 0.3rem;
-  border-radius: 4px;
-  font-size: 0.9rem;
+  padding: 0.1rem 0.25rem;
+  border-radius: 3px;
+  font-size: 0.85rem;
 }
 
 pre code {
@@ -210,23 +196,23 @@ pre code {
   padding: 0;
 }
 
-/* El footer es quedarà abaix gràcies al sistema Grid */
+/* Paleta de colors per al ressaltat de sintaxi (Rouge) */
+pre.highlight, .highlight pre { background: var(--code-bg); color: var(--code-text); }
+.highlight .c, .highlight .cm, .highlight .c1 { color: #64748b; font-style: italic; }
+.highlight .k, .highlight .kc, .highlight .kd, .highlight .kn { color: #f43f5e; font-weight: bold; }
+.highlight .nf, .highlight .fm { color: #38bdf8; }
+.highlight .s, .highlight .s1, .highlight .s2 { color: #10b981; }
+.highlight .mi, .highlight .mf, .highlight .mo { color: #fbbf24; }
+.highlight .nn { color: #e2e8f0; }
+.highlight .nb { color: #a855f7; }
+.highlight .o, .highlight .ow { color: #f43f5e; }
+
+/* Footer clavat a baix i sense espais extra */
 footer {
-  margin-top: 4rem;
-  padding: 2rem 0 2rem 0;            /* Controlem l'espai intern del propi footer */
+  margin-top: 3rem;
+  padding: 2rem 0 2rem 0;
   border-top: 1px solid var(--border-color);
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
   text-align: center;
 }
-
-/* Paleta de colors per al ressaltat de sintaxi (Rouge / Base16) */
-pre.highlight, .highlight pre { background: var(--code-bg); color: var(--code-text); }
-.highlight .c, .highlight .cm, .highlight .c1 { color: #64748b; font-style: italic; } /* Comentaris (Gris) */
-.highlight .k, .highlight .kc, .highlight .kd, .highlight .kn { color: #f43f5e; font-weight: bold; } /* Paraules clau com def, import, library (Rosa/Vermell) */
-.highlight .nf, .highlight .fm { color: #38bdf8; } /* Funcions com print, array, matrix (Blau cel) */
-.highlight .s, .highlight .s1, .highlight .s2 { color: #10b981; } /* Textos/Strings entre cometes (Verd) */
-.highlight .mi, .highlight .mf, .highlight .mo { color: #fbbf24; } /* Números (Groc/Taronja) */
-.highlight .nn { color: #e2e8f0; } /* Noms de llibreries (Blanc) */
-.highlight .nb { color: #a855f7; } /* Funcions natives com zip, len, sum (Lila) */
-.highlight .o, .highlight .ow { color: #f43f5e; } /* Operadors com +, -, *, | (Rosa) */
