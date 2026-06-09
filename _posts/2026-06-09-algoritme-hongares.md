@@ -51,11 +51,18 @@ $$
 \end{pmatrix}
 $$
 
-$$\begin{pmatrix}
+
+$$
+\left[
+\begin{array}{ccc}
 9 & 2 & 78 \\
 6 & 4 & 37 \\
 5 & 8 & 26
-\end{pmatrix}$$
+\end{array}
+\right]
+$$
+
+
 
 ### Exemple en Python
 
