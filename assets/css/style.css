@@ -30,7 +30,7 @@ body {
   min-height: 100vh;                 /* Mesura el 100% de la pantalla */
   max-width: 720px;
   margin: 0 auto;
-  padding: 4rem 2rem;
+  padding: 4rem 2rem 0 2rem;         /* CORREGIT: 0 espai extra a sota del footer */
   box-sizing: border-box;
 }
 
