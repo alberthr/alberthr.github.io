@@ -6,7 +6,6 @@ tags:
   - outliers
   - neteja-dades
 ---
-
 Aquesta és la funció clàssica que faig servir per identificar valors atípics en un DataFrame utilitzant el rang interquartílic (IQR).
 
 ### El codi en Python
