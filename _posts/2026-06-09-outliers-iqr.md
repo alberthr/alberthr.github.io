@@ -1,7 +1,10 @@
 ---
 layout: post
 title: "Com detectar Outliers ràpidament amb Python (IQR)"
-tags: [python, outliers, neteja-dades]
+tags:
+  - python
+  - outliers
+  - neteja-dades
 ---
 
 Aquesta és la funció clàssica que faig servir per identificar valors atípics en un DataFrame utilitzant el rang interquartílic (IQR).
