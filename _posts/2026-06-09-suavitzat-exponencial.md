@@ -21,7 +21,7 @@ Matemàticament, el model més bàsic (Suavitzat Exponencial Simple) es defineix
 $$F_{t+1} = \alpha Y_t + (1 - \alpha) F_t$$
 
 On:
-* $F_{t+1}$és el pronòstic per al següent període.
+* $F_{t+1}$ és el pronòstic per al següent període.
 * $Y_t$ és el valor real observat en el període actual.
 * $F_t$ és el pronòstic que s'havia fet per al període actual.
 * $\alpha$ (alpha) és el **paràmetre de suavitzat**, un valor entre 0 i 1.
