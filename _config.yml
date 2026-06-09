@@ -2,3 +2,6 @@
 title: Mi Sitio Jekyll
 description: Un sitio generado con Jekyll en GitHub Pages
 theme: minima  # Puedes usar otros temas si quieres
+collections:
+  articulos:
+    output: true
