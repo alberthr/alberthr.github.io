@@ -1,7 +1,7 @@
-# Configuración básica de Jekyll
-title: Mi Sitio Jekyll
-description: Un sitio generado con Jekyll en GitHub Pages
-theme: minima  # Puedes usar otros temas si quieres
+title: Mi Sitio sin cronología
+description: Sitio de consulta y agrupación temática
+theme: minima
 collections:
   articulos:
     output: true
+    permalink: /articulos/:path/
