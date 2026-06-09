@@ -7,10 +7,8 @@ title: Inicio
 
 Aquí tienes los artículos recientes:
 
-<ul>
 {% for post in site.posts %}
-  <li>
-    <a href="{{ post.url }}">{{ post.title }}</a> - {{ post.date | date: "%d %b %Y" }}
-  </li>
+  <h2>{{ post.data.title }}</h2>
+  <p>Publicado en: {{ post.data.categories | join: ', ' }}</p>
+  {{ post.content }}
 {% endfor %}
-</ul>
