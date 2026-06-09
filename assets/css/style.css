@@ -213,7 +213,7 @@ pre code {
 /* El footer es quedarà abaix gràcies al sistema Grid */
 footer {
   margin-top: 4rem;
-  padding-top: 2rem;
+  padding: 2rem 0 2rem 0;            /* Controlem l'espai intern del propi footer */
   border-top: 1px solid var(--border-color);
   font-size: 0.85rem;
   color: var(--text-muted);
