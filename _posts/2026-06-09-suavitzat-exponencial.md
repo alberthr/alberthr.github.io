@@ -27,6 +27,8 @@ F_{t+1} = \alpha Y_t + (1 - \alpha) F_t
 $$
 
 
+La fòrmula de la previsió és $F_{t+1} = \alpha Y_t + (1 - \alpha) F_t$ per al següent període.
+
 
 On:
 
