@@ -1,36 +1,178 @@
-/* Estils per a la barra de filtres */
+:root {
+  --bg-color: #fcfbf9;       /* Fons estil paper trencat, molt més càlid i elegant */
+  --text-color: #2c3e50;     /* Blau fosc/gris carbó en lloc de negre pur */
+  --text-muted: #7f8c8d;
+  --link-color: #2980b9;     /* Blau corporatiu polit */
+  --border-color: #e2e8f0;
+  --code-bg: #1e293b;        /* Bloc de codi fosc (estil VS Code) per a millor contrast */
+  --code-text: #f8fafc;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Georgia, serif;
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  line-height: 1.7;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+}
+
+header {
+  margin-bottom: 4rem;
+  border-bottom: 2px solid var(--text-color);
+  padding-bottom: 1rem;
+}
+
+.site-title {
+  font-family: "SF Pro Display", -apple-system, sans-serif;
+  font-weight: 800;
+  font-size: 1.8rem;
+  letter-spacing: -0.03em;
+  text-decoration: none;
+  color: var(--text-color);
+}
+
+a {
+  color: var(--link-color);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: #1a5276;
+  text-decoration: underline;
+}
+
+h1, h2, h3 {
+  font-family: "SF Pro Display", -apple-system, sans-serif;
+  color: #1a252f;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+h1 { font-size: 2.2rem; margin-bottom: 1.5rem; }
+h2 { font-size: 1.5rem; margin-top: 3rem; }
+
+.about {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  margin-bottom: 3rem;
+  line-height: 1.6;
+}
+
+/* Llista de posts estructurada */
+ul { padding: 0; list-style: none; }
+
+.post-item {
+  background: #ffffff;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.post-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.post-link {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+.post-link:hover {
+  color: var(--link-color);
+  text-decoration: none;
+}
+
+/* Filtres i Etiquetes */
 .tags-filter-container {
-  margin-bottom: 2.5rem;
+  margin-bottom: 3rem;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.6rem;
   align-items: center;
 }
 
 .filter-label {
-  font-size: 0.9rem;
-  color: #666;
-  margin-right: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
 }
 
 .tag-filter-btn {
-  background: none;
+  background: #ffffff;
   border: 1px solid var(--border-color);
-  color: var(--tag-text);
-  padding: 0.3rem 0.7rem;
-  border-radius: 20px;
+  color: var(--text-color);
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
   font-size: 0.85rem;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .tag-filter-btn:hover {
-  border-color: var(--link-color);
-  color: var(--link-color);
+  border-color: var(--text-color);
+  background: #f8fafc;
 }
 
 .tag-filter-btn.active {
   background-color: var(--text-color);
   border-color: var(--text-color);
-  color: var(--bg-color);
+  color: #ffffff;
+}
+
+.list-tags { margin-top: 0.5rem; display: flex; gap: 0.5rem; }
+
+.tag-sm {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  background: #f1f5f9;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+}
+
+/* Blocs de codi avançats (Estil Dark Mode per a dades) */
+pre {
+  background-color: var(--code-bg);
+  color: var(--code-text);
+  padding: 1.25rem;
+  overflow-x: auto;
+  border-radius: 8px;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 0.9rem;
+  margin: 1.5rem 0;
+}
+
+code {
+  font-family: "SFMono-Regular", Consolas, monospace;
+  background-color: #eaeade;
+  color: #c0392b;
+  padding: 0.15rem 0.3rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+pre code {
+  background-color: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+footer {
+  margin-top: 6rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-color);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-align: center;
 }
