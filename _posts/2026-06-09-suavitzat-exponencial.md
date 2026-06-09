@@ -78,3 +78,25 @@ print(model.fittedvalues.tail(3))
 print("\nPronòstic per als propers 3 mesos:")
 print(prediccio)
 ```
+
+###Exemple en R
+A R, podem utilitzar el potent ecosistema `fable` o les funcions natives de la llibreria clàssica `forecast`.
+
+```R
+# Cal instal·lar el paquet si no el tens: install.packages("forecast")
+library(forecast)
+
+# Creem la sèrie temporal de 12 mesos
+dades_vendes <- c(100, 112, 118, 125, 140, 145, 153, 160, 168, 180, 188, 195)
+serie_temporal <- ts(dades_vendes, start = c(2026, 1), frequency = 12)
+
+# Apliquem el mètode de Holt (Suavitzat Doble amb tendència)
+model <- holt(serie_temporal, h = 3)
+
+# Mostrem el resum del model i el pronòstic futur
+print(summary(model))
+
+# Veure les prediccions numèriques directament
+cat("\nPronòstic per als propers 3 mesos:\n")
+print(model$mean)
+```
