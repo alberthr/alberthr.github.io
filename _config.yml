@@ -1,8 +1,11 @@
-title: Mi Sitio sin cronología
-description: Sitio de consulta y agrupación temática
-theme: minima
+title: "Data Analyst Notebook"
+description: "El meu repositori personal de trucs, codi i anàlisis d'utilitat diària."
+baseurl: "" 
+url: ""
 
-collections:
-  posts:
-    output: true
-    permalink: /posts/:basename/
+# Configuració de Google Analytics
+google_analytics: "G-XXXXXXXXXX"
+
+permalink: /:title/
+markdown: kramdown
+theme: null
