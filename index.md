@@ -5,7 +5,7 @@ title: Página Principal
 
 # Artículos por Categorías
 
-{% assign categorias = site.posts | map: "categories" | flatten | uniq %}
+{% assign categorias = site.posts | map: 'categories' | flatten | uniq %}
 
 {% for categoria in categorias %}
 <h2>{{ categoria }}</h2>
