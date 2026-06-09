@@ -5,14 +5,14 @@ title: Página Principal
 
 # Artículos por Categorías
 
-{% assign categories = site.posts | map: 'categories' | uniq | flatten | uniq %}
+{% assign categorias = site.posts | map: 'categories' | uniq | flatten | uniq %}
 
-{% for categoria in categories %}
+{% for categoria in categorias %}
   <h2>{{ categoria }}</h2>
   <ul>
-  {% for post in site.posts %}
-    {% if post.data.categories contains categoria %}
-      <li><a href="{{ post.url }}">{{ post.data.title }}</a></li>
+  {% for articulo in site.articulos %}
+    {% if articulo.data.categories contains categoria %}
+      <li><a href="{{ articulo.url }}">{{ articulo.data.title }}</a></li>
     {% endif %}
   {% endfor %}
   </ul>
