@@ -75,3 +75,4 @@ for worker, task in zip(row_ind, col_ind):
     print(f"Treballador {worker} -> Tasca {task} (Cost: {cost_matrix[worker, task]})")
 
 print(f"Cost total mínim: {cost_matrix[row_ind, col_ind].sum()}")
+```
