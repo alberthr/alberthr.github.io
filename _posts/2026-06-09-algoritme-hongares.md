@@ -52,15 +52,13 @@ $$
 $$
 
 
-$
-\left[
-\begin{array}{ccc}
+$$
+{pmatrix}
 9 & 2 & 78 \\
 6 & 4 & 37 \\
 5 & 8 & 26
-\end{array}
-\right]
-$
+{pmatrix}
+$$
 
 
 
