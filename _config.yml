@@ -9,3 +9,6 @@ google_analytics: "G-XXXXXXXXXX"
 permalink: /:title/
 markdown: kramdown
 theme: null
+
+kramdown:
+  syntax_highlighter: rouge
