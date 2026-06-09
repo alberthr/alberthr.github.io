@@ -79,7 +79,7 @@ print("\nPronòstic per als propers 3 mesos:")
 print(prediccio)
 ```
 
-###Exemple en R
+### Exemple en R
 A R, podem utilitzar el potent ecosistema `fable` o les funcions natives de la llibreria clàssica `forecast`.
 
 ```R
