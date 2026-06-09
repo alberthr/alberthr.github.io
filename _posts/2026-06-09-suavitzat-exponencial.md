@@ -20,6 +20,14 @@ Matemàticament, el model més bàsic (Suavitzat Exponencial Simple) es defineix
 
 $$F_{t+1} = \alpha Y_t + (1 - \alpha) F_t$$
 
+
+
+$$
+F_{t+1} = \alpha Y_t + (1 - \alpha) F_t
+$$
+
+
+
 On:
 
 * $F_{t+1}$ és el pronòstic per al següent període.
