@@ -62,17 +62,14 @@ $$
 $$
 </div>
 
-</div>
+
 $$
-\left(
 \begin{matrix}
 9 & 2 & 78 \\
 6 & 4 & 37 \\
 5 & 8 & 26
 \end{matrix}
-\right)
 $$
-</div>
 
 
 ### Exemple en Python
