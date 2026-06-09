@@ -1,12 +1,14 @@
----
 layout: post
 title: "L'Algoritme Hongarès: Optimització d'assignació de recursos"
 tags:
-  - algoritmes
-  - python
-  - r
-  - optimitzacio
----
+
+algoritmes
+
+python
+
+r
+
+optimitzacio
 
 En el dia a dia de l'anàlisi de dades i la investigació operativa, sovint ens trobem amb problemes on hem de repartir tasques eficientment. Si tenim un grup de treballadors i un conjunt de projectes, on cada treballador té un cost (o temps) diferent per a cada projecte, com podem assignar una tasca a cada persona minimitzant el cost total? La resposta elegant a aquest problema de combinatòria és l'Algoritme Hongarès.
 
@@ -26,7 +28,7 @@ Resta de files: Trobar el valor mínim de cada fila i restar-lo a tots els eleme
 
 Resta de columnes: Trobar el valor mínim de cada columna de la nova matriu i restar-lo a tots els elements de la columna.
 
-Cobertura de zeros: Traçar el menor nombre possible de línies verticals i horitzontals per cobrir tots les valors zero de la matriu.
+Cobertura de zeros: Traçar el menor nombre possible de línies verticals i horitzontals per cobrir tots els valors zero de la matriu.
 
 Optimització: Si el nombre de línies és igual a $n$ (la dimensió de la matriu), ja tenim l'assignació òptima als zeros coberts. Si és menor, s'ajusta la matriu (restant el valor mínim no cobert als valors lliures i sumant-lo a les interseccions de les línies) i es torna al pas 3.
 
@@ -102,4 +104,4 @@ cat("Cost total mínim:", cost_total, "\n")
 
 Conclusió
 
-L'algoritme hongarès demostra com les matemàtiques discretes poden aportar solucions dràstiques i exactes a problemes de negoci complexos. Integrar aquest mètode en els nostres pipelines de dades ens permet automatitzar decisions operatives amb la certesa que estem maximitzant el rendiment dels nostres recursos.
+L'algoritme hongarès demostra com les matemàtiques discretes poden aportar solucions dràstiques i exactes a problemes de negoci complexos. Integrar aquest mètode en els nostres pipelines de dades ens permet automatitzar decisions operatives amb la certesa que estem maximitzant el rendiment dels nostres resources.
