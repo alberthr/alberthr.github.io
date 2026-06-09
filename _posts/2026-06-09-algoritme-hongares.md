@@ -76,3 +76,29 @@ for worker, task in zip(row_ind, col_ind):
 
 print(f"Cost total mínim: {cost_matrix[row_ind, col_ind].sum()}")
 ```
+
+###Exemple en R
+A R, podem utilitzar el paquet clue que conté la funció solve_LSAP (Linear Sum Assignment Problem).
+
+
+```R
+# Cal instal·lar el paquet si no el tens: install.packages("clue")
+library(clue)
+
+# Definim la matriu de costos
+cost_matrix <- matrix(c(9, 6, 5, 
+                        2, 4, 8, 
+                        78, 37, 26), 
+                      nrow = 3, ncol = 3)
+
+# Apliquem l'algoritme hongarès
+resultat <- solve_LSAP(cost_matrix)
+
+# Mostrem els resultats
+print("Tasques assignades als treballadors 1, 2 i 3 respectivament:")
+print(as.vector(resultat))
+
+# Calculem el cost total
+cost_total <- sum(cost_matrix[cbind(seq_along(resultat), resultat)])
+cat("Cost total mínim:", cost_total, "\n")
+```
