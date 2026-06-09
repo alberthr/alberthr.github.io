@@ -23,3 +23,4 @@ def detecta_outliers(df, columna):
     
     outliers = df[(df[columna] < filtre_inferior) | (df[columna] > filtre_superior)]
     return outliers
+```
