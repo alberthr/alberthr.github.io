@@ -2,16 +2,18 @@
 <html lang="ca">
 {% include head.html %}
 <body>
-  <header>
-    <nav>
-      <a href="{{ '/' | relative_url }}" class="site-title">{{ site.title }}</a>
-    </nav>
-  </header>
+  <div class="site-wrapper">
+    <header>
+      <nav>
+        <a href="{{ '/' | relative_url }}" class="site-title">{{ site.title }}</a>
+      </nav>
+    </header>
 
-  <main>
-    {{ content }}
-  </main>
+    <main class="site-content">
+      {{ content }}
+    </main>
 
-  {% include footer.html %}
+    {% include footer.html %}
+  </div>
 </body>
 </html>
