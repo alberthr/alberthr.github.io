@@ -3,8 +3,14 @@ layout: default
 title: Inicio
 ---
 
-# Bienvenido a mi sitio con Jekyll
+# Bienvenido a mi blog
 
-Este es un ejemplo básico usando Jekyll en GitHub Pages.
+Aquí tienes los artículos recientes:
 
-Puedes editar estos archivos para personalizar tu sitio.
+<ul>
+{% for post in site.posts %}
+  <li>
+    <a href="{{ post.url }}">{{ post.title }}</a> - {{ post.date | date: "%d %b %Y" }}
+  </li>
+{% endfor %}
+</ul>
