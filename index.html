@@ -27,11 +27,22 @@ title: "Inici"
 </div>
 
 <section class="posts-list">
-  <!-- <h2>Anotacions i Recursos</h2> -->
   <ul id="llista-posts">
     {% for post in site.posts %}
-      <li class="post-item" data-tags="{{ post.tags | join: ',' }}">
+      {% comment %}
+        Generar resums automàtics: primeres 30 paraules del contingut sense HTML
+      {% endcomment %}
+      {% assign excerpt = post.content | strip_html | truncatewords: 30 %}
+      
+      <li class="post-item" data-tags="{{ post.tags | join: ',' }}" data-search="{{ post.title | downcase }} {{ post.tags | join: ' ' | downcase }} {{ excerpt | downcase }}">
         <a href="{{ post.url | relative_url }}" class="post-link">{{ post.title }}</a>
+        
+        <div class="post-excerpt">{{ excerpt }}</div>
+        
+        <div class="post-meta">
+          <span class="post-date">{{ post.date | date: "%d %b %Y" }}</span>
+        </div>
+        
         <div class="list-tags">
           {% for tag in post.tags %}
             <span class="tag-sm">#{{ tag }}</span>
@@ -43,6 +54,7 @@ title: "Inici"
 </section>
 
 <script>
+// Funcionalitat de filtratge per tags
 function filtrarTags(tagSeleccionada) {
   // 1. Canviar l'estat visual dels botons de filtre
   document.querySelectorAll('.tag-filter-btn').forEach(btn => {
@@ -73,4 +85,19 @@ function filtrarTags(tagSeleccionada) {
     });
   }
 }
+
+// Funcionalitat de cerca en temps real
+document.getElementById('search-input').addEventListener('keyup', function(e) {
+  const searchTerm = this.value.toLowerCase();
+  const posts = document.querySelectorAll('.post-item');
+  
+  posts.forEach(post => {
+    const searchableText = post.getAttribute('data-search');
+    if (searchableText.includes(searchTerm) || searchTerm === '') {
+      post.style.display = 'block';
+    } else {
+      post.style.display = 'none';
+    }
+  });
+});
 </script>

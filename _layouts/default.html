@@ -4,9 +4,16 @@
 <body>
   <div class="site-wrapper">
     <header>
-      <nav>
-        <a href="{{ '/' | relative_url }}" class="site-title">{{ site.title }}</a>
-      </nav>
+      <a href="{{ '/' | relative_url }}" class="site-title">{{ site.title }}</a>
+      <div class="search-container">
+        <input 
+          type="text" 
+          id="search-input" 
+          class="search-input" 
+          placeholder="🔍 Cercar posts..."
+          aria-label="Cercar posts"
+        >
+      </div>
     </header>
 
     <main class="site-content">
@@ -15,5 +22,8 @@
 
     {% include footer.html %}
   </div>
+
+  <!-- Script per a la funcionalitat de cerca -->
+  <script src="{{ '/assets/js/search.js' | relative_url }}"></script>
 </body>
 </html>
