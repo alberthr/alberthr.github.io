@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "L'index de Herfindahl (o de concentracio)"
+title: "L'index de Herfindahl (o de Concentracio)"
 tags:
   - mesures
 ---
@@ -11,9 +11,9 @@ L’índex d’Herfindahl (H-Index) és una mesura utilitzada en economia i dret
 
 L’índex d’Herfindahl es calcula sumant els quadrats de la quota de mercat de totes les empreses que operen en l’àmbit analitzat. La fórmula és:
 
-$$
+<center>$
 H = \sum_{i=1}^{N} s_i^2
-$$
+$</center>
 
 $H = \sum_{i=1}^{N} s_i^2$
 
@@ -34,9 +34,9 @@ Primer, expressem aquestes quotes en decimals: 0,50; 0,30; 0,20.
 
 Aplicarem la fórmula:
 
-$\[
+<center>$
 H = 0,50^2 + 0,30^2 + 0,20^2 = 0,25 + 0,09 + 0,04 = 0,38
-\]$
+$</center>  
 
 $H = 0,50^2 + 0,30^2 + 0,20^2 = 0,25 + 0,09 + 0,04 = 0,38$
 
