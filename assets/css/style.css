@@ -1,10 +1,13 @@
 :root {
-  --bg-color: #fcfbf9;       /* Fons estil paper trencat, càlid i elegant */
+  /*--bg-color: #fcfbf9;*/   /* Fons estil paper trencat, càlid i elegant */
+  --bg-color: #ffffff;       /* Fons estil paper trencat, càlid i elegant */
+
   --text-color: #2c3e50;     /* Blau fosc/gris carbó */
   --text-muted: #7f8c8d;
   --link-color: #2980b9;     /* Blau corporatiu polit */
   --border-color: #e2e8f0;
-  --code-bg: #1e293b;        /* Bloc de codi fosc (estil VS Code) */
+  /*--code-bg: #1e293b;*/    /* Bloc de codi fosc (estil VS Code) */
+  --code-bg: #ebebeb;        /* Bloc de codi Color Gris */
   --code-text: #f8fafc;
 }
 
@@ -28,7 +31,7 @@ body {
   display: grid;
   grid-template-rows: auto 1fr auto; 
   min-height: 100vh;                 
-  max-width: 960px;                  /* Abans 720px: ara el text té més espai */
+  max-width: 840px;                  /* Abans 720px: ara el text té més espai */
   margin: 0 auto;
   padding: 2rem 1rem 0 1rem;         /* Reduït el marge lateral a 1rem (la meitat) */
   box-sizing: border-box;
@@ -73,7 +76,7 @@ h1, h2, h3 {
   letter-spacing: -0.01em;
 }
 
-h1 { font-size: 1.8rem; margin-bottom: 1.2rem; } /* Abans 2.2rem */
+h1 { font-size: 1.6rem; margin-bottom: 1.2rem; } /* Abans 2.2rem */
 h2 { font-size: 1.3rem; margin-top: 2.5rem; }    /* Abans 1.5rem */
 h3 { font-size: 1.1rem; }
 
