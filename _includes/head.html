@@ -26,3 +26,14 @@
   {% endif %}
   
 </head>
+
+<div class="bloc-capcalera-global">
+  <h1>{{ page.title | default: site.title }}</h1>
+  <p class="descripcio-global">
+    {% if page.description %}
+      {{ page.description }}
+    {% else %}
+      {{ site.description }}
+    {% endif %}
+  </p>
+</div>
