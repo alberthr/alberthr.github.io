@@ -21,6 +21,7 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
+  overflow-y: scroll;
 }
 
 /* Contenidor Grid: Més ample i amb la meitat de marge als costats */
