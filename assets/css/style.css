@@ -212,7 +212,7 @@ pre.highlight, .highlight pre { background: var(--code-bg); color: var(--code-te
 
 /* Footer clavat a baix i sense espais extra */
 footer {
-  margin-top: 3rem;
+  margin-top: 1rem;
   padding: 0.3rem 0 0.3rem 0;
   border-top: 1px solid var(--border-color);
   font-size: 0.7rem;
