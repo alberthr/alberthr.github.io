@@ -92,6 +92,11 @@ h3 { font-size: 1.0rem; }
   text-align: center;
 }
 
+.post-content h1 {
+  margin-bottom: 0rem;
+  margin-top: 1.5rem;
+}
+
 /* Llistat de posts net i minimalista (SENSE CAIXES) */
 ul { 
   padding: 0; 
@@ -175,7 +180,7 @@ ul {
 
 .post-tags {
   margin-bottom: 1.5rem;
-  margin-top: -1.0rem;
+  /*margin-top: -1.0rem;*/
   display: flex;
   gap: 0.5rem;
 }
