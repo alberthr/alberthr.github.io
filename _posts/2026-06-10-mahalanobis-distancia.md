@@ -2,6 +2,10 @@
 layout: post
 title: "Què és la Distància de Mahalanobis i per a què serveix?"
 description: "Descobreix com mesurar la distància entre dades tenint en compte la seva correlació i dispersió, amb exemples pràctics en Python i R."
+tags:
+  - outliers
+  - mesures
+  - distancia
 ---
 
 Quan treballem amb dades multidimensionals, la primera tendència que tenim per mesurar com de "lluny" estan dos punts és utilitzar la distància euclidiana (la línia recta de tota la vida). Però, què passa si les nostres variables tenen escales diferents o estan altament correlacionades? Aquí és on la distància euclidiana falla i on la **Distància de Mahalanobis** es converteix en la nostra millor aliada.
