@@ -28,15 +28,15 @@ body {
   display: grid;
   grid-template-rows: auto 1fr auto; 
   min-height: 100vh;                 
-  max-width: 840px;                  /* Abans 720px: ara el text té més espai */
+  max-width: 960px;                  /* Abans 720px: ara el text té més espai */
   margin: 0 auto;
-  padding: 3rem 1rem 0 1rem;         /* Reduït el marge lateral a 1rem (la meitat) */
+  padding: 2rem 1rem 0 1rem;         /* Reduït el marge lateral a 1rem (la meitat) */
   box-sizing: border-box;
 }
 
 /* Capçalera simplificada */
 header {
-  margin-bottom: 3rem;
+  margin-bottom: 0rem;
   border-bottom: 1px solid var(--border-color);
   padding-bottom: 1rem;
 }
