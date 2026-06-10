@@ -1,13 +1,10 @@
 :root {
-  /*--bg-color: #fcfbf9;*/   /* Fons estil paper trencat, càlid i elegant */
-  --bg-color: #ffffff;       /* Fons estil paper trencat, càlid i elegant */
-
+  --bg-color: #fcfbf9;       /* Fons estil paper trencat, càlid i elegant */
   --text-color: #2c3e50;     /* Blau fosc/gris carbó */
   --text-muted: #7f8c8d;
   --link-color: #2980b9;     /* Blau corporatiu polit */
   --border-color: #e2e8f0;
-  /*--code-bg: #1e293b;*/    /* Bloc de codi fosc (estil VS Code) */
-  --code-bg: #ebebeb;        /* Bloc de codi Color Gris */
+  --code-bg: #1e293b;        /* Bloc de codi fosc (estil VS Code) */
   --code-text: #f8fafc;
 }
 
