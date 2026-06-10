@@ -88,6 +88,7 @@ h3 { font-size: 1.0rem; }
   font-size: 1rem;
   color: var(--text-muted);
   margin-bottom: 2.5rem;
+  text-align: center;
 }
 
 /* Llistat de posts net i minimalista (SENSE CAIXES) */
@@ -127,6 +128,7 @@ ul {
   display: flex;
   flex-wrap: wrap;
   gap: 0.2rem;
+  justify-content: center; /* Centra els elements horizontalment */
   align-items: center;
 }
 
