@@ -11,9 +11,9 @@ L’índex d’Herfindahl (H-Index) és una mesura utilitzada en economia i dret
 
 L’índex d’Herfindahl es calcula sumant els quadrats de la quota de mercat de totes les empreses que operen en l’àmbit analitzat. La fórmula és:
 
-$\[
+$$
 H = \sum_{i=1}^{N} s_i^2
-\]$
+$$
 
 $H = \sum_{i=1}^{N} s_i^2$
 
