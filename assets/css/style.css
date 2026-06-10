@@ -116,7 +116,6 @@ ul {
 
 /* Filtres i Etiquetes */
 .tags-filter-container {
-  font-size: 0.8rem;
   margin-bottom: 2rem;
   display: flex;
   flex-wrap: wrap;
@@ -136,9 +135,9 @@ ul {
   background: transparent;
   border: 1px solid var(--border-color);
   color: var(--text-color);
-  padding: 0.3rem 0.7rem;
+  padding: 0.3rem 0.3rem;
   border-radius: 4px;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   cursor: pointer;
   transition: all 0.2s ease;
 }
