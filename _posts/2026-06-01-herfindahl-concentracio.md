@@ -1,4 +1,9 @@
-# Què és l’Índex d’Herfindahl i Per a què serveix?
+---
+layout: post
+title: "L'index de Herfindahl (o de concentracio)"
+tags:
+  - mesures
+---
 
 L’índex d’Herfindahl (H-Index) és una mesura utilitzada en economia i dret de la competència per avaluar el grau de concentració de mercat d’un sector o una indústria. En poques paraules, aquest indicador ens ajuda a determinar com de concentrat o competitius són els mercats, i si existeix un risc d’abús de poder de mercat per part d’algunes empreses dominants.
 
@@ -9,6 +14,8 @@ L’índex d’Herfindahl es calcula sumant els quadrats de la quota de mercat d
 $\[
 H = \sum_{i=1}^{N} s_i^2
 \]$
+
+$H = \sum_{i=1}^{N} s_i^2$
 
 on:
 - $\(s_i\)$ és la quota de mercat (en percentatge o en proporció) de l’empresa \(i\).
@@ -30,6 +37,8 @@ Aplicarem la fórmula:
 $\[
 H = 0,50^2 + 0,30^2 + 0,20^2 = 0,25 + 0,09 + 0,04 = 0,38
 \]$
+
+$H = 0,50^2 + 0,30^2 + 0,20^2 = 0,25 + 0,09 + 0,04 = 0,38$
 
 L’índex d’Herfindahl en aquest cas és 0,38 (o 3.8 si expressat en '%').
 
