@@ -34,8 +34,7 @@ title: "Inici"
       {% endcomment %}
       {% assign excerpt = post.content | strip_html | truncatewords: 30 %}
       
-	  {% assign full_content = post.content | strip_html | downcase %}
-	  <li class="post-item" data-tags="{{ post.tags | join: ',' }}" data-search="{{ post.title | downcase }} {{ post.tags | join: ' ' | downcase }} {{ excerpt | downcase }} {{ full_content }}">
+	  <li class="post-item" data-tags="{{ post.tags | join: ',' }}">
         <a href="{{ post.url | relative_url }}" class="post-link">{{ post.title }}</a>
         
         <div class="post-excerpt">{{ excerpt }}</div>
