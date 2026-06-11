@@ -73,6 +73,11 @@ header {
   text-transform: uppercase;
 }
 
+.site-title::before {
+  content: "📒 ";
+  font-size: 1.35rem;
+}
+
 .site-title:hover {
   color: var(--accent-color);  
 }
