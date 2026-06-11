@@ -1,3 +1,6 @@
+/* Importa la fuente desde Google Fonts */
+@import url('https://fonts.google.com/specimen/Orbitron');
+
 :root {
   /* Paleta de colors: blancs, grisos amb toc de color accent */
   --bg-color: #ffffff;           /* Blanc gairebé pur, molt lleuger (ORIGINAL: #fafaf8;) */
@@ -122,6 +125,7 @@ a:hover {
 }
 
 header a {
+  font-family: 'Oxanium', -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
   text-transform: uppercase;
 }
 
