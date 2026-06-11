@@ -1,6 +1,6 @@
 :root {
   /* Paleta de colors: blancs, grisos amb toc de color accent */
-  --bg-color: #fafaf8;           /* Blanc gairebé pur, molt lleuger */
+  --bg-color: #ffffff;           /* Blanc gairebé pur, molt lleuger (ORIGINAL: #fafaf8;) */
   --bg-secondary: #f5f3f0;       /* Gris molt clar per a contrast subtle */
   --text-color: #1a1a1a;         /* Negre molt fosc per a llegibilitat */
   --text-muted: #666666;         /* Gris mig */
