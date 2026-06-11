@@ -523,9 +523,9 @@ footer {
     font-size: 1.5rem;
   }
 
-  .site-title::after {
-    content: "📒";
-    font-size: 1.1rem;
+  .site-title::before {
+    content: "📒 ";
+    font-size: 1.35rem;
   }
   
   h1 {
