@@ -74,7 +74,7 @@ header {
 }
 
 .site-title::before {
-  content: " 📒";
+  content: "📒 ";
   font-size: 1.5rem;
 }
 
