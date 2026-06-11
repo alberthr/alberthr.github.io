@@ -1,57 +1,69 @@
----
-layout: default
----
-<article class="post-content">
-  <h1>{{ page.title }}</h1>
-  
-  <!--div class="post-meta"-->
-    <!--span class="post-date">{{ page.date | date: "%d %b %Y" }}</span-->
-  <!--/div-->
+<!DOCTYPE html>
+<html lang="ca">
+{% include head.html %}
+<body>
+  <div class="site-wrapper">
+    <header>
+      <a href="{{ '/' | relative_url }}" class="site-title">{{ site.title }}</a>
+    </header>
 
-  <div class="post-tags">
-    {% for tag in page.tags %}
-      <span class="tag-sm">{{ tag }}</span>
-    {% endfor %}
+    <main class="site-content">
+      <article class="post-content">
+        <h1>{{ page.title }}</h1>
+        
+        <div class="post-tags">
+          {% for tag in page.tags %}
+            <span class="tag-sm">{{ tag }}</span>
+          {% endfor %}
+        </div>
+
+        {{ content }}
+      </article>
+
+      <!-- Secció de posts relacionats (llista senzilla) -->
+      {% assign current_post_tags = page.tags %}
+      {% assign related_posts = "" | split: "" %}
+      {% assign max_related = 3 %}
+
+      {% for post in site.posts %}
+        {% if post.url != page.url %}
+          {% assign match_count = 0 %}
+          {% for post_tag in post.tags %}
+            {% if current_post_tags contains post_tag %}
+              {% assign match_count = match_count | plus: 1 %}
+            {% endif %}
+          {% endfor %}
+          
+          {% if match_count > 0 %}
+            {% assign related_posts = related_posts | push: post %}
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+
+      {% if related_posts.size > 0 %}
+        <section class="related-posts">
+          <h2 class="related-posts-title">Posts Relacionats</h2>
+          <ul class="related-posts-list">
+            {% for post in related_posts limit: max_related %}
+              <li>
+                <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+              </li>
+            {% endfor %}
+          </ul>
+        </section>
+      {% endif %}
+
+      <p style="margin-top: 3rem; text-align: center;">
+        <a href="{{ '/' | relative_url }}" style="display: inline-block; padding: 0.5rem 1rem; border: 1px solid #e0e0e0; border-radius: 4px; transition: all 0.2s ease;">
+          &larr; Tornar a l'inici
+        </a>
+      </p>
+    </main>
+
+    {% include footer.html %}
   </div>
 
-  {{ content }}
-</article>
-
-<!-- Secció de posts relacionats (llista senzilla) -->
-{% assign current_post_tags = page.tags %}
-{% assign related_posts = "" | split: "" %}
-{% assign max_related = 3 %}
-
-{% for post in site.posts %}
-  {% if post.url != page.url %}
-    {% assign match_count = 0 %}
-    {% for post_tag in post.tags %}
-      {% if current_post_tags contains post_tag %}
-        {% assign match_count = match_count | plus: 1 %}
-      {% endif %}
-    {% endfor %}
-    
-    {% if match_count > 0 %}
-      {% assign related_posts = related_posts | push: post %}
-    {% endif %}
-  {% endif %}
-{% endfor %}
-
-{% if related_posts.size > 0 %}
-  <section class="related-posts">
-    <h2 class="related-posts-title">Posts Relacionats</h2>
-    <ul class="related-posts-list">
-      {% for post in related_posts limit: max_related %}
-        <li>
-          <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-        </li>
-      {% endfor %}
-    </ul>
-  </section>
-{% endif %}
-
-<p style="margin-top: 3rem; text-align: center;">
-  <a href="{{ '/' | relative_url }}" style="display: inline-block; padding: 0.5rem 1rem; border: 1px solid #e0e0e0; border-radius: 4px; transition: all 0.2s ease;">
-    &larr; Tornar a l'inici
-  </a>
-</p>
+  <!-- Script per a la funcionalitat de cerca -->
+  <script src="{{ '/assets/js/search.js' | relative_url }}"></script>
+</body>
+</html>
