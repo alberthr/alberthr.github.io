@@ -316,6 +316,11 @@ ul {
   margin-bottom: 1rem;
 }
 
+.post-content h1::before {
+  content: "📃";
+  font-size: 0.9rem;
+} 
+
 .post-content p {
   margin-bottom: 1rem;
 }
