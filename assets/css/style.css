@@ -11,8 +11,8 @@
   --accent-color: #0066cc;       /* Blau vibrant (accent principal) */
   --accent-hover: #0052a3;       /* Blau més fosc per a hover */
   --border-color: #e0e0e0;       /* Gris clar per a separadors */
-  --code-bg: #1e293b;            /* Gris fosc per a blocs de codi */
-  --code-text: #f8fafc;          /* Gris molt clar per a text del codi */
+  --code-bg: #f5f3f0;            /* Gris clar per a blocs de codi */
+  --code-text: #1a1a1a;          /* Negre fosc per a text del codi */
   --tag-bg: #f0f4f8;             /* Fons molt clar per a tags */
   --tag-color: #0066cc;          /* Color dels tags = accent */
   --success-color: #10b981;      /* Verd per a destacats positius */
@@ -395,7 +395,7 @@ pre {
   font-size: 0.85rem;
   margin: 1.5rem 0;
   line-height: 1.5;
-  border: 1px solid #334155;
+  border: 1px solid #d0d0d0;
 }
 
 code {
@@ -442,7 +442,7 @@ pre.highlight, .highlight pre {
 }
 
 .highlight .nn {
-  color: #e2e8f0;
+  color: #333333;
 }
 
 .highlight .nb {
