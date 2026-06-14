@@ -2,9 +2,9 @@
 layout: post
 title: "Extreure tendències en sèries temporals. Suavitzat Polinómic"
 tags: 
-	- series-temporals
-	- tendencia
-	- modelitzacio
+  - series-temporals
+  - tendencia
+  - modelitzacio
 ---
 
 Quan treballem amb sèries temporals o gràfics de dispersió, sovint ens trobem amb una gran quantitat de soroll que dificulta veure la direcció real de les dades. Una línia recta de regressió lineal clàssica sol ser massa rígida, mentre que unir els punts directament genera un traç caòtic. 
