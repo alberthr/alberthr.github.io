@@ -70,11 +70,16 @@ else:
 
 ```r
 # Fixem la llavor
-set.seed(42)
+set.seed(27)
 
 # Generem les mateixes dades simulades
 grup_A <- rnorm(100, mean = 3.0, sd = 0.5)
 grup_B <- rnorm(100, mean = 2.8, sd = 0.5)
+
+# Grafiquem les mostres
+plot(ecdf(grup_A), col = "blue", main = "Comparativa de CDFs i Mètode K-S", 
+     xlab = "Valor", ylab = "Probabilitat Acumulada", verticals = TRUE, do.points = FALSE)
+plot(ecdf(grup_B), col = "red", add = TRUE, verticals = TRUE, do.points = FALSE)
 
 # Apliquem el test K-S
 resultat <- ks.test(grup_A, grup_B)
@@ -88,4 +93,5 @@ if (resultat$p.value < 0.05) {
 } else {
   cat("Resultat: No hi ha diferències significatives.\n")
 }
+
 ```
