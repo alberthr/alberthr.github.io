@@ -1,99 +1,109 @@
 ---
 layout: post
-title: "Què és la Distància de Mahalanobis i per a què serveix?"
-description: "Descobreix com mesurar la distància entre dades tenint en compte la seva correlació i dispersió, amb exemples pràctics en Python i R."
-tags:
+title: "Detecció d'Outliers Multivariants amb la Distància de Mahalanobis"
+tags: 
   - outliers
   - mesures
-  - distancia
 ---
 
-Quan treballem amb dades multidimensionals, la primera tendència que tenim per mesurar com de "lluny" estan dos punts és utilitzar la distància euclidiana (la línia recta de tota la vida). Però, què passa si les nostres variables tenen escales diferents o estan altament correlacionades? Aquí és on la distància euclidiana falla i on la **Distància de Mahalanobis** es converteix en la nostra millor aliada.
+Quan busquem valors atípics (*outliers*) en un conjunt de dades, el primer impuls sol ser analitzar cada columna per separat (anàlisi univariant). Per exemple, busquem si algú té una edat inusualment alta o uns ingressos desorbitats. 
 
-## El problema de la Distància Euclidiana
+Però, què passa quan el valor de cada variable per separat sembla completament normal, però **la seva combinació és impossible o molt estranya**? Aquí és on entren els *outliers* multivariants, i la millor eina per detectar-los és la **Distància de Mahalanobis**.
 
-Imagina que estàs analitzant dades de salut on mesures el pes (en kg) i l'alçada (en cm) de pacients. Un canvi de 5 unitats en el pes és una variació enorme, mentre que 5 unitats en l'alçada és relativament poc. Si calcules la distància en línia recta pura, la variable amb l'escala més gran dominarà el càlcul.
+## El problema de la distància tradicional (Euclidiana)
 
-A més, el pes i l'alçada estan **correlacionats**: la gent més alta acostuma a pesar més. La distància euclidiana ignora aquesta relació, tractant les variables com si fossin totalment independents.
+Si tenim variables en diferents escales (per exemple, el pes en tones, el preu en milers d'euros i la potència en cavalls), no podem mesurar la distància en línia recta de forma tradicional. Una distància de "10" en la columna de preus no significa el mateix que un "10" en la columna de pes.
 
-## Què fa diferent la Distància de Mahalanobis?
+A més, les variables solen estar correlacionades. Si una persona fa 2 metres d'alçada, és normal que pesi més que la mitjana. Un pes de 100 kg per a algú de 2 metres és normal; el mateix pes per a algú d'1,50 metres és un *outlier*. La distància euclidiana ignora aquesta relació.
 
-La distància de Mahalanobis calcula la distància d'un punt respecte a la mitjana d'una distribució de dades tenint en compte dos factors clau:
-1. **La dispersió (variància):** Normalitza lesescales de cada variable.
-2. **La correlació (covariància):** Entén com es mouen les variables de forma conjunta.
+## Què fa la Distància de Mahalanobis?
 
-En lloc de dibuixar cercles perfectes al voltant de la mitjana (com faria la distància euclidiana), Mahalanobis dibuixa **el·lipses** que s'ajusten a la forma real del núvol de dades.
+La distància de Mahalanobis resol aquests dos problemes d'un sol cop:
+1. **Normalitza les escales:** Transforma totes les variables perquè les diferències de magnitud no distorsionin el càlcul.
+2. **Té en compte la covariància (correlació):** Avalua la distància d'un punt respecte al "centre de gravetat" de les dades (el vector de mitjanes), però tenint en compte la direcció en què es distribueixen els punts.
 
 
 
-### La Fórmula Matemàtica
-
-La fórmula per calcular la distància de Mahalanobis ($D_M$) d'un vector $x$ respecte a una mitjana $\mu$ és:
-
-<center>$D_M(x) = \sqrt{(x - \mu)^T \Sigma^{-1} (x - \mu)}$</center>
-
-On:
-* $x$ és el vector del punt que volem avaluar.
-* $\mu$ és el vector de mitjanes de les nostres dades.
-* $\Sigma^{-1}$ és la **matriu inversa de covariància** (la que s'encarrega d'eliminar l'efecte de la correlació).
-
-## Utilitats i Usos Principals
-
-* **Detecció d'Anomalies (Outliers):** És la seva utilitat estrella. Permet identificar punts que, mirats variable per variable semblen normals, però que combinats són altament improbables.
-* **Classificació de Patrons:** S'utilitza en el classificador de la distància mínima de Mahalanobis, ideal per assignar un element a un grup basant-se en la seva similitud multidimensional.
-* **Sèries Temporals i Finances:** Per detectar canvis bruscos en el comportament de mercats on múltiples actius es mouen de forma correlacionada.
+Estadísticament, la distància de Mahalanobis al quadrat segueix una distribució **Chi-quadrat ($\chi^2$)**. Això ens permet establir un llindar matemàtic objectiu (per exemple, amb un nivell de significació del 5%) per dir: *"Qualsevol punt que superi aquesta distància té menys d'un 5% de probabilitats de pertànyer a aquest grup; per tant, és un outlier"*.
 
 ---
 
-## Implementació Pràctica
+## Implementació pràctica
 
-Anem a veure com podem calcular aquesta distància utilitzant un petit conjunt de dades multidimensional tant en **Python** com en **R**.
+Per als següents exemples utilitzarem el dataset clàssic `mtcars`. Analitzarem 4 columnes amb escales totalment diferents: consum (`mpg`), cavalls de potència (`hp`), pes en tones (`wt`) i cilindrada (`disp`).
 
-### En Python (amb SciPy)
+### Exemple en R
 
-```python
-import numpy as np
-from scipy.spatial import distance
-
-# Definim el nostre núvol de dades (3 observacions, 2 variables)
-dades = np.array([[1, 2], [3, 4], [5, 6]])
-
-# Calculem la matriu de covariància i la seva inversa
-cov_matriu = np.cov(dades, rowvar=False)
-inv_cov_matriu = np.linalg.inv(cov_matriu)
-
-# Calculem la mitjana de les columnes
-mitjana = np.mean(dades, axis=0)
-
-
-# Punt nou que volem avaluar
-nou_punt = np.array([2, 3])
-
-# Calculem la distància de Mahalanobis
-mahalanobis_dist = distance.mahalanobis(nou_punt, mitjana, inv_cov_matriu)
-
-print(f"Distància de Mahalanobis: {mahalanobis_dist}")
-```
-
-### En R
-R inclou una funció nativa excel·lent anomenada mahalanobis() que ens estalvia haver de fer la inversa de la matriu manualment.
+A R, el càlcul està integrat de forma nativa gràcies a la funció `mahalanobis()`.
 
 ```r
-# Creem la matriu de dades
-dades <- matrix(c(1, 3, 5, 2, 4, 6), ncol = 2)
+# 1. Seleccionem les dades amb diferents escales
+dades <- mtcars[, c("mpg", "hp", "wt", "disp")]
 
-# Calculem la mitjana de cada columna
-mitjana <- colMeans(dades)
+# 2. Calculem el centre (mitjanes) i la matriu de covariància
+centre       <- colMeans(dades)
+covariancia  <- cov(dades)
 
-# Calculem la matriu de covariància
-cov_matriu <- cov(dades)
+# 3. Calcular la distància de Mahalanobis per a cada cotxe (fila)
+dades$dist_mahalanobis <- mahalanobis(dades, center = centre, cov = covariancia)
 
-# Punt nou a avaluar
-nou_punt <- c(2, 3)
+# 4. Determinar el llindar crític amb la distribució Chi-quadrat
+# Els graus de llibertat (df) són el nombre de columnes analitzades (4)
+graus_llibertat <- 4 
+alfa <- 0.05 
+llindar_critic <- qchisq(p = 1 - alfa, df = graus_llibertat)
 
-# El mètode en R retorna el quadrat de la distància (D^2), per tant fem l'arrel
-mahal_quadrat <- mahalanobis(nou_punt, mitjana, cov_matriu)
-mahalanobis_dist <- sqrt(mahal_quadrat)
+# 5. Etiquetar els outliers
+dades$es_outlier <- dades$dist_mahalanobis > llindar_critic
 
-print(paste("Distància de Mahalanobis:", mahalanobis_dist))
+# 6. Mostrar els 5 resultats més extrems
+dades_ordenades <- dades[order(-dades$dist_mahalanobis), ]
+print("Top Outliers detectats a R:")
+print(head(dades_ordenades, 5))
 ```
+
+### Exemple en Python
+
+A Python podem replicar exactament el mateix comportament utilitzant `pandas` per gestionar les dades i `scipy` per a la distribució estadística i el càlcul de la matriu inversa de covariància.
+
+```python
+import pandas as pd
+import numpy as np
+from scipy.stats import chi2
+import statsmodels.api as sm # Només per importar el dataset mtcars
+
+# 1. Carreguem el mateix dataset des de statsmodels
+mtcars_df = sm.datasets.get_rdataset("mtcars", "datasets").data
+dades = mtcars_df[["mpg", "hp", "wt", "disp"]].copy()
+
+# 2. Càlculs necessaris (mitjanes i matriu de covariància)
+centre = dades.mean()
+covariancia = dades.cov()
+cov_inversa = np.linalg.inv(covariancia) # Necessària per a la fórmula a Python
+
+# 3. Funció per calcular Mahalanobis per a una fila
+def calcular_mahalanobis(fila, centre, cov_inv):
+    diferencia = fila - centre
+    # Fórmula matemàtica: D^2 = (x - mu)^T * Sigma^-1 * (x - mu)
+    return np.dot(np.dot(diferencia, cov_inv), diferencia)
+
+# Apliquem la funció a cada fila del DataFrame
+dades['dist_mahalanobis'] = dades.apply(calcular_mahalanobis, axis=1, args=(centre, cov_inversa))
+
+# 4. Determinar el llindar crític amb Chi-quadrat
+graus_llibertat = 4
+alfa = 0.05
+llindar_critic = chi2.ppf(1 - alfa, df=graus_llibertat)
+
+# 5. Etiquetar els outliers
+dades['es_outlier'] = dades['dist_mahalanobis'] > llindar_critic
+
+# 6. Mostrar els 5 resultats més extrems
+dades_ordenades = dades.sort_values(by='dist_mahalanobis', ascending=False)
+print("Top Outliers detectats a Python:")
+print(dades_ordenades.head(5))
+```
+
+## Conclusio
+
+La distància de Mahalanobis és una eina elegant i robusta. Ens permet netejar conjunts de dades complexos abans d'entrenar models de Machine Learning, garantint que cap observació "anòmala en combinació" esbiaixi els nostres resultats, fins i tot si els seus valors individuals semblen completament innocents.
