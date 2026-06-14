@@ -5,19 +5,17 @@ tags:
   - metodologia
 ---
 
-Quantes vegades t’has enfrontat a un problema matemàtic o estadístic tan complex que calcular la solució exacta era directament impossible? En el món de l'anàlisi de dades, sovint ens trobem amb escenaris plens d'incertesa o amb models amb massa variables. 
-
-Quan les fórmules tradicionals fallen, hi ha una estratègia que gairebé sembla trampa, però que està completament fonamentada en la matemàtica: **si no ho pots calcular, simula-ho milers de vegades.** Benvinguts al **Mètode de Montecarlo**.
+Quan ens enfrentem a un problema matemàtic o estadístic tan complexe on calcular la solució es directament impossible, quan les fórmules tradicionals fallen, hi ha una estratègia que gairebé sembla trampa, però que està fonamentada en la matemàtica: **si no ho pots calcular, simula-ho milers de vegades.** Aquesta manera de fer s'anomenta el **Mètode de Montecarlo**.
 
 ## Què és el Mètode de Montecarlo?
 
-El Mètode de Montecarlo és una tècnica estadística que utilitza la **generació de nombres aleatoris** per resoldre problemes que poden ser deterministes o probabilístics. El nom prové del famós Casí de Mònaco, fent al·lusió a la ruleta i als jocs d'atzar, i va ser encunyat pels científics John von Neumann, Stanislaw Ulam i Nicholas Metropolis als anys 40, mentre treballaven en el Projecte Manhattan.
+El Mètode de Montecarlo és una tècnica estadística que utilitza la **generació de nombres aleatoris** per resoldre problemes que poden ser deterministes o probabilístics. El nom prové del Casino de Mònaco, fent al·lusió a la ruleta i als jocs d'atzar, i va ser batejat aixi pels científics John von Neumann, Stanislaw Ulam i Nicholas Metropolis als anys 40, mentre treballaven en el Projecte Manhattan.
 
 La premissa és senzilla: en lloc de resoldre una equació complexa de manera analítica, utilitzem l'atzar per "experimentar" amb el model milions de vegades. Gràcies a la **Llei dels Grans Nombres**, sabem que a mesura que augmentem el nombre de simulacions, la mitjana dels resultats obtinguts convergirà cap a la solució real.
 
 ## Per a què serveix i quines aplicacions té?
 
-Aquest mètode és un autèntic "ganivet suís" en la ciència de dades i s'utilitza principalment per a:
+Aquest mètode és una autèntica "navalla suís" en la ciència de dades i s'utilitza principalment per a:
 
 * **Estimació de probabilitats complexes:** Calcular el risc d'una cartera d'inversions o la probabilitat de fallada d'un sistema d'enginyeria.
 * **Integració numèrica:** Calcular àrees o volums sota corbes matemàtiques on la integral no té una solució tancada.
@@ -32,11 +30,11 @@ La millor manera d'entendre Montecarlo és amb un exemple visual clàssic: **cal
 
 Imagina un quadrat de costat $2r$ que conté un cercle inscrit de radi $r$. Si llançem "dards" de manera completament aleatòria dins del quadrat, la probabilitat que caiguin dins del cercle depèn de la relació entre les seves àrees:
 
-$$\frac{\text{Àrea del cercle}}{\text{Àrea del quadrat}} = \frac{\pi r^2}{(2r)^2} = \frac{\pi}{4}$$
+$\frac{\text{Àrea del cercle}}{\text{Àrea del quadrat}} = \frac{\pi r^2}{(2r)^2} = \frac{\pi}{4}$
 
 Per tant, si simulem milers de punts aleatoris, podem estimar $\pi$ com:
 
-$$\pi \approx 4 \times \frac{\text{Punts dins del cercle}}{\text{Punts totals}}$$
+$\pi \approx 4 \times \frac{\text{Punts dins del cercle}}{\text{Punts totals}}$
 
 ### Implementació a Python
 
