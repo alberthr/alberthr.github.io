@@ -18,6 +18,17 @@ Si intentessis fer combinacions a l'atzar per veure quina agrupació de 5 botigu
 
 ---
 
+## Com funciona? (Els passos clau)
+
+L'algoritme transforma la matriu de costos original en una matriu de "costos d'oportunitat" mitjançant operacions aritmètiques senzilles a les files i columnes, buscant zeros que indiquin una assignació òptima. Els passos bàsics són:
+
+1. **Resta de files:** Trobar el valor mínim de cada fila i restar-lo a tots els elements d'aquella fila.
+2. **Resta de columnes:** Trobar el valor mínim de cada columna de la nova matriu i restar-lo a tots els elements de la columna.
+3. **Cobertura de zeros:** Traçar el menor nombre possible de línies verticals i horitzontals per cobrir tots les valors zero de la matriu.
+4. **Optimització:** Si el nombre de línies és igual a $n$ (la dimensió de la matriu), ja tenim l'assignació òptima als zeros coberts. Si és menor, s'ajusta la matriu (restant el valor mínim no cobert als valors lliures i sumant-lo a les interseccions de les línies) i es torna al pas 3.
+
+---
+
 ## Altres utilitats de l'algorisme en la indústria i la tecnologia
 
 Tot i que l'emparellament d'individus o botigues similars és molt útil en analítica de negoci, l'algorisme hongarès és un pilar fonamental en logística, gestió de projectes i ciència de dades aplicada a negocis:
