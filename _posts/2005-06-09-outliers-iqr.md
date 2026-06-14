@@ -3,6 +3,7 @@ layout: post
 title: "Com detectar Outliers ràpidament amb Python (IQR)"
 tags:
   - outliers
+  - estadistica
 ---
 
 Aquesta és la funció clàssica per identificar valors atípics en un DataFrame utilitzant el rang interquartílic (IQR).
