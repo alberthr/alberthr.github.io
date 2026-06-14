@@ -16,7 +16,7 @@ Es basa en la **Funció de Distribució Acumulada** (CDF, per les seves sigles e
 
 A la següent imatge es pot veure gràficament com l'estadístic $D$ busca el punt on les dues corbes es separen més:
 
-![Concepte de l'estadístic D en el test Kolmogorov-Smirnov](https://upload.wikimedia.org/wikipedia/commons/c/cf/KS_Example.png)
+![Concepte de l'estadístic D en el test Kolmogorov-Smirnov](https://raw.githubusercontent.com/alberthr/alberthr.github.io/refs/heads/main/_posts/img/2022-08-01-kolmogorov-smirnov_01.png)
 
 Hi ha dues variants principals d'aquest test:
 
