@@ -30,6 +30,12 @@ Hi ha dues variants principals d'aquest test:
 * **Proves A/B (A/B Testing):** Determinar si el temps de permanència a la web o els diners gastats varien significativament entre el grup de control i el de tractament.
 * **Detecció de *Data Drift*:** En entorns de producció de Machine Learning, s'utilitza per veure si les dades que entren avui al model tenen la mateixa distribució que les dades amb les quals es va entrenar.
 
+## Limitacions a tenir en compte
+Tot i la seva potència, el test K-S té punts febles que s'han de tenir en compte:
+* ⚠️ Atenció amb els paràmetres estimats: Si es fa el test d'una mostra (per exemple, contra una normal) i es calcula la mitjana i la desviació estàndard directament de les pròpies dades, el test K-S es torna massa conservador. En aquest cas, és millor fer servir el Test de Lilliefors.
+* 🪰 Sensibilitat a l'escala: És molt sensible a qualsevol diferència en la forma, la mitjana o la dispersió de les distribucions, però de vegades pot ser massa sensible amb mostres molt grans, trobant diferències estadísticament significatives que a la pràctica no tenen rellevància real.
+
+
 ---
 
 ## Exemples pràctiques: Python i R
