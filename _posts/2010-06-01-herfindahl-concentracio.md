@@ -3,9 +3,12 @@ layout: post
 title: "L'index de Herfindahl (o de Concentracio)"
 tags:
   - mesures
+  - publicitat
 ---
 
 L’índex d’Herfindahl (H-Index) és una mesura utilitzada en economia i dret de la competència per avaluar el grau de concentració de mercat d’un sector o una indústria. En poques paraules, aquest indicador ens ajuda a determinar com de concentrat o competitius són els mercats, i si existeix un risc d’abús de poder de mercat per part d’algunes empreses dominants.
+
+Fa uns anys se'm va acudir fer servir aquest index com a part d'una calculadora que estimava cobertures de TV. La idea original era que a més concentració de GRPs en poques cadenes, més limitada estaria la cobertura de la campanya. De la mateixa manera també es calculava un index per veure com de concentrada estava la campanya en franges horaries. La calculadora era una mica més complexa que només calcular l'index de concentracio per cadenes i franges i tenia en compte mes indicadors com la quantitat de GRPs. A part, el pes de cada cadena i franja estava ponderat, no es el mateix concentrar tota una campanya de TV de Matinada que fer-ho en Prime Time.
 
 ## Com es calcula l’Índex d’Herfindahl?
 

@@ -6,19 +6,19 @@ tags:
   - algoritme
 ---
 
-Imagina que ets l'analista de dades d'una cadena de supermercats. L'empresa ha aplicat una nova estratègia de màrqueting en **5 botigues seleccionades** (les anomenarem el "Grup de Tractament"). Per mesurar l'impacte real de la campanya sense biaixos, vols comparar-les amb botigues que no hagin tingut la campanya. A la teva base dades tens **20 botigues de control**.
+A l'hora d'executar un test A/B, en cas de voler testejar canvis en una mostra petita, es molt probable que no poguem assegurar que les mostres Test i Control siguin comparables. Estant d'analista de dades en una cadena de retail, imaginem que l'empresa ha aplicat una nova estratègia de màrqueting en **5 botigues seleccionades** (les anomenarem el "Grup de Tractament"). Per mesurar l'impacte real de la campanya sense biaixos, es volen comparar amb botigues on no s'hagi implementat la campanya. A la base dades hi ha **20 botigues de control** disponibles.
 
-El teu objectiu és trobar, dins d'aquestes 20 opcions, les **5 botigues de control que siguin el més similars possibles** a les 5 botigues tractades (en facturació, mida del local, nombre de clients, etc.). Com pots fer aquest emparellament de manera que la diferència total de tot el conjunt sigui la mínima possible? L'eina matemàtica perfecta és l'**Algorisme Hongarès**.
+L'objectiu és trobar, dins d'aquestes 20 opcions, les **5 botigues de control que siguin el més similars possibles** a les 5 botigues tractades (en facturació, mida del local, nombre de clients, etc.). Com pots fer aquest emparellament de manera que la diferència total de tot el conjunt sigui la mínima possible? L'eina matemàtica perfecta és l'**Algorisme Hongarès**.
 
 ## Què és l'Algorisme Hongarès?
 
 L'algorisme hongarès (mètode de Kuhn-Munkres) és un algorisme d'optimització combinatòria dissenyat per resoldre el **problema de l'assignació**. 
 
-Si intentessis fer combinacions a l'atzar per veure quina agrupació de 5 botigues és la millor de totes, el nombre de camins possibles creix de forma exponencial. L'algorisme hongarès resol aquest problema en mil·lisegons reduint una **matriu de costos** (on cada cel·la representa la "distància" o diferència en característiques entre la botiga A i la botiga B).
+Si intentessim fer combinacions a l'atzar per veure quina agrupació de 5 botigues és la millor de totes, el nombre de camins possibles creix de forma exponencial. L'algorisme hongarès resol aquest problema reduint una **matriu de costos** (on cada cel·la representa la "distància" o diferència en característiques entre la botiga A i la botiga B).
 
 ## Com funciona? (Els passos clau)
 
-L’algoritme parteix d’una matriu quadrada de costos on en el nostre exemple, les files representen les botigues del test i les columnes la resta de botigues. L’objectiu és trobar una combinació d’elements on només es triï un element per fila i un per columna, minimitzant la suma total.
+L’algoritme parteix d’una matriu quadrada de costos on en el nostre exemple, les files representen les botigues amb el tractament i les columnes la resta de botigues control disponibles. L’objectiu és trobar una combinació d’elements on només es triï un element per fila i un per columna, minimitzant la suma total de distancies (o costos).
 
 L'algoritme transforma la matriu de costos original en una matriu de "costos d'oportunitat" mitjançant operacions aritmètiques senzilles a les files i columnes, buscant zeros que indiquin una assignació òptima. Els passos bàsics són:
 
