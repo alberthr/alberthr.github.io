@@ -3,7 +3,7 @@ layout: post
 title: "Detecció d'Outliers Multivariants amb la Distància de Mahalanobis"
 tags: 
   - outliers
-  - mesures
+  - estadistica
 ---
 
 Quan busquem valors atípics (*outliers*) en un conjunt de dades, el primer impuls sol ser analitzar cada columna per separat (anàlisi univariant). Per exemple, busquem si algú té una edat inusualment alta o uns ingressos desorbitats. 
