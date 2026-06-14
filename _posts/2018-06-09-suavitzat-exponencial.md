@@ -3,9 +3,7 @@ layout: post
 title: "Suavitzat Exponencial: Predicció de Sèries Temporals"
 tags:
   - series-temporals
-  - python
-  - r
-  - pronostic
+  - tendencies
 ---
 
 En l'anàlisi de sèries temporals, un dels reptes més habituals és separar el "soroll" de la veritable tendència de les dades. Si treballem amb mètriques de negoci que fluctuen diàriament (com les visites de la web o les vendes d'un e-commerce), fer un pronòstic basat en mitjanes mòbils simples pot deixar fora informació crucial. Per resoldre això d'una manera estadísticament robusta, disposem del **Suavitzat Exponencial** (*Exponential Smoothing*).
@@ -52,7 +50,7 @@ Com a Data Analysts, aquest mètode és altament valorat per la seva velocitat d
 
 Anem a simular una sèrie temporal de vendes i a aplicar-hi un suavitzat doble (amb tendència) per fer una predicció dels següents passos.
 
-### Exemple en Python
+### Exemple a Python
 
 A Python, la llibreria de referència per a models estadístics és `statsmodels`.
 
@@ -78,10 +76,10 @@ print("\nPronòstic per als propers 3 mesos:")
 print(prediccio)
 ```
 
-### Exemple en R
+### Exemple a R
 A R, podem utilitzar el potent ecosistema `fable` o les funcions natives de la llibreria clàssica `forecast`.
 
-```R
+```r
 # Cal instal·lar el paquet si no el tens: install.packages("forecast")
 library(forecast)
 
