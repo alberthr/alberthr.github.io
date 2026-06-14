@@ -437,7 +437,7 @@ pre.highlight, .highlight pre {
   color: #10b981;
 }
 
-.highlight .mi, .highlight .mf, .highlight .mo {
+.highlight .mi, .highlight .mf, .highlight .mo, .hightlight .m {
   color: #fbbf24;
 }
 
