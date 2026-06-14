@@ -1,37 +1,26 @@
 ---
 layout: post
-title: "L'Algoritme Hongarès: Optimització d'assignació de recursos"
-tags:
-  - algoritmes
-  - python
-  - r
+title: "L'Algorisme Hongarès: Optimització i assignació de parelles o recursos"
+tags: 
   - optimitzacio
+  - algoritme
 ---
 
-En el dia a dia de l'anàlisi de dades i la investigació operativa, sovint ens trobem amb problemes on hem de repartir tasques eficientment. Si tenim un grup de treballadors i un conjunt de projectes, on cada treballador té un cost (o temps) diferent per a cada projecte, com podem assignar una tasca a cada persona minimitzant el cost total? La resposta elegant a aquest problema de combinatòria és l'**Algoritme Hongarès**.
+Imagina que ets l'analista de dades d'una cadena de supermercats. L'empresa ha aplicat una nova estratègia de màrqueting en **5 botigues seleccionades** (les anomenarem el "Grup de Tractament"). Per mesurar l'impacte real de la campanya sense biaixos, vols comparar-les amb botigues que no hagin tingut la campanya. A la teva base dades tens **20 botigues de control**.
 
+El teu objectiu és trobar, dins d'aquestes 20 opcions, les **5 botigues de control que siguin el més similars possibles** a les 5 botigues tractades (en facturació, mida del local, nombre de clients, etc.). Com pots fer aquest emparellament de manera que la diferència total de tot el conjunt sigui la mínima possible? L'eina matemàtica perfecta per a cela és l'**Algorisme Hongarès**.
 
+## Què és l'Algorisme Hongarès?
 
-## Què és l'Algoritme Hongarès?
+L'algorisme hongarès (mètode de Kuhn-Munkres) és un algorisme d'optimització combinatòria dissenyat per resoldre el **problema de l'assignació**. 
 
-Desenvolupat originalment pel matemàtic Harold Kuhn l'any 1955 (qui el va anomenar així en honor als treballs previs dels matemàtics hongaresos Dénes Kőnig i Jenő Egerváry), és un mètode d'optimització combinatòria que resol el **problema de l'assignació** en un temps polinòmic $O(n^3)$. 
+Si intentessis fer combinacions a l'atzar per veure quina agrupació de 5 botigues és la millor de totes, el nombre de camins possibles creix de forma exponencial. L'algorisme hongarès resol aquest problema en mil·lisegons reduint una **matriu de costos** (on cada cel·la representa la "distància" o diferència en característiques entre la botiga A i la botiga B).
 
-Abans de la seva aparició, resoldre aquest problema per força bruta requeria calcular totes les permutacions possibles ($n!$), una bogeria inexecutable a mesura que la matriu de dades creixia.
+---
 
-L'algoritme parteix d'una matriu quadrada de costos on les files representen els agents (recursos) i les columnes les tasques. L'objectiu és trobar una combinació d'elements on només es triï un element per fila i un per columna, minimitzant la suma total.
+## Altres utilitats de l'algorisme en la indústria i la tecnologia
 
-## Com funciona? (Els passos clau)
-
-L'algoritme transforma la matriu de costos original en una matriu de "costos d'oportunitat" mitjançant operacions aritmètiques senzilles a les files i columnes, buscant zeros que indiquin una assignació òptima. Els passos bàsics són:
-
-1. **Resta de files:** Trobar el valor mínim de cada fila i restar-lo a tots els elements d'aquella fila.
-2. **Resta de columnes:** Trobar el valor mínim de cada columna de la nova matriu i restar-lo a tots els elements de la columna.
-3. **Cobertura de zeros:** Traçar el menor nombre possible de línies verticals i horitzontals per cobrir tots les valors zero de la matriu.
-4. **Optimització:** Si el nombre de línies és igual a $n$ (la dimensió de la matriu), ja tenim l'assignació òptima als zeros coberts. Si és menor, s'ajusta la matriu (restant el valor mínim no cobert als valors lliures i sumant-lo a les interseccions de les línies) i es torna al pas 3.
-
-## Utilitats i casos d'ús reals
-
-Aquest algoritme és un pilar fonamental en logística, gestió de projectes i ciència de dades aplicada a negocis:
+Tot i que l'emparellament d'individus o botigues similars és molt útil en analítica de negoci, l'algorisme hongarès és un pilar fonamental en logística, gestió de projectes i ciència de dades aplicada a negocis:
 
 * **Assignació de personal:** Acoblar operaris a màquines industrials o consultors a projectes basant-se en les seves tarifes horàries o habilitats.
 * **Logística de flotes:** Decidir quin vehicle repartidor s'ha d'enviar a cada punt de recollida per minimitzar el combustible o el temps de ruta total.
@@ -39,60 +28,69 @@ Aquest algoritme és un pilar fonamental en logística, gestió de projectes i c
 
 ---
 
-## Implementació Pràctica
+## Implementació pràctica amb dades rectangulars
 
-Avui en dia no cal fer aquestes restes a mà. Tant Python com R tenen llibreries optimitzades que resolen el problema en mil·lisegons. Suposem que tenim 3 treballadors i 3 tasques amb la següent matriu de costos:
+Anem a simular el cas de les nostres botigues: Tenim el **Grup A** (5 botigues tractades) i el **Grup B** (20 botigues candidates a control). Cada botiga es defineix per 3 variables (Facturació, Superfície, Clients).
 
-\begin{pmatrix} 9 & 2 & 78 \\\ 6 & 4 & 37 \\\ 5 & 8 & 26 \end{pmatrix}
+### Exemple en R (fent servir `RcppHungarian`)
 
+A R evitem fer servir el paquet clàssic `clue` perquè ens obligaria a fer la matriu quadrada de forma artificial (afegint files buides). Amb `RcppHungarian` (escrit en C++), el càlcul amb matrius rectangulars és directe i automàtic.
 
-### Exemple en Python
+```R
+# Instalar si no es té: install.packages("RcppHungarian")
+library(RcppHungarian)
 
-A Python, utilitzem la funció `linear_sum_assignment` de la llibreria científica `scipy`.
+# 1. Creem dades sintètiques (3 característiques per botiga)
+set.seed(42)
+botigues_A <- matrix(rnorm(15, mean = 10, sd = 2), ncol = 3)  # 5 botigues tractades
+botigues_B <- matrix(rnorm(60, mean = 10.5, sd = 2), ncol = 3) # 20 botigues control
+
+# 2. Construïm la matriu de costos rectangular (5 files x 20 columnes)
+# Calculem la distància Euclídea entre cada combinació possible
+matriu_costos <- as.matrix(dist(rbind(botigues_A, botigues_B)))[1:5, 6:25]
+
+cat("Dimensió de la matriu de costos:", dim(matriu_costos)[1], "files x", dim(matriu_costos)[2], "columnes.\n\n")
+
+# 3. Executem l'algorisme (busca MINIMITZAR la distància total)
+solucio <- HungarianSolver(matriu_costos)
+
+# 4. Mostrar les parelles d'èxit
+# Nota: Sumem 1 als índexs perquè el motor de C++ comença a comptar des de 0
+parelles <- solucio$pairs
+
+print("Parelles òptimes trobades (Botiga Tractada -> Botiga Control):")
+for(i in 1:nrow(parelles)) {
+  if(parelles[i, 2] != 0) { 
+    cat(paste("La Botiga A_", parelles[i, 1], " s'aparella amb la Botiga Control B_", parelles[i, 2], "\n", sep=""))
+  }
+}
+```
+
+### Exemple en Python (fent servir `scipy`)
+
+A Python, la funció nativa linear_sum_assignment de la llibreria `scipy` gestiona les matrius rectangulars a la perfecció de manera interna.
 
 ```python
 import numpy as np
+from scipy.spatial.distance import cdist
 from scipy.optimize import linear_sum_assignment
 
-# Definim la matriu de costos
-cost_matrix = np.array([
-    [9, 2, 78],
-    [6, 4, 37],
-    [5, 8, 26]
-])
+# 1. Creem les mateixes dades sintètiques (3 característiques per botiga)
+np.random.seed(42)
+botigues_A = np.random.normal(loc=10, scale=2, size=(5, 3))    # 5 files (Tractades)
+botigues_B = np.random.normal(loc=10.5, scale=2, size=(20, 3)) # 20 files (Controls)
 
-# Apliquem l'algoritme hongarès
-row_ind, col_ind = linear_sum_assignment(cost_matrix)
+# 2. Calcular la matriu de costos rectangular (5x20)
+matriu_costos = cdist(botigues_A, botigues_B, metric='euclidean')
 
-# Mostrem els resultats
-print("Assignacions òptimes:")
-for worker, task in zip(row_ind, col_ind):
-    print(f"Treballador {worker} -> Tasca {task} (Cost: {cost_matrix[worker, task]})")
+print(f"Dimensió de la matriu de costos a Python: {matriu_costos.shape[0]} files x {matriu_costos.shape[1]} columnes.\n")
 
-print(f"Cost total mínim: {cost_matrix[row_ind, col_ind].sum()}")
-```
+# 3. Apliquem l'Algorisme Hongarès
+# El mètode retornarà exactament 5 assignacions òptimes
+files_A, columnes_B = linear_sum_assignment(matriu_costos)
 
-### Exemple en R
-A R, podem utilitzar el paquet `clue` que conté la funció `solve_LSAP` (Linear Sum Assignment Problem).
-
-```r
-# Cal instal·lar el paquet si no el tens: install.packages("clue")
-library(clue)
-
-# Definim la matriu de costos
-cost_matrix <- matrix(c(9, 6, 5, 
-                        2, 4, 8, 
-                        78, 37, 26), 
-                      nrow = 3, ncol = 3)
-
-# Apliquem l'algoritme hongarès
-resultat <- solve_LSAP(cost_matrix)
-
-# Mostrem els resultats
-print("Tasques assignades als treballadors 1, 2 i 3 respectivament:")
-print(as.vector(resultat))
-
-# Calculem el cost total
-cost_total <- sum(cost_matrix[cbind(seq_along(resultat), resultat)])
-cat("Cost total mínim:", cost_total, "\n")
+# 4. Mostrar el resultat de l'emparellament
+print("Parelles òptimes trobades (Python):")
+for a, b in zip(files_A, columnes_B):
+    print(f"La Botiga A_{a+1} s'aparella amb la Botiga Control B_{b+1} (Diferència: {matriu_costos[a, b]:.2f})")
 ```
