@@ -12,40 +12,37 @@ Si el model no entén com interactuen les palanques bàsiques del negoci (el pre
 
 En aquest article abordarem els tres grans dilemes inicials que definiran el rumb del teu MMM: l'estructura de la baseline, el modelatge de l'efecte de la publicitat en el temps (Ad-Stock) i la captura de l'estacionalitat.
 
----
 
-## 1. Baseline Aditiva vs. Baseline Multiplicativa: Com interactua el teu negoci?
+## Baseline Aditiva vs. Baseline Multiplicativa: Com interactua el teu negoci?
 
 La **baseline** representa les vendes orgàniques de la marca, és a dir, tot allò que es vendria sense fer publicitat. La decisió de com interconectem els seus components (preu, distribució, accions macroeconòmiques) canvia radicalment el comportament del model.
 
 ### Baseline Aditiva
 En una estructura aditiva, s'assumeix que cada factor orgànic aporta una quantitat de vendes fixa, independent de la resta.
 
-$$\text{Vendes Base}_t = \beta_0 + \text{Efecte Preu}_t + \text{Efecte Distribució}_t + \text{Estacionalitat}_t$$
+$\text{Vendes Base}_t = \beta_0 + \text{Efecte Preu}_t + \text{Efecte Distribució}_t + \text{Estacionalitat}_t$
 
 * **Com funciona:** Si estem a l'estiu, l'estacionalitat suma 2.000 unitats fixes. Si obrim 10 botigues més (distribució), sumem unes altres 1.000 unitats fixes.
 * **El dilema comercial:** No reflecteix la realitat. Si dupliques els teus punts de venda, la teva campanya d'estiu hauria de tenir un impacte molt més gran en volum absolut. En un model aditiu, els efectes es calculen en "túnels tancats", ignorant que la distribució amplifica el potencial de les temporades altes.
 
-### Baseline Multiplicativa (Lògica Log-Log)
+### Baseline Multiplicativa
 En una estructura multiplicativa, els factors de la baseline actuen com a multiplicadors o ràtios percentuals els uns sobre els altres.
 
-$$\text{Vendes Base}_t = \beta_0 \cdot (\text{Preu}_t)^{\beta_1} \cdot (\text{Distribució}_t)^{\beta_2} \cdot \text{Estacionalitat}_t$$
+$\text{Vendes Base}_t = \beta_0 \cdot (\text{Preu}_t)^{\beta_1} \cdot (\text{Distribució}_t)^{\beta_2} \cdot \text{Estacionalitat}_t$
 
 * **Com funciona:** L'estacionalitat esdevé un índex (ex: $1.3$ a l'agost, un 30% més; $0.7$ al gener, un 30% menys). 
 * **Per què és superior?** Captura les sinergies de manera natural. Si la teva distribució augmenta, l'índex del 30% extra de l'estiu s'aplicarà sobre aquesta nova base de vendes més gran, escalant el pic correctament. Una pujada de preu contraurà les vendes proporcionalment a la mida del mercat actual, no com una pèrdua lineal de paquets fixos.
 
----
 
-## 2. Modelar el retard de la publicitat (Ad-Stock): Geometric Decay vs. Funció Gamma
+## Modelar el retard de la publicitat (Ad-Stock): Decay vs. Funció Gamma
 
 Un anunci vist avui pot generar una venda demà o la setmana vinent. Aquesta memòria de marca es coneix com **Ad-Stock**. El dilema aquí és triar quina funció matemàtica descriu millor la pèrdua de record del consumidor segons el canal.
 
 
-
-### Geometric Decay (Decaïment Geomètric de 1 paràmetre)
+### Decay (Decaïment Geomètric de 1 paràmetre)
 Assumeix que l'impacte màxim de la publicitat es produeix **immediatament** (en el mateix moment de l'exposició) i decreix de manera exponencial al llarg del temps segons un factor d'esvaïment $\alpha$ (entre 0 i 1).
 
-$$Adstock_t = X_t + \alpha \cdot Adstock_{t-1}$$
+$Adstock_t = X_t + \alpha \cdot Adstock_{t-1}$
 
 * **Característiques:** És ràpida de calcular i només requereix optimitzar un únic paràmetre.
 * **Quan triar-la?** Per a canals digitals i d'acció immediata (*Paid Search*, *Performance Marketing*, *Emailing*), on l'usuari fa clic i compra al moment, i el record s'esvaeix ràpidament si no es torna a impactar.
@@ -56,9 +53,8 @@ La funció Gamma és molt més sofisticada. Permet modelar un **efecte retardat 
 * **Característiques:** Afegeix molta flexibilitat a la corba de record, però requereix fixar o optimitzar dos hiperparàmetres (forma i escala), incrementant la complexitat i el temps de computació del model.
 * **Quan triar-la?** Per a mitjans tradicionals de construcció de marca (*TV*, *Ràdio*, *OOH / Exterior*). Un consumidor pot veure un anunci de TV dimarts, però no anirà al supermercat a comprar el producte fins dissabte. La funció Gamma captura perfectament aquest desplaçament temporal del pic de conversions.
 
----
 
-## 3. Com capturar l'Estacionalitat segons la teva arquitectura
+## Com capturar l'Estacionalitat segons la teva arquitectura
 
 Si el teu producte es ven més a l'hivern, has d'aïllar aquest patró perquè el model no atribueixi erròniament aquestes vendes orgàniques a les campanyes publicitàries que fas per Nadal. La teva estratègia d'estacionalitat dependrà de la baseline triada:
 
@@ -69,7 +65,7 @@ Si optes per la simplicitat lineal, pots incloure variables *dummy* (binàries) 
 ### B. Estacionalitat en Baseline Multiplicativa (Components de Fourier)
 Per a models multiplicatius (linearitzats mitjançant logaritmes $\ln(Y)$), s'utilitzen **ones de Fourier** (sinus i cosinus) per crear corbes suaus que pugen i baixen harmònicament al llarg de l'any ($P = 365.25$ per a diari, o $P = 52.18$ per a setmanal).
 
-$$\text{Terme Fourier}_t = \sin\left(\frac{2\pi \cdot t}{P}\right) + \cos\left(\frac{2\pi \cdot t}{P}\right)$$
+$\text{Terme Fourier}_t = \sin\left(\frac{2\pi \cdot t}{P}\right) + \cos\left(\frac{2\pi \cdot t}{P}\right)$
 
 * **Avantatge:** Captura patrons complexos i continus utilitzant molt poques variables (només uns quants parells de lletres), actuant com un ràtio que escala de forma dinàmica juntament amb el preu i la distribució.
 
