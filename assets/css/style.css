@@ -385,7 +385,7 @@ ul {
 
 
 /* ===== BLOCS DE CODI ===== */
-pre {
+/*pre {
   background-color: var(--code-bg);
   color: var(--code-text);
   padding: 1.5rem;
@@ -411,80 +411,14 @@ pre code {
   background-color: transparent;
   color: inherit;
   padding: 0;
-}
+}*/
 
 /* Ressaltat de sintaxi (Rouge) */
-pre.highlight, .highlight pre {
-  background: var(--code-bg);
-  color: var(--code-text);
-}
+/*pre.highlight, .highlight pre {
+  background-color: #ffffff;
+  color: #000000;
+}*/
 
-.highlight .c, .highlight .cm, .highlight .c1 {
-  color: #64748b;
-  font-style: italic;
-}
-
-.highlight .k, .highlight .kc, .highlight .kd, .highlight .kn {
-  color: #f43f5e;
-  font-weight: bold;
-}
-
-.highlight .nf, .highlight .fm {
-  color: #38bdf8;
-}
-
-.highlight .s, .highlight .s1, .highlight .s2 {
-  color: #10b981;
-}
-
-.highlight .mi, .highlight .mf, .highlight .mo {
-  color: #fbbf24;
-}
-
-.highlight .nn {
-  color: #e2e8f0;
-}
-
-.highlight .nb {
-  color: #a855f7;
-}
-
-.highlight .o, .highlight .ow {
-  color: #f43f5e;
-}
-
-/* ===== BLOCS ESPECIALS ===== */
-blockquote {
-  border-left: 4px solid var(--accent-color);
-  padding-left: 1rem;
-  margin-left: 0;
-  color: var(--text-muted);
-  font-style: italic;
-}
-
-/* ===== TAULA ===== */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 1.5rem 0;
-  font-size: 0.9rem;
-}
-
-th, td {
-  border: 1px solid var(--border-color);
-  padding: 0.8rem;
-  text-align: left;
-}
-
-th {
-  background-color: var(--tag-bg);
-  font-weight: 700;
-  color: var(--text-color);
-}
-
-tr:nth-child(even) {
-  background-color: var(--bg-secondary);
-}
 
 /* ===== FOOTER ===== */
 footer {
