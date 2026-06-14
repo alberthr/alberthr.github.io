@@ -8,7 +8,7 @@ tags:
 
 Imagina que ets l'analista de dades d'una cadena de supermercats. L'empresa ha aplicat una nova estratègia de màrqueting en **5 botigues seleccionades** (les anomenarem el "Grup de Tractament"). Per mesurar l'impacte real de la campanya sense biaixos, vols comparar-les amb botigues que no hagin tingut la campanya. A la teva base dades tens **20 botigues de control**.
 
-El teu objectiu és trobar, dins d'aquestes 20 opcions, les **5 botigues de control que siguin el més similars possibles** a les 5 botigues tractades (en facturació, mida del local, nombre de clients, etc.). Com pots fer aquest emparellament de manera que la diferència total de tot el conjunt sigui la mínima possible? L'eina matemàtica perfecta per a cela és l'**Algorisme Hongarès**.
+El teu objectiu és trobar, dins d'aquestes 20 opcions, les **5 botigues de control que siguin el més similars possibles** a les 5 botigues tractades (en facturació, mida del local, nombre de clients, etc.). Com pots fer aquest emparellament de manera que la diferència total de tot el conjunt sigui la mínima possible? L'eina matemàtica perfecta és l'**Algorisme Hongarès**.
 
 ## Què és l'Algorisme Hongarès?
 
@@ -19,6 +19,8 @@ Si intentessis fer combinacions a l'atzar per veure quina agrupació de 5 botigu
 ---
 
 ## Com funciona? (Els passos clau)
+
+L’algoritme parteix d’una matriu quadrada de costos on en el nostre exemple, les files representen les botigues del test i les columnes la resta de botigues. L’objectiu és trobar una combinació d’elements on només es triï un element per fila i un per columna, minimitzant la suma total.
 
 L'algoritme transforma la matriu de costos original en una matriu de "costos d'oportunitat" mitjançant operacions aritmètiques senzilles a les files i columnes, buscant zeros que indiquin una assignació òptima. Els passos bàsics són:
 
