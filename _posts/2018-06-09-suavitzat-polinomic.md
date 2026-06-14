@@ -26,8 +26,6 @@ Imagina que l'algorisme ha de dibuixar la línia de tendència d'esquerra a dret
 3. **Calcula una regressió local:** Amb aquest petit grup de dades ponderades, calcula una regressió lineal o quadràtica. Com que els punts propers tenen més pes, la línia es veu fortament atreta cap a ells.
 4. **Connecta els punts:** L'algorisme repeteix aquest procés per a cada posició al llarg de tot l'eix. Finalment, uneix tots els petits resultats locals per formar una corba suau i contínua.
 
-
-
 ### El paràmetre clau: `span` (o l'efecte "Alpha")
 
 El paràmetre que controla com es comporta aquesta línia s'anomena formalment **`span`** (en algunes llibreries o conceptes es recorda com un factor de suavitzat o *alpha*):

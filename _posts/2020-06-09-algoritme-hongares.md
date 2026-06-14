@@ -35,6 +35,8 @@ Tot i que l'emparellament d'individus o botigues similars és molt útil en anal
 * **Logística de flotes:** Decidir quin vehicle repartidor s'ha d'enviar a cada punt de recollida per minimitzar el combustible o el temps de ruta total.
 * **Economia de plataformes (Matching):** Algoritmes de repartiment de menjar a domicili o aplicacions de transport viatger per assignar conductors als clients més propers eficientment.
 
+---
+
 ## Implementació pràctica
 
 Anem a simular el cas de les nostres botigues: Tenim el **Grup A** (5 botigues tractades) i el **Grup B** (20 botigues candidates a control). Cada botiga es defineix per 3 variables (Facturació, Superfície, Clients).
