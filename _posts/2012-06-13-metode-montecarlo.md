@@ -2,7 +2,7 @@
 layout: post
 title: "El Mètode de Montecarlo. El Poder de l'Atzar"
 tags: 
-  - metodologia
+  - estadistica
 ---
 
 Quan ens enfrentem a un problema matemàtic o estadístic tan complexe on calcular la solució es directament impossible, quan les fórmules tradicionals fallen, hi ha una estratègia que gairebé sembla trampa, però que està fonamentada en la matemàtica: **si no ho pots calcular, simula-ho milers de vegades.** Aquesta manera de fer s'anomenta el **Mètode de Montecarlo**.
