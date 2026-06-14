@@ -385,8 +385,8 @@ ul {
 
 
 /* ===== BLOCS DE CODI ===== */
-pre {
-  /*background-color: var(--code-bg);*/
+/*pre {
+  background-color: var(--code-bg);
   color: var(--code-text);
   padding: 1.5rem;
   overflow-x: auto;
@@ -411,13 +411,13 @@ pre code {
   background-color: transparent;
   color: inherit;
   padding: 0;
-}
+}*/
 
 /* Ressaltat de sintaxi (Rouge) */
-pre.highlight, .highlight pre {
+/*pre.highlight, .highlight pre {
   background-color: #ffffff;
   color: #000000;
-}
+}*/
 
 
 /* ===== FOOTER ===== */
