@@ -75,7 +75,7 @@ print(f"Cost total mínim: {cost_matrix[row_ind, col_ind].sum()}")
 ### Exemple en R
 A R, podem utilitzar el paquet `clue` que conté la funció `solve_LSAP` (Linear Sum Assignment Problem).
 
-```R
+```r
 # Cal instal·lar el paquet si no el tens: install.packages("clue")
 library(clue)
 

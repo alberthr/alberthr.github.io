@@ -45,7 +45,7 @@ A continuació veurem com aplicar LOESS a una sèrie temporal simulada amb sorol
 
 A R, la funció està integrada de forma nativa mitjançant `loess()`.
 
-```R
+```r
 # 1. Creem unes dades simulades (una ona sinusoïdal amb soroll)
 set.seed(123)
 temps <- 1:100
@@ -74,7 +74,7 @@ legend("topright", legend=c("Dades", "span = 0.1 (Ajust)", "span = 0.75 (Línia)
 
 A Python, podem utilitzar la llibreria statsmodels que inclou la funció lowess dins del seu mòdul de models no paramètrics.
 
-```Python
+```python
 import numpy as np
 import matplotlib.pyplot as plt
 import statsmodels.api as sm

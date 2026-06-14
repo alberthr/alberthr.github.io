@@ -78,7 +78,7 @@ print(f"Distància de Mahalanobis: {mahalanobis_dist}")
 ### En R
 R inclou una funció nativa excel·lent anomenada mahalanobis() que ens estalvia haver de fer la inversa de la matriu manualment.
 
-```R
+```r
 # Creem la matriu de dades
 dades <- matrix(c(1, 3, 5, 2, 4, 6), ncol = 2)
 
