@@ -16,8 +16,6 @@ L'algorisme hongarès (mètode de Kuhn-Munkres) és un algorisme d'optimització
 
 Si intentessis fer combinacions a l'atzar per veure quina agrupació de 5 botigues és la millor de totes, el nombre de camins possibles creix de forma exponencial. L'algorisme hongarès resol aquest problema en mil·lisegons reduint una **matriu de costos** (on cada cel·la representa la "distància" o diferència en característiques entre la botiga A i la botiga B).
 
----
-
 ## Com funciona? (Els passos clau)
 
 L’algoritme parteix d’una matriu quadrada de costos on en el nostre exemple, les files representen les botigues del test i les columnes la resta de botigues. L’objectiu és trobar una combinació d’elements on només es triï un element per fila i un per columna, minimitzant la suma total.
@@ -29,8 +27,6 @@ L'algoritme transforma la matriu de costos original en una matriu de "costos d'o
 3. **Cobertura de zeros:** Traçar el menor nombre possible de línies verticals i horitzontals per cobrir tots les valors zero de la matriu.
 4. **Optimització:** Si el nombre de línies és igual a $n$ (la dimensió de la matriu), ja tenim l'assignació òptima als zeros coberts. Si és menor, s'ajusta la matriu (restant el valor mínim no cobert als valors lliures i sumant-lo a les interseccions de les línies) i es torna al pas 3.
 
----
-
 ## Altres utilitats de l'algorisme en la indústria i la tecnologia
 
 Tot i que l'emparellament d'individus o botigues similars és molt útil en analítica de negoci, l'algorisme hongarès és un pilar fonamental en logística, gestió de projectes i ciència de dades aplicada a negocis:
@@ -39,13 +35,11 @@ Tot i que l'emparellament d'individus o botigues similars és molt útil en anal
 * **Logística de flotes:** Decidir quin vehicle repartidor s'ha d'enviar a cada punt de recollida per minimitzar el combustible o el temps de ruta total.
 * **Economia de plataformes (Matching):** Algoritmes de repartiment de menjar a domicili o aplicacions de transport viatger per assignar conductors als clients més propers eficientment.
 
----
-
-## Implementació pràctica amb dades rectangulars
+## Implementació pràctica
 
 Anem a simular el cas de les nostres botigues: Tenim el **Grup A** (5 botigues tractades) i el **Grup B** (20 botigues candidates a control). Cada botiga es defineix per 3 variables (Facturació, Superfície, Clients).
 
-### Exemple en R (fent servir `RcppHungarian`)
+### Exemple a R (fent servir `RcppHungarian`)
 
 A R evitem fer servir el paquet clàssic `clue` perquè ens obligaria a fer la matriu quadrada de forma artificial (afegint files buides). Amb `RcppHungarian` (escrit en C++), el càlcul amb matrius rectangulars és directe i automàtic.
 
@@ -79,7 +73,7 @@ for(i in 1:nrow(parelles)) {
 }
 ```
 
-### Exemple en Python (fent servir `scipy`)
+### Exemple a Python (fent servir `scipy`)
 
 A Python, la funció nativa linear_sum_assignment de la llibreria `scipy` gestiona les matrius rectangulars a la perfecció de manera interna.
 
