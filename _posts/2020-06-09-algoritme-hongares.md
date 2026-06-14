@@ -3,7 +3,7 @@ layout: post
 title: "L'Algorisme Hongarès: Optimització i assignació de parelles o recursos"
 tags: 
   - optimitzacio
-  - algoritme
+  - estadistica
 ---
 
 A l'hora d'executar un test A/B, en cas de voler testejar canvis en una mostra petita, es molt probable que no poguem assegurar que les mostres Test i Control siguin comparables. Estant d'analista de dades en una cadena de retail, imaginem que l'empresa ha aplicat una nova estratègia de màrqueting en **5 botigues seleccionades** (les anomenarem el "Grup de Tractament"). Per mesurar l'impacte real de la campanya sense biaixos, es volen comparar amb botigues on no s'hagi implementat la campanya. A la base dades hi ha **20 botigues de control** disponibles.
