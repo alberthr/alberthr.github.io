@@ -1,112 +1,91 @@
 ---
 layout: post
-title: "El Test de Kolmogorov-Smirnov: Com saber si les teves dades segueixen una distribució"
+title: "Comparacio de distribucions amb Kolmogorov-Smirnov"
 tags:
   - estadistica
 ---
 
-En el món de la ciència de dades, és molt habitual haver d'assumir que les nostres variables segueixen una forma geomètrica determinada. Per exemple, potser necessites validar si els residus d'un model de regressió lineal són normals, o si el temps d'espera dels usuaris en una aplicació s'ajusta a una distribució exponencial per poder aplicar la teoria de cues.
-
-Com podem comprovar si les nostres dades reals coincideixen amb el que diu la teoria matemàtica? En lloc d'intentar endevinar-ho mirant un histograma a ull, l'estadística ens ofereix una eina elegant i precisa: el **Test de Kolmogorov-Smirnov (K-S)**.
-
-## Què és el Test de Kolmogorov-Smirnov?
-
-El test de Kolmogorov-Smirnov és una prova d'hipòtesi no paramètrica que serveix per determinar si una mostra prové d'una distribució teòrica específica (test d'una mostra o *Goodness-of-Fit*), o si dues mostres independents provenen de la mateixa distribució (test de dues mostres).
-
-A diferència d'altres proves (com el test de Shapiro-Wilk, que només mesura la normalitat), el test K-S és totalment **universal**: es pot utilitzar amb qualsevol tipus de distribució contínua (Normal, Exponencial, Uniforme, Log-normal, etc.).
-
-### Com funciona conceptualment?
-
-L'enginy del test K-S rau en la seva simplicitat conceptual. En lloc de comparar histogrames o barres, utilitza les **Funcions de Distribució Acumulada (CDF)**. La CDF ens mostra la probabilitat que una variable prengui un valor menor o igual a $x$.
-
-El procés és el següent:
-1. Es calcula la **CDF empírica** de la nostra mostra real (una corba en forma d'escala que puja des de 0 fins a 1).
-2. Es dibuixa la **CDF teòrica** de la distribució amb la qual ens volem comparar (una corba suau ideal).
-3. Es busca l'estadístic **$D$**, que és exactament la **distància vertical màxima** entre totes dues corbes.
+Quan treballem en ciència de dades o estadística, sovint ens fem preguntes com: *Aquesta variable segueix una distribució normal?* o *Els usuaris del grup A es comporten igual que els del grup B?* Per respondre a això, solem recórrer a gràfics com histogrames o diagrames Q-Q. Però si necessitem una mètrica objectiva i un p-valor, el **Test de Kolmogorov-Smirnov (K-S)** és una de les eines més versàtils i utilitzades.
 
 
+## Què és i per a què serveix?
 
-Si la distància màxima $D$ és prou gran, significa que la realitat s'allunya de la teoria; per tant, el *p-value* baixarà del nostre llindar habitual (0.05) i rebutjarem la hipòtesi nul·la que diu que les dades segueixen aquesta distribució.
+El test de Kolmogorov-Smirnov és una prova estadística no paramètrica (és a dir, no assumeix que les dades segueixen una forma de distribució predeterminada) que serveix per **comparar distribucions de variables contínues**.
+
+Es basa en la **Funció de Distribució Acumulada** (CDF, per les seves sigles en anglès). L'estadístic del test, anomenat $D$, és literalment la **distància màxima vertical** entre les dues funcions acumulades que estem comparant.
+
+A la següent imatge es pot veure gràficament com l'estadístic $D$ busca el punt on les dues corbes es separen més:
+
+![Concepte de l'estadístic D en el test Kolmogorov-Smirnov](https://upload.wikimedia.org/wikipedia/commons/c/cf/KS_Example.png)
+
+Hi ha dues variants principals d'aquest test:
+
+1. **Test K-S d'una mostra:** Compara la distribució de les teves dades amb una distribució teòrica coneguda (normal, exponencial, uniforme, etc.).
+2. **Test K-S de dues mostres:** Compara si dues mostres independents procedeixen de la mateixa distribució subjacent.
+
+
+## Aplicacions pràctiques
+
+* **Validació de models:** Comprovar si els residus d'un model de regressió segueixen una distribució normal.
+* **Proves A/B (A/B Testing):** Determinar si el temps de permanència a la web o els diners gastats varien significativament entre el grup de control i el de tractament.
+* **Detecció de *Data Drift*:** En entorns de producció de Machine Learning, s'utilitza per veure si les dades que entren avui al model tenen la mateixa distribució que les dades amb les quals es va entrenar.
 
 ---
 
-## Pràctica amb dades sintètiques: Com es comporta el test?
+## Exemples pràctiques: Python i R
 
-Anem a crear dos escenaris sintètics diferents:
-* **Escenari A:** Generarem una mostra realment Normal i la compararem amb la corba teòrica Normal.
-* **Escenari B:** Generarem una mostra d'una distribució Gamma (esbiaixada) i intentarem "forçar" el test a veure si es creu que és Normal.
+Anem a veure com aplicar el test de dues mostres utilitzant codi. Imaginem que volem comparar si el temps de càrrega de la nostra web amb un servidor nou (Grup B) és diferent del servidor antic (Grup A).
 
-A continuació veurem com programar-ho, avaluar els resultats i generar el gràfic en Python i en R.
+### Implementació a Python
 
-### Exemple a Python (amb `scipy` i `matplotlib`)
+Farem servir la llibreria `scipy.stats`. Generarem dades aleatòries on el Grup B és lleugerament més ràpid.
 
 ```python
 import numpy as np
-import scipy.stats as stats
-import matplotlib.pyplot as plt
+from scipy import stats
 
 # Fixem la llavor per a la reproductibilitat
 np.random.seed(42)
-mida_mostra = 100
 
-# 1. Generem les dades sintètiques
-dades_normals = np.random.normal(loc=0, scale=1, size=mida_mostra)
-dades_gamma = np.random.gamma(shape=2, scale=1, size=mida_mostra)
+# Generem dades simulades (temps en segons)
+grup_A = np.random.normal(loc=3.0, scale=0.5, size=100) # Servidor antic
+grup_B = np.random.normal(loc=2.8, scale=0.5, size=100) # Servidor nou (més ràpid)
 
-# 2. Executem el Test K-S contra la distribució normal estàndard ('norm')
-res_normal = stats.kstest(dades_normals, 'norm', args=(0, 1))
-res_gamma = stats.kstest(dades_gamma, 'norm', args=(2, 1)) # mitjana=2 en una gamma(2,1)
+# Apliquem el test de Kolmogorov-Smirnov de dues mostres
+estadistic_d, p_valor = stats.ks_2samp(grup_A, grup_B)
 
-print(f"Dades Normals -> Estadístic D: {res_normal.statistic:.4f}, p-value: {res_normal.pvalue:.4f}")
-print(f"Dades Gamma   -> Estadístic D: {res_gamma.statistic:.4f}, p-value: {res_gamma.pvalue:.4f}")
+print(f"Estadístic D: {estadistic_d:.4f}")
+print(f"p-valor: {p_valor:.4f}")
 
-# 3. Grafiquem les CDFs per veure el comportament visual
-plt.figure(figsize=(10, 5))
-
-# Dibuixem la CDF teòrica de referència
-x = np.linspace(-3, 6, 500)
-plt.plot(x, stats.norm.cdf(x, loc=0, scale=1), label='CDF Teòrica Normal', color='black', lw=2)
-
-# Dibuixem les CDFs empíriques
-plt.ecdf(dades_normals, label='CDF Empírica (Dades Normals)', color='blue', alpha=0.7)
-plt.ecdf(dades_gamma, label='CDF Empírica (Dades Gamma)', color='red', alpha=0.7)
-
-plt.title('Comparativa de CDFs: Test de Kolmogorov-Smirnov')
-plt.xlabel('Valor de la Variable')
-plt.ylabel('Probabilitat Acumulada')
-plt.legend()
-plt.grid(True, linestyle='--')
-plt.show()
+# Interpretació
+alpha = 0.05
+if p_valor < alpha:
+    print("Rebutgem l'hipòtesi nul·la: Les dues distribucions són significativament diferents.")
+else:
+    print("No podem rebutjar l'hipòtesi nul·la: No hi ha evidència que les distribucions siguin diferents.")
 ```
 
-Resultat esperat: El p-value de les dades normals serà gran (ex: > 0.5), confirmant que no hi ha proves per dir que no són normals. En canvi, el de les dades Gamma serà pràcticament 0 ($< 0.05$), indicant clarament que la línia vermella s'allunya massa de la línia teòrica de control.
 
 ### Exemple a R
 
 ```r
 # Fixem la llavor
 set.seed(42)
-mida_mostra <- 100
 
-# 1. Generem les dades sintètiques
-dades_normals <- rnorm(mida_mostra, mean = 0, sd = 1)
-dades_gamma <- rgamma(mida_mostra, shape = 2, scale = 1)
+# Generem les mateixes dades simulades
+grup_A <- rnorm(100, mean = 3.0, sd = 0.5)
+grup_B <- rnorm(100, mean = 2.8, sd = 0.5)
 
-# 2. Executem el Test K-S integrat de R
-test_normal <- ks.test(dades_normals, "pnorm", mean = 0, sd = 1)
-test_gamma <- ks.test(dades_gamma, "pnorm", mean = 2, sd = 1)
+# Apliquem el test K-S
+resultat <- ks.test(grup_A, grup_B)
 
-cat(sprintf("Dades Normals -> Estadístic D: %.4f, p-value: %.4f\n", test_normal$statistic, test_normal$p.value))
-cat(sprintf("Dades Gamma   -> Estadístic D: %.4f, p-value: %.4f\n", test_gamma$statistic, test_gamma$p.value))
+# Mostrem els resultats per pantalla
+print(resultat)
 
-# 3. Gràfic de comportament
-plot(ecdf(dades_normals), col = "blue", main = "Comparativa de CDFs i Mètode K-S", 
-     xlab = "Valor", ylab = "Probabilitat Acumulada", verticals = TRUE, do.points = FALSE)
-plot(ecdf(dades_gamma), col = "red", add = TRUE, verticals = TRUE, do.points = FALSE)
-
-# Afegim la corba normal teòrica de referència
-curve(pnorm(x, mean = 0, sd = 1), from = -3, to = 6, col = "black", lwd = 2, add = TRUE)
-
-legend("bottomright", legend = c("Teòrica Normal", "Empírica Normals", "Empírica Gamma"),
-       col = c("black", "blue", "red"), lty = 1, lwd = 2)
+# Comprovar el p-valor de manera programàtica
+if (resultat$p.value < 0.05) {
+  cat("Resultat: Les distribucions són significativament diferents.\n")
+} else {
+  cat("Resultat: No hi ha diferències significatives.\n")
+}
 ```
