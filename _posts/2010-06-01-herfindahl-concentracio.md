@@ -2,7 +2,7 @@
 layout: post
 title: "L'index de Herfindahl (o de Concentracio)"
 tags:
-  - mesures
+  - estadistica
   - publicitat
 ---
 
