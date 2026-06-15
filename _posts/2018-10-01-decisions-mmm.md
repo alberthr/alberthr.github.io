@@ -81,7 +81,7 @@ Una alternativa cada vegada més utilitzada és extreure l'estacionalitat multip
 
 ---
 
-## Implementació en Python: Extreure Estacionalitat Multiplicativa
+### 🐍 Implementació en Python: Extreure Estacionalitat Multiplicativa
 
 Vegem com separar l'estacionalitat d'una baseline multiplicativa utilitzant la llibreria `statsmodels`:
 
@@ -111,7 +111,7 @@ df['tendencia_neta'] = resultat.trend
 print(df[['Vendes', 'index_estacional', 'tendencia_neta']].head())
 ```
 
-### Implementacio en R
+### 📊 Implementacio en R
 ```r
 # 1. Simulem dades diàries d'un negoci amb creixement i estacionalitat multiplicativa
 set.seed(42)
