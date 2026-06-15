@@ -7,32 +7,34 @@ tags:
   - publicitat
 ---
 
-Abans de llançar la primera línia de codi d'un projecte de **Marketing Mix Modeling (MMM)**, tot *data scientist* s'enfronta a un full en blanc ple de dilemes estructurals. Un model MMM no és una simple regressió que es pugui automatitzar a cegues; és la traducció matemàtica de la realitat comercial d'una empresa. 
+Abans de llançar la primera línia de codi d'un projecte de **Marketing Mix Modeling (MMM)**, tot *analista* s'enfronta a un full en blanc amb alguns dilemes estructurals. Un model MMM no és una simple regressió que es pugui automatitzar a cegues; és la traducció matemàtica de la realitat comercial d'un producte o empresa. 
 
-Si el model no entén com interactuen les palanques bàsiques del negoci (el preu o les botigues on es ven), o com reacciona el cervell del consumidor davant d'un anunci, els coeficients finals estaran esbiaixats. El resultat? Decisions multimilionàries d'optimització de pressupost basades en hipòtesis incorrectes.
+Si el model no entén com interactuen les palanques bàsiques del negoci (el preu o les botigues on es ven), o com reacciona el cervell del consumidor davant d'un anunci, els coeficients finals estaran esbiaixats. El resultat? Decisions d'optimització de pressupost basades en hipòtesis incorrectes.
 
-En aquest article abordarem els tres grans dilemes inicials que definiran el rumb del teu MMM: l'estructura de la baseline, el modelatge de l'efecte de la publicitat en el temps (Ad-Stock) i la captura de l'estacionalitat.
+En aquest article vull abordar els tres grans dilemes inicials que definiran el rumb d'un MMM: l'estructura de la baseline, el modelatge de l'efecte de la publicitat en el temps (Ad-Stock) i la captura de l'estacionalitat.
 
 
 ## Baseline Aditiva vs. Baseline Multiplicativa: Com interactua el teu negoci?
 
-La **baseline** representa les vendes orgàniques de la marca, és a dir, tot allò que es vendria sense fer publicitat. La decisió de com interconectem els seus components (preu, distribució, accions macroeconòmiques) canvia radicalment el comportament del model.
+La **baseline** representa les vendes orgàniques de la marca, és a dir, tot allò que es vendria sense fer publicitat. La decisió de com interconectem els seus components (preu, distribució, estacionalitat...) canvia radicalment el comportament del model.
 
 ### Baseline Aditiva
 En una estructura aditiva, s'assumeix que cada factor orgànic aporta una quantitat de vendes fixa, independent de la resta.
 
-$\text{Vendes Base}_t = \beta_0 + \text{Efecte Preu}_t + \text{Efecte Distribució}_t + \text{Estacionalitat}_t$
+<center>$\text{Vendes Base}_t = \beta_0 + \text{Efecte Preu}_t + \text{Efecte Distribució}_t + \text{Estacionalitat}_t$</center>
 
-* **Com funciona:** Si estem a l'estiu, l'estacionalitat suma 2.000 unitats fixes. Si obrim 10 botigues més (distribució), sumem unes altres 1.000 unitats fixes.
-* **El dilema comercial:** No reflecteix la realitat. Si dupliques els teus punts de venda, la teva campanya d'estiu hauria de tenir un impacte molt més gran en volum absolut. En un model aditiu, els efectes es calculen en "túnels tancats", ignorant que la distribució amplifica el potencial de les temporades altes.
+* **Com funciona:** Cada parametre del model fa que la variable de sortida pugi o baixi d'un manera fixa. Per exemple, si estem a l'estiu, l'estacionalitat suma 2.000 unitats fixes. Si teniem 10 botigues i n'obrim 10 més (distribució), sumem unes altres 1.000 unitats fixes.
+* **El dilema:** No reflecteix la realitat. Si es dupliquen els punts de venda, la campanya d'estiu hauria de tenir un impacte molt més gran en volum absolut. En un model aditiu, els efectes es calculen en "túnels tancats", ignorant que la distribució amplifica el potencial de les temporades altes.
 
 ### Baseline Multiplicativa
 En una estructura multiplicativa, els factors de la baseline actuen com a multiplicadors o ràtios percentuals els uns sobre els altres.
 
-$\text{Vendes Base}_t = \beta_0 \cdot (\text{Preu}_t)^{\beta_1} \cdot (\text{Distribució}_t)^{\beta_2} \cdot \text{Estacionalitat}_t$
+<center>$\text{Vendes Base}_t = \beta_0 \cdot (\text{Preu}_t)^{\beta_1} \cdot (\text{Distribució}_t)^{\beta_2} \cdot \text{Estacionalitat}_t$</center>
 
 * **Com funciona:** L'estacionalitat esdevé un índex (ex: $1.3$ a l'agost, un 30% més; $0.7$ al gener, un 30% menys). 
 * **Per què és superior?** Captura les sinergies de manera natural. Si la teva distribució augmenta, l'índex del 30% extra de l'estiu s'aplicarà sobre aquesta nova base de vendes més gran, escalant el pic correctament. Una pujada de preu contraurà les vendes proporcionalment a la mida del mercat actual, no com una pèrdua lineal de paquets fixos.
+
+En resum, els models aditius, son més facils d'explicar, interpretar i implementar a l'hora d'asignar pesos a cada variable de la Baseline. Els models Multiplicatius son mes treballats i a la vegada mes correctes a l'hora d'entendre la lógica de com funciona la realitat. Si només ens importa el resultat final i un cop calculat el model només volem explicar el passat i no volem simular el futur, no sol haver-hi gaire diferencies entre les 2 metodologies. 
 
 
 ## Modelar el retard de la publicitat (Ad-Stock): Decay vs. Funció Gamma
@@ -46,13 +48,15 @@ Assumeix que l'impacte màxim de la publicitat es produeix **immediatament** (en
 $Adstock_t = X_t + \alpha \cdot Adstock_{t-1}$
 
 * **Característiques:** És ràpida de calcular i només requereix optimitzar un únic paràmetre.
-* **Quan triar-la?** Per a canals digitals i d'acció immediata (*Paid Search*, *Performance Marketing*, *Emailing*), on l'usuari fa clic i compra al moment, i el record s'esvaeix ràpidament si no es torna a impactar.
+* **Quan triar-la?** Per a canals digitals i d'acció immediata (*Paid Search*, *Performance Marketing*, *Emailing*), on l'usuari fa clic i compra al moment, i el record s'esvaeix ràpidament si no es torna a impactar. 
 
 ### Funció Gamma (2 paràmetres: Forma i Escala)
 La funció Gamma és molt més sofisticada. Permet modelar un **efecte retardat (*lagged effect*)**. L'impacte màxim de l'anunci no té lloc el primer dia, sinó que pot assolir el seu pic uns dies o setmanes més tard, caient després de forma asimètrica.
 
 * **Característiques:** Afegeix molta flexibilitat a la corba de record, però requereix fixar o optimitzar dos hiperparàmetres (forma i escala), incrementant la complexitat i el temps de computació del model.
 * **Quan triar-la?** Per a mitjans tradicionals de construcció de marca (*TV*, *Ràdio*, *OOH / Exterior*). Un consumidor pot veure un anunci de TV dimarts, però no anirà al supermercat a comprar el producte fins dissabte. La funció Gamma captura perfectament aquest desplaçament temporal del pic de conversions.
+
+Per experiencia, encara que els mitjans tradicionals no siguin inmediats, també funciona be fer servir el Decay si estem mesurant l'efecte de la publicitat al curt plaç i estem analitzant l'efecte en Ventes en productes de gran consum (FMCG).
 
 
 ## Com capturar l'Estacionalitat segons la teva arquitectura
