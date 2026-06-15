@@ -42,8 +42,8 @@ En resum, els models aditius, son més facils d'explicar, interpretar i implemen
 Un anunci vist avui pot generar una venda demà o la setmana vinent. Aquesta memòria de marca es coneix com **Ad-Stock**. El dilema aquí és triar quina funció matemàtica descriu millor la pèrdua de record del consumidor segons el canal.
 
 
-### Decay (Decaïment Geomètric de 1 paràmetre)
-Assumeix que l'impacte màxim de la publicitat es produeix **immediatament** (en el mateix moment de l'exposició) i decreix de manera exponencial al llarg del temps segons un factor d'esvaïment $\alpha$ (entre 0 i 1).
+### Decay (Caiguda geomètrica d'1 paràmetre)
+Assumeix que l'impacte màxim de la publicitat es produeix **immediatament** (en el mateix moment de l'exposició) i decreix de manera exponencial al llarg del temps segons un factor de caiguda $\alpha$ (entre 0 i 1).
 
 <center>$Adstock_t = X_t + \alpha \cdot Adstock_{t-1}$</center>
 
@@ -56,7 +56,7 @@ La funció Gamma és molt més sofisticada. Permet modelar un **efecte retardat 
 * **Característiques:** Afegeix molta flexibilitat a la corba de record, però requereix fixar o optimitzar dos hiperparàmetres (forma i escala), incrementant la complexitat i el temps de computació del model.
 * **Quan triar-la?** Per a mitjans tradicionals de construcció de marca (*TV*, *Ràdio*, *OOH / Exterior*). Un consumidor pot veure un anunci de TV dimarts, però no anirà al supermercat a comprar el producte fins dissabte. La funció Gamma captura perfectament aquest desplaçament temporal del pic de conversions.
 
-Per experiencia, encara que els mitjans tradicionals no siguin inmediats, també funciona be fer servir el Decay si estem mesurant l'efecte de la publicitat al curt plaç i estem analitzant l'efecte en Ventes en productes de gran consum (FMCG).
+Per experiencia, encara que els mitjans tradicionals no siguin inmediats, també funciona be fer servir el Decay si estem mesurant l'efecte de la publicitat al curt plaç i estem analitzant l'efecte en Ventes en productes de gran consum (FMCG) on les bases de dades i els models es solen analitzar amb dades agrupades de manera setmanal. En productes on la decisió de compra es molt més pensada (productes financers, automovils...) pot ser més convenient fer servir una Funció Gamma
 
 
 ## Com capturar l'Estacionalitat segons la teva arquitectura
