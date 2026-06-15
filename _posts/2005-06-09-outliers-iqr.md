@@ -8,7 +8,7 @@ tags:
 
 Aquesta és la funció clàssica per identificar valors atípics en un DataFrame utilitzant el rang interquartílic (IQR).
 
-### El codi en Python
+### 🐍 El codi en Python
 
 ```python
 import pandas as pd
