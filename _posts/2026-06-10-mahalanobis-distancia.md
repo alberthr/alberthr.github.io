@@ -30,7 +30,7 @@ Estadísticament, la distància de Mahalanobis al quadrat segueix una distribuci
 
 Per als següents exemples utilitzarem el dataset clàssic `mtcars`. Analitzarem 4 columnes amb escales totalment diferents: consum (`mpg`), cavalls de potència (`hp`), pes en tones (`wt`) i cilindrada (`disp`).
 
-### Exemple en R
+### 📊 Exemple en R
 
 A R, el càlcul està integrat de forma nativa gràcies a la funció `mahalanobis()`.
 
@@ -60,7 +60,7 @@ print("Top Outliers detectats a R:")
 print(head(dades_ordenades, 5))
 ```
 
-### Exemple en Python
+### 🐍 Exemple en Python
 
 A Python podem replicar exactament el mateix comportament utilitzant `pandas` per gestionar les dades i `scipy` per a la distribució estadística i el càlcul de la matriu inversa de covariància.
 
