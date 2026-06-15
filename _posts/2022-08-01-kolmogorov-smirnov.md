@@ -42,7 +42,7 @@ Tot i la seva potència, el test K-S té punts febles que s'han de tenir en comp
 
 Anem a veure com aplicar el test de dues mostres utilitzant codi. Imaginem que volem comparar si el temps de càrrega de la nostra web amb un servidor nou (Grup B) és diferent del servidor antic (Grup A).
 
-### Implementació a Python
+### 🐍 Implementació en Python
 
 Farem servir la llibreria `scipy.stats`. Generarem dades aleatòries on el Grup B és lleugerament més ràpid.
 
@@ -72,7 +72,7 @@ else:
 ```
 
 
-### Exemple a R
+### 📊 Implementacio en R
 
 ```r
 # Fixem la llavor
