@@ -77,6 +77,7 @@ $\text{Terme Fourier}_t = \sin\left(\frac{2\pi \cdot t}{P}\right) + \cos\left(\f
 ### C. Descomposició STL Prèvia
 Una alternativa cada vegada més utilitzada és extreure l'estacionalitat multiplicativa abans de la regressió mitjançant algorismes de descomposició de sèries temporals (com el mètode Loess). Això permet netejar la variable dependent o utilitzar l'índex calculat com un *input* rígid.
 
+
 ---
 
 ## Implementació en Python: Extreure Estacionalitat Multiplicativa
