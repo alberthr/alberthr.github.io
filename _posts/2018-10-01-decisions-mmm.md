@@ -45,7 +45,8 @@ Un anunci vist avui pot generar una venda demà o la setmana vinent. Aquesta mem
 ### Decay (Caiguda geomètrica d'1 paràmetre)
 Assumeix que l'impacte màxim de la publicitat es produeix **immediatament** (en el mateix moment de l'exposició) i decreix de manera exponencial al llarg del temps segons un factor de caiguda $\alpha$ (entre 0 i 1).
 
-<center>$Adstock_t = X_t + \alpha \cdot Adstock_{t-1}$</center>
+<center>$Adstock_t = \alpha \cdot X_t + (1 - \alpha) \cdot Adstock_{t-1}$</center>
+
 
 * **Característiques:** És ràpida de calcular i només requereix optimitzar un únic paràmetre.
 * **Quan triar-la?** Per a canals digitals i d'acció immediata (*Paid Search*, *Performance Marketing*, *Emailing*), on l'usuari fa clic i compra al moment, i el record s'esvaeix ràpidament si no es torna a impactar. 
