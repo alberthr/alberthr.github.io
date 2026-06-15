@@ -45,7 +45,7 @@ Un anunci vist avui pot generar una venda demà o la setmana vinent. Aquesta mem
 ### Decay (Decaïment Geomètric de 1 paràmetre)
 Assumeix que l'impacte màxim de la publicitat es produeix **immediatament** (en el mateix moment de l'exposició) i decreix de manera exponencial al llarg del temps segons un factor d'esvaïment $\alpha$ (entre 0 i 1).
 
-$Adstock_t = X_t + \alpha \cdot Adstock_{t-1}$
+<center>$Adstock_t = X_t + \alpha \cdot Adstock_{t-1}$</center>
 
 * **Característiques:** És ràpida de calcular i només requereix optimitzar un únic paràmetre.
 * **Quan triar-la?** Per a canals digitals i d'acció immediata (*Paid Search*, *Performance Marketing*, *Emailing*), on l'usuari fa clic i compra al moment, i el record s'esvaeix ràpidament si no es torna a impactar. 
@@ -70,7 +70,7 @@ Si optes per la simplicitat lineal, pots incloure variables *dummy* (binàries) 
 ### B. Estacionalitat en Baseline Multiplicativa (Components de Fourier)
 Per a models multiplicatius (linearitzats mitjançant logaritmes $\ln(Y)$), s'utilitzen **ones de Fourier** (sinus i cosinus) per crear corbes suaus que pugen i baixen harmònicament al llarg de l'any ($P = 365.25$ per a diari, o $P = 52.18$ per a setmanal).
 
-$\text{Terme Fourier}_t = \sin\left(\frac{2\pi \cdot t}{P}\right) + \cos\left(\frac{2\pi \cdot t}{P}\right)$
+<center>$\text{Terme Fourier}_t = \sin\left(\frac{2\pi \cdot t}{P}\right) + \cos\left(\frac{2\pi \cdot t}{P}\right)$</center>
 
 * **Avantatge:** Captura patrons complexos i continus utilitzant molt poques variables (només uns quants parells de lletres), actuant com un ràtio que escala de forma dinàmica juntament amb el preu i la distribució.
 
