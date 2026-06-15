@@ -36,7 +36,7 @@ Per tant, si simulem milers de punts aleatoris, podem estimar $\pi$ com:
 
 <center>$\pi \approx 4 \times \frac{\text{Punts dins del cercle}}{\text{Punts totals}}$</center>
 
-### Implementació a Python
+### 🐍 Implementació en Python
 
 Utilitzant `numpy`, podem vectoritzar aquesta simulació per fer-la extremadament ràpida.
 
@@ -64,7 +64,7 @@ resultat = estimar_pi_montecarlo(n)
 print(f"Estimació de Pi amb {n} simulacions: {resultat}")
 ```
 
-### Implementació a R
+### 📊 Implementació en R
 
 ```r
 estimar_pi_montecarlo <- function(n_simulacions) {
