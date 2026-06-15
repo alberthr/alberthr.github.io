@@ -40,7 +40,7 @@ Imagina que tenim una mostra petita ($n=30$) del temps que triguen els usuaris a
 
 A continuació, veurem com resoldre-ho tant en Python com en R.
 
-### Implementació a Python
+### 🐍 Implementació en Python
 
 ```python
 import numpy as np
@@ -75,7 +75,7 @@ print(f"Mediana observada: {mediana_obs:.2f}")
 print(f"Interval de Confiança 95% (Bootstrap): [{ic_inf:.2f}, {ic_sup:.2f}]")
 ```
 
-### Implementacio a R
+### 📊 Implementacio a R
 ```r
 # Fixem la llavor
 set.seed(42)
