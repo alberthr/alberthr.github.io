@@ -3,6 +3,7 @@ layout: post
 title: "Marketin Mix Modelling (MMM): Decisions a prendre abans de començar"
 tags:
   - mmm
+  - modelitzacio
   - publicitat
 ---
 
