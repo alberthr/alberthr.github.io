@@ -14,7 +14,7 @@ Fa uns anys se'm va acudir fer servir aquest index com a part d'una calculadora 
 
 L’índex d’Herfindahl es calcula sumant els quadrats de la quota de mercat de totes les empreses que operen en l’àmbit analitzat. La fórmula és:
 
-$H = \sum_{i=1}^{N} s_i^2$
+<center>$H = \sum_{i=1}^{N} s_i^2$</center>
 
 on:
 - $\(s_i\)$ és la quota de mercat (en percentatge o en proporció) de l’empresa \(i\).
@@ -33,7 +33,7 @@ Primer, expressem aquestes quotes en decimals: 0,50; 0,30; 0,20.
 
 Aplicarem la fórmula:
 
-$H = 0,50^2 + 0,30^2 + 0,20^2 = 0,25 + 0,09 + 0,04 = 0,38$
+<center>$H = 0,50^2 + 0,30^2 + 0,20^2 = 0,25 + 0,09 + 0,04 = 0,38$</center>
 
 L’índex d’Herfindahl en aquest cas és 0,38 (o 3.8 si expressat en '%').
 
