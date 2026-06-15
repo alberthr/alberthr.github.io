@@ -41,7 +41,7 @@ Tot i que l'emparellament d'individus o botigues similars és molt útil en anal
 
 Anem a simular el cas de les nostres botigues: Tenim el **Grup A** (5 botigues tractades) i el **Grup B** (20 botigues candidates a control). Cada botiga es defineix per 3 variables (Facturació, Superfície, Clients).
 
-### Exemple a R (fent servir `RcppHungarian`)
+### 📊 Exemple en R (fent servir `RcppHungarian`)
 
 A R evitem fer servir el paquet clàssic `clue` perquè ens obligaria a fer la matriu quadrada de forma artificial (afegint files buides). Amb `RcppHungarian` (escrit en C++), el càlcul amb matrius rectangulars és directe i automàtic.
 
@@ -75,7 +75,7 @@ for(i in 1:nrow(parelles)) {
 }
 ```
 
-### Exemple a Python (fent servir `scipy`)
+### 🐍 Exemple en Python (fent servir `scipy`)
 
 A Python, la funció nativa linear_sum_assignment de la llibreria `scipy` gestiona les matrius rectangulars a la perfecció de manera interna.
 
