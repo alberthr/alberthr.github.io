@@ -56,7 +56,7 @@ La funció Gamma és molt més sofisticada. Permet modelar un **efecte retardat 
 * **Característiques:** Afegeix molta flexibilitat a la corba de record, però requereix fixar o optimitzar dos hiperparàmetres (forma i escala), incrementant la complexitat i el temps de computació del model.
 * **Quan triar-la?** Per a mitjans tradicionals de construcció de marca (*TV*, *Ràdio*, *OOH / Exterior*). Un consumidor pot veure un anunci de TV dimarts, però no anirà al supermercat a comprar el producte fins dissabte. La funció Gamma captura perfectament aquest desplaçament temporal del pic de conversions.
 
-Per experiencia, encara que els mitjans tradicionals no siguin inmediats, també funciona be fer servir el Decay si estem mesurant l'efecte de la publicitat al curt plaç i estem analitzant l'efecte en Ventes en productes de gran consum (FMCG) on les bases de dades i els models es solen analitzar amb dades agrupades de manera setmanal. En productes on la decisió de compra es molt més pensada (productes financers, automovils...) pot ser més convenient fer servir una Funció Gamma
+Per experiencia, encara que els mitjans tradicionals no siguin inmediats, també funciona be fer servir el Decay si estem mesurant l'efecte de la publicitat al curt plaç i estem analitzant l'efecte en Ventes en productes de gran consum (FMCG) on les bases de dades i els models es solen analitzar amb dades agrupades de manera setmanal. En productes on la decisió de compra es molt més pensada (productes financers, automovils...) pot ser més convenient fer servir una Funció Gamma.
 
 
 ## Com capturar l'Estacionalitat segons la teva arquitectura
