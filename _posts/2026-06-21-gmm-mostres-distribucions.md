@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Mostres bimodals: Gaussian Mixture Models (GMM) per trobar la frontera oculta"
+title: "Mostres bimodals: Troba la frontera amb GMM"
 tags: 
   - machine learning
   - clustering
