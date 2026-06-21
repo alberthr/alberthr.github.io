@@ -50,19 +50,19 @@ La variabilitat és la responsable real de la creació de cues. Si tothom trigu�
 En aquest interval, el supermercat ha absorbit un total de $22 + 26 = 48$ clients. Això significa que el sistema ha estat funcionant de mitjana a una intensitat de trànsit molt alta. En sistemes quasi-saturats de curta durada, aproximem la utilització global ($\rho$) basant-nos en la capacitat utilitzada de les caixes obertes:
 
 * **Temps mitjà de servei combinat ($\mu_s$):** Ponderat pels tiquets de cada caixa:
-    $$\mu_s = \frac{(22 \cdot 90.91) + (26 \cdot 76.92)}{48} = \frac{2000 + 2000}{48} \approx 83.33 \text{ s/client}$$
+    $\mu_s = \frac{(22 \cdot 90.91) + (26 \cdot 76.92)}{48} = \frac{2000 + 2000}{48} \approx 83.33 \text{ s/client}$
 * **Variància combinada ($C_s^2$):** Fem la mitjana ponderada dels coeficients de variació al quadrat (les seves variàncies relatives):
-    $$C_s^2 = \frac{22 \cdot (0.582)^2 + 26 \cdot (0.469)^2}{48} = \frac{22 \cdot 0.339 + 26 \cdot 0.220}{48} \approx 0.274$$
+    $C_s^2 = \frac{22 \cdot (0.582)^2 + 26 \cdot (0.469)^2}{48} = \frac{22 \cdot 0.339 + 26 \cdot 0.220}{48} \approx 0.274$
 
 
 ### Pas 4: Estimar la cua mitjana en el sistema ($L_q$) mitjançant l'aproximació de Kingman
 L'equació de Kingman per a múltiples servidors (model $G/G/2$) ens dona la longitud mitjana de la cua esperada quan el sistema està en un règim d'alta demanda ($\rho \approx 0.90$ en moments punta simulats d'arribades):
 
-$$L_q \approx \frac{\rho^2}{1-\rho} \cdot \frac{C_a^2 + C_s^2}{2} \cdot \frac{1}{2}$$
+$L_q \approx \frac{\rho^2}{1-\rho} \cdot \frac{C_a^2 + C_s^2}{2} \cdot \frac{1}{2}$
 
 Assumint unes arribades de clients relativament estables (per exemple, $C_a^2 \approx 0.5$ de tipus de trànsit regular de supermercat) i una utilització real en hora punta del $90\%$ ($\rho = 0.90$):
 
-$$L_q \approx \frac{0.81}{0.10} \cdot \frac{0.5 + 0.274}{2} \cdot \frac{1}{2} = 8.1 \cdot 0.387 \cdot 0.5 \approx 1.57 \text{ clients en cua de mitjana}$$
+$L_q \approx \frac{0.81}{0.10} \cdot \frac{0.5 + 0.274}{2} \cdot \frac{1}{2} = 8.1 \cdot 0.387 \cdot 0.5 \approx 1.57 \text{ clients en cua de mitjana}$
 
 De mitjana, hi ha un o dos clients esperant. Però... quin ha estat el **pic màxim** absolut en aquests 33 minuts?
 
@@ -72,8 +72,8 @@ La cua mitjana ens dona l'estat constant, però la cua fluctua constantment com 
 
 Per trobar el valor màxim en un interval determinat on s'han generat 48 esdeveniments, apliquem el factor de creixement de valors extrems (basat en la distribució de Gumbel), que ens diu que el pic màxim se sol trobar a unes $2.5$ o $3$ desviacions estàndard per sobre de la mitjana en períodes curts d'alta variabilitat:
 
-$$Q_{max} = L_q + (2.5 \cdot \sigma_{cua})$$
-$$Q_{max} = 1.57 + (2.5 \cdot 2.01) = 1.57 + 5.025 = 6.595 \approx \mathbf{6-7 \text{ clients}}$$
+$Q_{max} = L_q + (2.5 \cdot \sigma_{cua})$
+$Q_{max} = 1.57 + (2.5 \cdot 2.01) = 1.57 + 5.025 = 6.595 \approx \mathbf{6-7 \text{ clients}}$
 
 ---
 
