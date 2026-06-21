@@ -29,9 +29,9 @@ Per estimar quants clients s'han arribat a acumular com a màxim en la cua duran
 ### Pas 1: Calcular les taxes i els temps mitjans de servei ($\mu$)
 El primer que necessitem és saber quant de temps triga, de mitjana, cada caixa a atendre un client. Dividim el temps total ($T = 2000$ s) entre el nombre de tiquets de cada caixa:
 
-* **Caixa 1:** $$\mu_1 = \frac{2000 \text{ segons}}{22 \text{ tiquets}} \approx 90.91 \text{ s/client}$$
+* **Caixa 1:** $\mu_1 = \frac{2000 \text{ segons}}{22 \text{ tiquets}} \approx 90.91 \text{ s/client}$
     La seva taxa de servei és $\mu_{taxa1} = \frac{1}{90.91} \approx 0.0110 \text{ clients/s}$.
-* **Caixa 2:** $$\mu_2 = \frac{2000 \text{ segons}}{26 \text{ tiquets}} \approx 76.92 \text{ s/client}$$
+* **Caixa 2:** $\mu_2 = \frac{2000 \text{ segons}}{26 \text{ tiquets}} \approx 76.92 \text{ s/client}$
     La seva taxa de servei és $\mu_{taxa2} = \frac{1}{76.92} \approx 0.0130 \text{ clients/s}$.
 
 
@@ -39,9 +39,9 @@ El primer que necessitem és saber quant de temps triga, de mitjana, cada caixa 
 La variabilitat és la responsable real de la creació de cues. Si tothom trigués exactament el mateix, les cues serien gairebé inexistents. El **Coeficient de Variació ($C_v$)** mesura la desviació estàndard en relació amb la mitjana ($C_v = \frac{\sigma}{\mu}$):
 
 * **Caixa 1:** La seva desviació és $\sigma_1 = \sqrt{2800} \approx 52.92$ segons.
-    $$C_{v1} = \frac{52.92}{90.91} \approx 0.582$$
+    $C_{v1} = \frac{52.92}{90.91} \approx 0.582$
 * **Caixa 2:** La seva desviació és $\sigma_2 = \sqrt{1300} \approx 36.06$ segons.
-    $$C_{v2} = \frac{36.06}{76.92} \approx 0.469$$
+    $C_{v2} = \frac{36.06}{76.92} \approx 0.469$
 
 *Interpretació:* Com que ambdós $C_v$ són menors que 1, sabem que el servei és més regular que una distribució aleatòria exponencial (on $C_v = 1$), però la Caixa 1 té fluctuacions molt més altes (tiquets molt llargs combinats amb tiquets molt curts).
 
