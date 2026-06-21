@@ -85,3 +85,18 @@ En el moment crític de l'interval de 2000 segons, **es va arribar a registrar u
 
 ## Conclusions per al Negoci
 Gràcies a aquest desglòs pas a pas, hem demostrat matemàticament que per reduir aquest pic de 6 clients a la meitat, el supermercat no necessita obrir una tercera caixa, sinó **reduir la variància de la Caixa 1** (per exemple, desviant els clients de més de 15 articles a una caixa específica), evitant així que els temps de servei es disparin fins als 2800 $s^2$.
+
+---
+
+## ⚠️ El gran debat: Sabem del cert que no hi havia 100 persones fent cua?
+
+Si ets un analista punyent, hauràs detectat una esquerda en tot aquest raonament: **Com sabem que no hi havia una cua de 100 persones des de l'inici i que les caixes simplement no donaven l'abast?**
+
+La resposta curta és: **Amb els logs de tiquets a la mà, no ho podem saber al 100%.** Perquè els càlculs d'aquest article (i la fórmula de Kingman) siguin vàlids, hem hagut d'aplicar una premissa fonamental en enginyeria de processos: **l'Assumpció de l'Estat Estacionari**. Això significa que assumim que el supermercat no està col·lapsat i que la taxa d'arribada de clients és igual a la taxa de sortida ($\lambda = \mu$).
+
+### Què passaria si estiguéssim equivocats?
+Si la botiga hagués estat desbordada amb una cua de 100 persones:
+1. Les fórmules de Kingman **deixarien de ser vàlides** (ja que el sistema seria inestable).
+2. El nombre de tiquets (22 i 26) no reflectiria la demanda de la gent, sinó el **límit de velocitat humana** dels dos caixers treballant sota estrès màxim.
+
+**Lliçó per al Data Scientist:** Les dades de tiquets són un inici fantàstic, però per validar si la nostra cua promig d'1.78 clients o la màxima de 6 són reals, sempre s'ha de contrastar el model numèric amb una validació externa (com ara els sensors de pas de la porta o un mostreig visual de les càmeres). La matemàtica ens dona el mapa, però el terra el trepitja el negoci.
