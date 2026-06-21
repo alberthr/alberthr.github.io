@@ -1,74 +1,80 @@
 ---
 layout: post
-title: "Introducció als Gaussian Mixture Models (GMM): Més enllà del K-Means"
+title: "Mostres bimodals: Gaussian Mixture Models (GMM) per trobar la frontera oculta"
 tags: 
   - machine learning
   - clustering
 ---
 
-Quan parlem de *clustering* o agrupament en Machine Learning, el primer algorisme que ens ve al cap és el K-Means. És senzill, ràpid i eficaç. Però, què passa quan les nostres dades no formen cercles perfectes? Què passa si un punt podria pertànyer a més d'un grup a la vegada? Aquí és on entren en joc els **Gaussian Mixture Models (GMM)** o Models de Mescla Gaussiana.
+Imagina que estàs analitzant el temps d'espera dels  clients en un restaurant o l'alçada d'una població barrejada. Quan pintes l'histograma, descobreixes que no tens la típica campana de Gauss simètrica, sinó una **distribució bimodal** (amb dos pics). De vegades els dos pics són evidents, però d'altres, les distribucions estan tan encavalcades que visualment sembla una sola massa de dades deformada.
 
-## Què és un Gaussian Mixture Model (GMM)?
+El repte és clar: **A quin grup correspon cada observació? A partir de quin punt exacte una dada deixa de pertànyer al primer grup i passa al segon?**
 
-A diferència del K-Means, que assigna cada dada de forma estricte a un sol grup (*hard clustering*), el GMM és un model probabilístic. Assumeix que totes les dades han estat generades a partir d'una barreja d'un nombre fixat de **distribucions gaussianes** (normals) amb paràmetres desconeguts.
-
-En lloc de dir "aquest punt pertany al Grup A", el GMM diu: *"Aquest punt té un 85% de probabilitats de ser del Grup A i un 15% del Grup B"* (*soft clustering*).
-
-### El secret: L'algorisme EM
-
-Per trobar els paràmetres d'aquestes gaussianes (la mitjana, la covariància i el pes de cada grup), el GMM utilitza l'algorisme **Expectation-Maximization (EM)**:
-1. **E-step (Expectation):** Calcula la probabilitat que cada punt provingui de cada distribució gaussiana.
-2. **M-step (Maximization):** Actualitza els paràmetres (mitjana, covariància i pes) de les gaussianes per maximitzar la versemblança de les dades.
+En aquest article veurem com els **Gaussian Mixture Models (GMM)** responen a aquesta pregunta utilitzant la probabilitat, superant les limitacions de mètodes clàssics com el K-Means.
 
 
-## Quan es fa servir i quines utilitats té?
+## El problema de la frontera en dades bimodals
 
-El GMM és especialment útil en situacions on la flexibilitat geomètrica és clau:
+Quan barregem dues fonts de dades diferents (per exemple, les vendes d'un dia laborable vs. cap de setmana), estem davant d'una mescla numèrica. Si apliquem un llindar rígid i arbitrari (com dir "tot el que sigui menor que 50 és el Grup A"), estarem cometent errors en la zona on les dues distribucions es solapen.
 
-* **Agrupaments no esfèrics:** El K-Means assumeix que els clústers són esfèrics. Si els teus grups són el·líptics, allargats o tenen diferents mides, el K-Means fallarà. GMM s'adapta gràcies a la matriu de covariància.
-* **Solapament de grups:** Quan les fronteres entre clústers no estan clares i necessites mesurar la incertesa de l'assignació.
-* **Estimació de densitat:** De vegades no vols fer clústers, sinó simplement entendre la distribució de les teves dades per generar-ne de noves que s'hi assemblin.
+En aquesta zona de transició, una dada té característiques de tots dos grups. En lloc de dibuixar una línia divisòria cega, necessitem saber la **certesa** o probabilitat de la nostra assignació. 
 
-### Exemples d'utilització reals
-
-1. **Segmentació de clients:** Identificar perfils de compradors on un usuari pot tenir comportaments compartits de diferents segments (ex. 70% comprador compulsiu, 30% cercador d'ofertes).
-2. **Processament d'imatges:** Segmentació del fons i primer pla en vídeos o imatges (computació visual).
-3. **Detecció d'anomalies:** Si un nou punt de dada té una probabilitat extremadament baixa de pertànyer a qualsevol de les gaussianes del model, es pot catalogar com a anomalia o frau.
+### Per què el K-Means no és la millor opció aquí?
+El K-Means és un algorisme de *hard clustering*. Això significa que mesura la distància geomètrica i assigna la dada de forma estricta a un clúster o a l'altre (estàs a dins o estàs a fora). 
+* Si la frontera està difusa, K-Means tallarà pel mig sense dir-te com de segur està d'aquesta decisió.
+* A més, assumeix que ambdós grups tenen la mateixa dispersió (variància), cosa que en la realitat bimodal poques vegades passa (un grup pot ser molt estret i alt, i l'altre baix i ample).
 
 
-## Implementació en Python
+## La solució: Què fa el GMM?
 
-A Python, la llibreria per excel·lència és `scikit-learn`. Podem utilitzar la classe `GaussianMixture`.
+El Gaussian Mixture Model (GMM) tracta el problema des de l'estadística. Assumeix que la teva mostra està formada per dues distribucions gaussianes que s'han sumat. El seu objectiu és "desmuntar" la barreja per trobar:
+1. La mitjana i la variància de cada un dels dos grups.
+2. El pes (proporció) de cada grup en el total de la mostra.
+
+Un cop entrenat, el GMM no et dona una resposta binària. Et calcula el *soft clustering*: per a cada observació, et diu quina probabilitat té de formar part de la distribució 1 i de la distribució 2. 
+
+**Com trobem el punt d'inflexió?** La dada on la probabilitat passa de ser $P(\text{Grup 1}) > 0.5$ a ser $P(\text{Grup 2}) > 0.5$ és, exactament, la frontera matemàtica on les dades canvien de grup.
+
+
+## Implementació en Python: Trobant el punt de tall
+
+Anem a simular una distribució bimodal encavalcada i a utilitzar `scikit-learn` per trobar a quin grup pertany cada dada i determinar on es creuen les probabilitats.
 
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.mixture import GaussianMixture
-from sklearn.datasets import make_blobs
 
-# 1. Generar dades d'exemple de forma el·líptica
-X, _ = make_blobs(n_samples=300, centers=3, cluster_std=1.0, random_state=42)
-transformation = [[0.6, -0.6], [-0.4, 0.8]]
-X_aniso = np.dot(X, transformation)  # Estirem les dades
+# 1. Simulem una mostra bimodal (dues poblacions solapades)
+np.random.seed(42)
+grup_1 = np.random.normal(loc=20, scale=3, size=400)  # Mitjana 20
+grup_2 = np.random.normal(loc=28, scale=5, size=600)  # Mitjana 28 (més dispers)
+dades = np.concatenate([grup_1, grup_2]).reshape(-1, 1)
 
-# 2. Entrenar el model GMM
-# Triem 3 components (clústers)
-gmm = GaussianMixture(n_components=3, covariance_type='full', random_state=42)
-gmm.fit(X_aniso)
+# 2. Ajustem el GMM amb 2 components
+gmm = GaussianMixture(n_components=2, random_state=42)
+gmm.fit(dades)
 
-# 3. Predicció de clústers i probabilitats
-labels = gmm.predict(X_aniso)
-probs = gmm.predict_proba(X_aniso) # Probabilitats de pertinença
+# 3. Ordenem les dades per veure clarament la transició
+dades_ordenades = np.sort(dades, axis=0)
+probabilitats = gmm.predict_proba(dades_ordenades)
+assignacio = gmm.predict(dades_ordenades)
 
-# 4. Mostrar resultats
-plt.scatter(X_aniso[:, 0], X_aniso[:, 1], c=labels, cmap='viridis', s=40, zorder=2)
-plt.title("GMM Clustering en Python")
-plt.xlabel("Característica 1")
-plt.ylabel("Característica 2")
+# 4. Busquem el punt exacte on es creuen les probabilitats (frontera)
+# És el punt on la probabilitat del grup 0 baixa del 50% i puja la del grup 1
+punt_tall = dades_ordenades[np.argmin(np.abs(probabilitats[:, 0] - 0.5))]
+print(f"Les dades canvien de grup a partir del valor aproximat de: {punt_tall[0]:.2f}")
+
+# 5. Visualització de la transició probabilística
+plt.figure(figsize=(10, 5))
+plt.plot(dades_ordenades, probabilitats[:, 0], label="Probabilitat Grup 1", color="blue")
+plt.plot(dades_ordenades, probabilitats[:, 1], label="Probabilitat Grup 2", color="orange")
+plt.axvline(punt_tall, color="red", linestyle="--", label=f"Frontera ({punt_tall[0]:.2f})")
+plt.title("Transició de probabilitat i punt d'inflexió amb GMM")
+plt.xlabel("Valor de l'observació")
+plt.ylabel("Probabilitat")
+plt.legend()
 plt.show()
-
-# Exemple de probabilitats del primer punt
-print(f"Probabilitats del primer punt (Grup 0, 1, 2): {probs[0]}")
 ```
 
 ### Implementació en R
@@ -80,26 +86,37 @@ A R, una de les millors opcions és el paquet mclust, que a més té l'avantatge
 if(!require(mclust)) install.packages("mclust")
 library(mclust)
 
-# 2. Utilitzarem el dataset intern 'iris' (sense la columna de l'espècie)
-dades <- iris[, 1:4]
+# 2. Crear una mostra bimodal simulada
+set.seed(42)
+grup_1 <- rnorm(400, mean = 20, sd = 3)
+grup_2 <- rnorm(600, mean = 28, sd = 5)
+dades <- data.frame(valor = c(grup_1, grup_2))
 
-# 3. Entrenar el model GMM
-# Mclust busca automàticament el millor nombre de clústers i forma de covariància
-model_gmm <- Mclust(dades)
+# 3. Entrenar el model forçant 2 components (G=2)
+model_bimodal <- Mclust(dades$valor, G = 2)
 
-# 4. Resum del model
-summary(model_gmm)
+# 4. Veure a quin grup s'ha assignat cada observació final
+dades$grup_assignat <- model_bimodal$classification
 
-# 5. Visualitzar els resultats
-# Mostra la classificació i l'estimació de densitat
-plot(model_gmm, what = "classification")
+# 5. Extreure les probabilitats de pertinença (soft clustering)
+# 'z' conté una columna per a cada component (grup)
+dades$prob_grup1 <- model_bimodal$z[, 1]
+dades$prob_grup2 <- model_bimodal$z[, 2]
 
-# Accedir a les probabilitats de pertinença (soft clustering)
-probabilitats <- model_gmm$z
-head(probabilitats)
+# Mostrem les primeres línies del resultat
+head(dades)
+
+# 6. Trobar quines observacions estan a la zona d'incertesa (frontera)
+# Per exemple, observacions on la probabilitat està molt renyida (entre 45% i 55%)
+zona_frontera <- dades[dades$prob_grup1 > 0.45 & dades$prob_grup1 < 0.55, ]
+cat("Valors en la zona de transició directa:\n")
+print(range(zona_frontera$valor))
+
+# 7. Pintar la densitat dels dos grups trobats
+plot(model_bimodal, what = "density")
 ```
 
 ## Conclusió
-Els Gaussian Mixture Models són una eina extremadament potent que supera les limitacions geomètriques del K-Means clàssic. Tot i que requereixen més potència de càlcul i són més sensibles a tenir poques dades, el fet d'aportar una mètrica probabilística (predict_proba) els fa indispensables en l'arsenal de qualsevol científic de dades.
+Quan treballes amb dades reals, les fronteres netes no existeixen. En una distribució bimodal, el valor que separa els dos fenòmens no és un mur, sinó una zona de transició.
 
-T'has trobat mai amb dades que el K-Means no podia gestionar correctament? Deixa la teva experiència als comentaris!
+Utilitzar GMM en lloc de K-Means o llindars fixos et permet tractar aquesta transició amb rigor científic: saps exactament on es troba el punt d'inflexió matemàtic (el canvi de tendència al 50%) i, alhora, mantens el control sobre la incertesa de les teves dades en les zones de solapament.
