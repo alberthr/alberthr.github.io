@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Estimat de cues màximes en paral·lel: Com optimitzar les caixes d'un supermercat"
+title: "Estimació de cues en un supermercat"
 tags:
   - estadistica
   - cues
