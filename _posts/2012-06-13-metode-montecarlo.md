@@ -30,11 +30,11 @@ La millor manera d'entendre Montecarlo és amb un exemple visual clàssic: **cal
 
 Imagina un quadrat de costat $2r$ que conté un cercle inscrit de radi $r$. Si llançem "dards" de manera completament aleatòria dins del quadrat, la probabilitat que caiguin dins del cercle depèn de la relació entre les seves àrees:
 
-<center>$\frac{\text{Àrea del cercle}}{\text{Àrea del quadrat}} = \frac{\pi r^2}{(2r)^2} = \frac{\pi}{4}$</center>
+$$\frac{\text{Àrea del cercle}}{\text{Àrea del quadrat}} = \frac{\pi r^2}{(2r)^2} = \frac{\pi}{4}$$
 
 Per tant, si simulem milers de punts aleatoris, podem estimar $\pi$ com:
 
-<center>$\pi \approx 4 \times \frac{\text{Punts dins del cercle}}{\text{Punts totals}}$</center>
+$$\pi \approx 4 \times \frac{\text{Punts dins del cercle}}{\text{Punts totals}}$$
 
 ### 🐍 Implementació en Python
 
