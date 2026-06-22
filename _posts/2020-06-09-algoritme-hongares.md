@@ -12,7 +12,7 @@ L'objectiu és trobar, dins d'aquestes 20 opcions, les **5 botigues de control q
 
 ## Què és l'Algorisme Hongarès?
 
-L'algorisme hongarès (mètode de Kuhn-Munkres) és un algorisme d'optimització combinatòria dissenyat per resoldre el **problema de l'assignació**. 
+L'algoritme hongarès (mètode de Kuhn-Munkres) és un algoritme d'optimització combinatòria dissenyat per resoldre el **problema de l'assignació**. 
 
 Si intentessim fer combinacions a l'atzar per veure quina agrupació de 5 botigues és la millor de totes, el nombre de camins possibles creix de forma exponencial. L'algorisme hongarès resol aquest problema reduint una **matriu de costos** (on cada cel·la representa la "distància" o diferència en característiques entre la botiga A i la botiga B).
 
