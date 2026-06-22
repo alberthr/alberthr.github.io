@@ -8,7 +8,7 @@ plugins:
 - jekyll-remote-theme # add this line to the plugins list if you already have one
 
 # Configuració de Google Analytics
-google_analytics: "G-XXXXXXXXXX"
+google_analytics: "G-24FW05JLVP"
 
 permalink: /:title/
 markdown: kramdown
