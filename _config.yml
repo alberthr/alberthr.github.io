@@ -16,3 +16,4 @@ theme: null
 
 kramdown:
   syntax_highlighter: rouge
+  math_engine: mathjax
