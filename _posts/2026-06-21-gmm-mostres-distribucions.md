@@ -4,7 +4,10 @@ title: "Mostres bimodals: Troba la frontera amb GMM"
 tags: 
   - machine learning
   - clustering
+excerpt: "Quan una variable sembla tenir més d'una 'campana' (bimodal, trimodal...), un Gaussian Mixture Model permet estimar quants grups hi ha, a quin pertany cada observació i on és exactament el punt de tall entre grups."
 ---
+
+
 
 Imagina que tens una mostra d'una sola variable contínua: temps de resposta, despesa per client, alçada d'una població, una mètrica de vendes... Quan en fas l'histograma no veus una única campana de Gauss, sinó dues, tres, o una forma estranya que fa sospitar que en realitat hi ha **diversos grups barrejats dins la mateixa columna de dades**.
 
@@ -24,31 +27,8 @@ $$
 p(x) = \sum_{k=1}^{K} \pi_k \cdot \mathcal{N}(x \mid \mu_k, \sigma_k^2)
 $$
 
-L'algoritme (via **Expectation-Maximization**, EM) estima aquests paràmetres sense conèixer prèviament a quin grup pertany cada punt. El resultat no és una etiqueta dura, sinó una **probabilitat de pertinença a cada grup per a cada observació** (soft clustering). A partir d'aquesta probabilitat, sí que pots assignar una etiqueta dura si et convé.
+Un algoritme estima aquests paràmetres sense conèixer prèviament a quin grup pertany cada punt. El resultat no és una etiqueta dura, sinó una **probabilitat de pertinença a cada grup per a cada observació** (soft clustering). A partir d'aquesta probabilitat, sí que pots assignar una etiqueta dura si et convé.
 
-### Com s'estimen exactament la mitjana i la desviació de cada grup
-
-Aquí és on entra l'EM en detall, perquè val la pena entendre-ho abans de veure'l com una caixa negra. El problema és circular: per calcular la mitjana d'un grup necessitaries saber quines observacions hi pertanyen, però per saber a quin grup pertany cada observació necessitaries ja conèixer les mitjanes. L'EM resol això iterant entre dos passos:
-
-1. **Pas E (Expectation)**: amb els paràmetres actuals (μ, σ, π de cada component, encara que siguin una estimació inicial qualsevol), es calcula per a cada observació *i* la probabilitat *a posteriori* (la "responsabilitat", γ) que pertanyi a cada component *k*:
-
-$$
-\gamma_{ik} = \frac{\pi_k \cdot \mathcal{N}(x_i \mid \mu_k, \sigma_k^2)}{\sum_j \pi_j \cdot \mathcal{N}(x_i \mid \mu_j, \sigma_j^2)}
-$$
-
-2. **Pas M (Maximization)**: amb aquestes responsabilitats com a pesos, es recalculen μ, σ² i π de cada grup com una **mitjana i variància ponderades**, on el pes de cada observació és la probabilitat que pertany a aquell grup:
-
-$$
-\mu_k = \frac{\sum_i \gamma_{ik} \, x_i}{\sum_i \gamma_{ik}} \qquad
-\sigma_k^2 = \frac{\sum_i \gamma_{ik} \, (x_i - \mu_k)^2}{\sum_i \gamma_{ik}} \qquad
-\pi_k = \frac{1}{n}\sum_i \gamma_{ik}
-$$
-
-Aquests dos passos es repeteixen —amb les noves μ, σ i π es torna a calcular γ, i amb les noves γ es torna a calcular μ, σ i π— fins que la versemblança del model deixa de millorar de forma significativa (convergència). El punt de partida (la primera estimació de μ i σ abans de la primera iteració) sol generar-se a l'atzar o, sovint, a partir d'un K-means previ ràpid.
-
-És important veure-ho així: **no és una mitjana i desviació "normals" de cada grup**, perquè no saps de quin grup és cada punt; és una mitjana i desviació **ponderades per una probabilitat que el mateix algoritme va refinant a cada iteració**.
-
-Al codi, tot aquest procés iteratiu el fa internament la crida a `gmm.fit(dades)` (Python) o `Mclust(dades, ...)` (R). Tu no escrius el bucle E/M: només crides `.fit()` i després **llegeixes** el resultat final amb `gmm.means_` i `gmm.covariances_` (Python) o `model$parameters$mean` i `model$parameters$variance$sigmasq` (R). Als blocs de codi de sota ja s'hi inclou l'extracció explícita de la desviació (σ), no només la mitjana.
 
 ## Per què serveix exactament
 
@@ -58,6 +38,7 @@ Al codi, tot aquest procés iteratiu el fa internament la crida a `gmm.fit(dades
 - **Modelar la incertesa** a la zona de solapament entre distribucions, en lloc de forçar una frontera rígida com fa K-means.
 - **Generar dades sintètiques** amb la mateixa estructura de barreja un cop estimats els paràmetres.
 
+
 ## Exemples d'utilització
 
 - **Segmentació de clients** per despesa: detectar si hi ha un grup de "compra petita" i un de "compra gran" barrejats en la mateixa distribució de ticket mitjà, i trobar el llindar que els separa.
@@ -66,6 +47,7 @@ Al codi, tot aquest procés iteratiu el fa internament la crida a `gmm.fit(dades
 - **Detecció d'anomalies**: el component amb pes (π) molt baix i mitjana allunyada pot identificar-se com a grup d'outliers.
 - **Finances**: rendiments d'un actiu que alternen entre un règim de baixa volatilitat i un règim de alta volatilitat (dos components gaussians amb σ molt diferent).
 - **A/B testing post-hoc**: quan sospites que dins del grup de "tractament" hi ha en realitat responedors i no-responedors barrejats.
+
 
 ## Com es troba el "punt de tall" entre dos grups
 
