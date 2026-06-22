@@ -21,7 +21,7 @@ La **baseline** representa les vendes orgàniques de la marca, és a dir, tot al
 ### Baseline Aditiva
 En una estructura aditiva, s'assumeix que cada factor orgànic aporta una quantitat de vendes fixa, independent de la resta.
 
-<center>$\text{Vendes Base}_t = \beta_0 + \text{Efecte Preu}_t + \text{Efecte Distribució}_t + \text{Estacionalitat}_t$</center>
+$$\text{Vendes Base}_t = \beta_0 + \text{Efecte Preu}_t + \text{Efecte Distribució}_t + \text{Estacionalitat}_t$$
 
 * **Com funciona:** Cada parametre del model fa que la variable de sortida pugi o baixi d'un manera fixa. Per exemple, si estem a l'estiu, l'estacionalitat suma 2.000 unitats fixes. Si teniem 10 botigues i n'obrim 10 més (distribució), sumem unes altres 1.000 unitats fixes.
 * **El dilema:** No reflecteix la realitat. Si es dupliquen els punts de venda, la campanya d'estiu hauria de tenir un impacte molt més gran en volum absolut. En un model aditiu, els efectes es calculen en "túnels tancats", ignorant que la distribució amplifica el potencial de les temporades altes.
@@ -29,7 +29,7 @@ En una estructura aditiva, s'assumeix que cada factor orgànic aporta una quanti
 ### Baseline Multiplicativa
 En una estructura multiplicativa, els factors de la baseline actuen com a multiplicadors o ràtios percentuals els uns sobre els altres.
 
-<center>$\text{Vendes Base}_t = \beta_0 \cdot (\text{Preu}_t)^{\beta_1} \cdot (\text{Distribució}_t)^{\beta_2} \cdot \text{Estacionalitat}_t$</center>
+$$\text{Vendes Base}_t = \beta_0 \cdot (\text{Preu}_t)^{\beta_1} \cdot (\text{Distribució}_t)^{\beta_2} \cdot \text{Estacionalitat}_t$$
 
 * **Com funciona:** L'estacionalitat esdevé un índex (ex: $1.3$ a l'agost, un 30% més; $0.7$ al gener, un 30% menys). 
 * **Per què és superior?** Captura les sinergies de manera natural. Si la teva distribució augmenta, l'índex del 30% extra de l'estiu s'aplicarà sobre aquesta nova base de vendes més gran, escalant el pic correctament. Una pujada de preu contraurà les vendes proporcionalment a la mida del mercat actual, no com una pèrdua lineal de paquets fixos.
@@ -45,7 +45,7 @@ Un anunci vist avui pot generar una venda demà o la setmana vinent. Aquesta mem
 ### Decay (Caiguda geomètrica d'1 paràmetre)
 Assumeix que l'impacte màxim de la publicitat es produeix **immediatament** (en el mateix moment de l'exposició) i decreix de manera exponencial al llarg del temps segons un factor de caiguda $\alpha$ (entre 0 i 1).
 
-<center>$Adstock_t = \alpha \cdot X_t + (1 - \alpha) \cdot Adstock_{t-1}$</center>
+$$Adstock_t = \alpha \cdot X_t + (1 - \alpha) \cdot Adstock_{t-1}$$
 
 
 * **Característiques:** És ràpida de calcular i només requereix optimitzar un únic paràmetre.
@@ -71,7 +71,7 @@ Si optes per la simplicitat lineal, pots incloure variables *dummy* (binàries) 
 ### B. Estacionalitat en Baseline Multiplicativa (Components de Fourier)
 Per a models multiplicatius (linearitzats mitjançant logaritmes $\ln(Y)$), s'utilitzen **ones de Fourier** (sinus i cosinus) per crear corbes suaus que pugen i baixen harmònicament al llarg de l'any ($P = 365.25$ per a diari, o $P = 52.18$ per a setmanal).
 
-<center>$\text{Terme Fourier}_t = \sin\left(\frac{2\pi \cdot t}{P}\right) + \cos\left(\frac{2\pi \cdot t}{P}\right)$</center>
+$$\text{Terme Fourier}_t = \sin\left(\frac{2\pi \cdot t}{P}\right) + \cos\left(\frac{2\pi \cdot t}{P}\right)$$
 
 * **Avantatge:** Captura patrons complexos i continus utilitzant molt poques variables (només uns quants parells de lletres), actuant com un ràtio que escala de forma dinàmica juntament amb el preu i la distribució.
 
