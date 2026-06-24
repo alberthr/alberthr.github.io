@@ -1,65 +1,52 @@
 ---
 ---
-@import "{{ site.theme }}";
-
-/* VARIABLES DEL TEU CV */
+/* CONTROL TOTAL DE LA MAQUETA INDEPENDENT DEL TEMA */
 :root {
-    --primary: #3b82f6;       /* Blau corporatiu suau */
-    --primary-light: #f1f5f9; /* Fons del banner superior */
-    --dark: #1e293b;          /* Gris fosc elegant per a títols */
-    --sidebar-bg: #f8fafc;     /* Fons clar i discret per a la barra lateral */
-    --text-main: #475569;      /* Text principal */
-    --text-light: #64748b;     /* Text secundari */
-    --bg-body: #e2e8f0;        /* Fons de pantalla neutral */
-    --card-bg: #ffffff;        /* Fons blanc de la part principal */
-    --border: #e2e8f0;         /* Línies de separació */
+    --primary: #3b82f6;       
+    --primary-light: #f1f5f9; 
+    --dark: #1e293b;          
+    --sidebar-bg: #f8fafc;     
+    --text-main: #475569;      
+    --text-light: #64748b;     
+    --bg-body: #e2e8f0;        
+    --card-bg: #ffffff;        
+    --border: #e2e8f0;         
 }
 
-/* RESET I TIPOGRAFIA DEL CV */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-    background-color: var(--bg-body) !important;
-    color: var(--text-main) !important;
-    padding: 40px 20px !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    line-height: 1.5;
+    padding: 40px 20px;
 }
 
-/* CONTENIDOR ESTIL "FULL DE PAPER" (COPSANT L'ESTRUCTURA DEL MINIMAL) */
-.wrapper {
-    max-width: 1050px !important;
-    margin: 0 auto !important;
-    background: var(--card-bg) !important;
-    display: flex !important;
-    flex-wrap: wrap !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
-    padding: 0 !important;
+/* AMPLADA EXACTA DEL CV (1050px) */
+.cv-container {
+    max-width: 1050px;
+    margin: 0 auto;
+    background: var(--card-bg);
+    display: flex;
+    flex-wrap: nowrap; /* Evita que la barra es mogui a dalt en pantalles grans */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 
-/* BARRA LATERAL GRISA DISCRETA */
-header {
-    flex: 1 1 260px !important;
-    width: auto !important;
-    background-color: var(--sidebar-bg) !important;
-    padding: 40px 25px !important;
-    border-right: 1px solid var(--border) !important;
-    position: static !important; /* Desactivem el posicionament fix del tema minimal */
+/* BARRA LATERAL GRISA IDENTICA */
+.sidebar {
+    flex: 0 0 260px; /* Amplada fixa estricta */
+    width: 260px;
+    background-color: var(--sidebar-bg);
+    color: var(--text-main);
+    padding: 40px 25px;
+    border-right: 1px solid var(--border);
 }
 
-header h1 {
-    font-size: 22px !important;
-    font-weight: 600 !important;
-    line-height: 1.3 !important;
-    color: var(--dark) !important;
-    margin-bottom: 6px !important;
-}
-
-header p {
-    color: var(--text-light) !important;
-    font-size: 13px !important;
-    font-weight: 500 !important;
-    margin-bottom: 35px !important;
-}
-
-/* SECCIONS DE LA BARRA LATERAL */
 .sidebar-section {
     margin-bottom: 30px;
 }
@@ -72,25 +59,21 @@ header p {
     margin-bottom: 12px;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.5px !important;
+    letter-spacing: 0.5px;
 }
 
-/* Enllaços de la barra lateral */
-.sidebar-section a {
-    color: var(--dark) !important;
-    text-decoration: none !important;
-    font-weight: 500 !important;
-    display: block !important;
-    margin-bottom: 6px !important;
-    font-size: 13.5px !important;
+.contact-link a {
+    color: var(--dark);
+    text-decoration: none;
+    font-weight: 500;
+    display: block;			 
+    margin-bottom: 6px; 	 
+}
+.contact-link a:hover {
+    text-decoration: underline;
+    color: var(--primary);
 }
 
-.sidebar-section a:hover {
-    text-decoration: underline !important;
-    color: var(--primary) !important;
-}
-
-/* NÚVOL DE TAGS (ESTIL BADGES CV) */
 .skills-container {
     display: flex;
     flex-wrap: wrap;
@@ -104,68 +87,145 @@ header p {
     font-size: 12px;
     border: 1px solid var(--border);
     font-weight: 400;
-    border-radius: 3px !important;
-    text-decoration: none !important;
+    border-radius: 3px;
+    cursor: pointer;
 }
 .badge:hover {
     border-color: var(--primary);
     color: var(--primary);
 }
 
-/* ÍNDEX DINÀMIC DELS POSTS (TOC) */
+/* ESTRUCTURA DE RECURSIÓ D'ENLLAÇOS DEL POST (TOC) */
+.toc-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
 .toc-link {
-    font-size: 13px !important;
-    color: var(--text-main) !important;
-    font-weight: 400 !important;
-    margin-bottom: 4px !important;
-    padding-left: 0;
+    font-size: 13px;
+    color: var(--text-main);
+    text-decoration: none;
+}
+.toc-link:hover {
+    color: var(--primary);
+    text-decoration: underline;
 }
 .toc-h3 {
-    padding-left: 10px !important;
-    font-size: 12px !important;
-    color: var(--text-light) !important;
+    padding-left: 12px;
+    font-size: 12px;
+    color: var(--text-light);
 }
 
-/* CONTINGUT PRINCIPAL */
-section {
-    flex: 3 1 600px !important;
-    width: auto !important;
-    padding: 40px 45px !important;
-    background: #ffffff !important;
+/* SECCIÓ PRINCIPAL DELS POSTS */
+.main-content {
+    flex: 1; /* Ocupa la resta de l'espai */
+    padding: 40px 45px;
+    background: #ffffff;
+    min-width: 0; /* Important perquè el codi pre o iframe no trenqui el layout */
 }
 
-section h1, section h2, section h3 {
-    color: var(--dark) !important;
-    font-weight: 600 !important;
-    border-bottom: 1px solid var(--border) !important;
-    padding-bottom: 4px !important;
-    margin-top: 24px !important;
-    margin-bottom: 16px !important;
+.philosophy-banner {
+    background: var(--primary-light);
+    border-left: 3px solid var(--text-light);
+    padding: 15px;
+    margin-bottom: 40px;
+    font-size: 13.5px;
+    color: var(--dark);
 }
-section h1 { font-size: 20px !important; }
-section h2 { font-size: 16px !important; }
-section h3 { font-size: 14px !important; border-bottom: none !important; }
 
-section p {
-    font-size: 13.5px !important;
-    color: var(--text-main) !important;
-    text-align: justify !important;
-    line-height: 1.6 !important;
-    margin-bottom: 15px !important;
+/* CONTENIDOR DELS POSTS EN LA LLISTA (TIMELINE) */
+.timeline {
+    position: relative;
+    padding-left: 18px;
+    border-left: 1px solid var(--border);
+}
+
+/* ESPACIAT I DESTACAT DELS POSTS (PUNT 5 I 6 DE LA HOME) */
+.timeline-item {
+    position: relative;
+    margin-bottom: 35px; /* Espai augmentat entre posts */
+    padding: 15px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+/* EFECTE DESTACAT EN PASSAR EL RATOLÍ PER SOBRE DEL POST */
+.timeline-item:hover {
+    background-color: #f8fafc; /* Color griset subtil de fons */
+    transform: translateX(4px); /* Lleuger desplaçament dinàmic */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -22px;
+    top: 22px; /* Ajustat al padding nou del títol del post */
+    width: 7px;
+    height: 7px;
+    background: #ffffff;
+    border: 1.5px solid var(--text-light);
+}
+
+.item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+}
+
+.company {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--dark);
+}
+.company a {
+    color: var(--dark);
+    text-decoration: none;
+}
+.company a:hover {
+    color: var(--primary);
+}
+
+.date {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-light);
+}
+
+/* CORRECCIÓ DE LA FONT DEL CODI (PUNT 2 DELS POSTS) */
+pre, code {
+    font-family: Consolas, "Liberation Mono", Courier, monospace;
+    font-size: 12px !important; /* Mida petita i neta */
+}
+pre {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    padding: 12px;
+    overflow-x: auto; /* Permet scroll horitzontal sense deformar l'ample de pàgina */
+    margin-bottom: 18px;
+}
+
+/* ASSEGURAR QUE ELS COMENTARIS O IFRAMES NO EXPANDREIXIN L'AMPLADA */
+#disqus_thread, .comments, iframe {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin-top: 40px;
 }
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
-    .wrapper {
-        flex-direction: column !important;
+    .cv-container {
+        flex-direction: column;
     }
-    header {
-        border-right: none !important;
-        border-bottom: 1px solid var(--border) !important;
-        flex: 1 1 100% !important;
+    .sidebar {
+        width: 100%;
+        flex: 1 1 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
     }
-    section {
-        flex: 1 1 100% !important;
-        padding: 20px !important;
+    .main-content {
+        padding: 20px;
     }
 }

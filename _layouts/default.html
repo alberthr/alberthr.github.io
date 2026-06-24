@@ -1,108 +1,160 @@
 <!DOCTYPE html>
-<html lang="{{ site.lang | default: "en-US" }}">
-  <head>
+<html lang="ca">
+<head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ site.title | default: site.github.repository_name }}</title>
-    <link rel="stylesheet" href="{{ "/assets/css/style.css?v=" | append: site.github.build_revision | relative_url }}">
-    <!--[if lt IE 9]>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
-    <![endif]-->
-    {% include head-custom.html %}
-  </head>
-  <body>
-    <div class="wrapper">
-      
-      <!-- BARRA LATERAL GRISA (IGUAL QUE AL CV) -->
-      <header>
-        <h1><a href="{{ '/' | relative_url }}" style="color: var(--dark); text-decoration: none !important;">{{ site.title | default: site.github.repository_name }}</a></h1>
-        <p>{{ site.description | default: site.github.project_tagline }}</p>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ site.title }}</title>
+    <!-- Carreguem el fitxer style.css que ara controlarà el 100% del disseny -->
+    <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+    {% if site.google_analytics %}
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ site.google_analytics }}"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '{{ site.google_analytics }}');
+    </script>
+    {% endif %}
+</head>
+<body>
 
+<div class="cv-container">
+    
+    <!-- BARRA LATERAL GRISA UNIFICADA -->
+    <aside class="sidebar">
         {% if page.url == "/" %}
           <!-- CONTINGUT PER A LA PÀGINA PRINCIPAL -->
-          
-          <!-- Núvol de tags automàtic -->
           <div class="sidebar-section">
-            <div class="sidebar-title">Tags</div>
+            <div class="sidebar-title">Filtra per Tags</div>
             <div class="skills-container">
               {% assign tags = "" %}
               {% for post in site.posts %}
                 {% for tag in post.tags %}
                   {% unless tags contains tag %}
-                    <span class="badge">{{ tag }}</span>
+                    <button class="badge tag-filter-btn" onclick="filterByTag('{{ tag }}')">{{ tag }}</button>
                     {% capture tags %}{{ tags }} {{ tag }}{% endcapture %}
                   {% endunless %}
                 {% endfor %}
               {% endfor %}
             </div>
+            <button id="clear-filter-btn" class="badge" style="margin-top:12px; display:none; background: var(--dark); color: white;" onclick="clearTagFilter()">Neteja filtre</button>
           </div>
 
-          <!-- Les meves networks (en blanc) -->
           <div class="sidebar-section">
-            <div class="sidebar-title">Networks</div>
-            <!-- <a href="ENLLAÇ_AQUÍ" target="_blank">LinkedIn</a> -->
+            <div class="sidebar-title">Network</div>
+            <span class="contact-link">
+                <!-- En blanc de moment -->
+            </span>
           </div>
 
-          <!-- Links d'interès (en blanc) -->
           <div class="sidebar-section">
             <div class="sidebar-title">Links d'interès</div>
-            <!-- <a href="ENLLAÇ_AQUÍ" target="_blank">Recurs o web útil</a> -->
+            <span class="contact-link">
+                <!-- En blanc de moment -->
+            </span>
           </div>
-
         {% else %}
-          <!-- CONTINGUT PER ALS POSTS: ESTRUCTURA DINÀMICA -->
+          <!-- CONTINGUT PER ALS POSTS: ESTRUCTURA DEL POST -->
           <div class="sidebar-section">
             <div class="sidebar-title">Estructura del Post</div>
-            <div id="toc" class="skills-container" style="flex-direction: column; align-items: flex-start; gap: 2px;">
+            <div id="toc" class="toc-container">
               <!-- El JavaScript l'omplirà automàticament -->
             </div>
           </div>
+          <div class="sidebar-section" style="margin-top: 40px;">
+            <span class="contact-link">
+                <a href="{{ '/' | relative_url }}">← Tornar al Blog</a>
+            </span>
+          </div>
         {% endif %}
+    </aside>
 
-      </header>
-
-      <!-- SECCIÓ PRINCIPAL DEL TEXT -->
-      <section>
-        {{ content }}
-      </section>
-      
-    </div>
-    <script src="{{ "/assets/js/scale.fix.js" | relative_url }}"></script>
-    
-    <!-- SCRIPT PER GENERAR L'ÍNDEX DE HEADERS EN ELS POSTS -->
-    {% if page.url != "/" %}
-    <script>
-      document.addEventListener("DOMContentLoaded", function() {
-        const tocContainer = document.getElementById("toc");
-        // Busquem els headers h2 i h3 dins del contingut del post
-        const headers = document.querySelectorAll("section h2, section h3");
+    <!-- CONTINGUT PRINCIPAL CENTRAT -->
+    <main class="main-content">
         
-        if (headers.length === 0) {
-          tocContainer.innerHTML = "<p style='font-size:12px; color:var(--text-light); italic;'>Sense apartats</p>";
-          return;
-        }
+        <!-- El títol i subtítol del blog apareixen a la part central superior estil filosofia banner del CV -->
+        <div class="philosophy-banner">
+            <strong><a href="{{ '/' | relative_url }}" style="color:var(--dark); text-decoration:none;">{{ site.title }}</a></strong>: {{ site.description }}
+        </div>
 
-        headers.forEach((header, index) => {
-          // Generar un ID únic per al header si no en té
-          if (!header.id) {
-            header.id = "header-" + index;
-          }
-          
-          const link = document.createElement("a");
-          link.href = "#" + header.id;
-          link.innerText = header.innerText;
-          link.classList.add("toc-link");
-          
-          // Si és un h3, li donem una classe de sagnat
-          if (header.tagName.toLowerCase() === "h3") {
-            link.classList.add("toc-h3");
-          }
-          
-          tocContainer.appendChild(link);
-        });
-      });
-    </script>
-    {% endif %}
-  </body>
+        <!-- Injectem el contingut (la llista de posts a la Home o el text sencer si és un post) -->
+        <div class="blog-body-content">
+            {{ content }}
+        </div>
+
+    </main>
+</div>
+
+<!-- SCRIPT PER FILTRAR POSTS A LA HOME -->
+{% if page.url == "/" %}
+<script>
+  function filterByTag(tag) {
+    const posts = document.querySelectorAll('.timeline-item');
+    posts.forEach(post => {
+      const postTags = post.getAttribute('data-tags').split(' ');
+      if (postTags.includes(tag)) {
+        post.style.display = 'block';
+      } else {
+        post.style.display = 'none';
+      }
+    });
+    // Marcar el botó actiu i mostrar el de netejar
+    document.querySelectorAll('.tag-filter-btn').forEach(btn => {
+      if(btn.innerText === tag) {
+        btn.style.borderColor = 'var(--primary)';
+        btn.style.color = 'var(--primary)';
+      } else {
+        btn.style.borderColor = 'var(--border)';
+        btn.style.color = 'var(--text-main)';
+      }
+    });
+    document.getElementById('clear-filter-btn').style.display = 'inline-block';
+  }
+
+  function clearTagFilter() {
+    const posts = document.querySelectorAll('.timeline-item');
+    posts.forEach(post => post.style.display = 'block');
+    document.querySelectorAll('.tag-filter-btn').forEach(btn => {
+      btn.style.borderColor = 'var(--border)';
+      btn.style.color = 'var(--text-main)';
+    });
+    document.getElementById('clear-filter-btn').style.display = 'none';
+  }
+</script>
+{% endif %}
+
+<!-- SCRIPT PER GENERAR L'ÍNDEX (TOC) EN ELS POSTS -->
+{% if page.url != "/" %}
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const tocContainer = document.getElementById("toc");
+    // Busquem headers h2 i h3 dins el text del post
+    const headers = document.querySelectorAll(".blog-body-content h2, .blog-body-content h3");
+    
+    if (headers.length === 0) {
+      tocContainer.innerHTML = "<p style='font-size:12px; color:var(--text-light); font-style:italic;'>Sense subapartats</p>";
+      return;
+    }
+
+    headers.forEach((header, index) => {
+      if (!header.id) {
+        header.id = "section-h-" + index;
+      }
+      
+      const link = document.createElement("a");
+      link.href = "#" + header.id;
+      link.innerText = header.innerText;
+      link.classList.add("toc-link");
+      
+      if (header.tagName.toLowerCase() === "h3") {
+        link.classList.add("toc-h3");
+      }
+      
+      tocContainer.appendChild(link);
+    });
+  });
+</script>
+{% endif %}
+
+</body>
 </html>
