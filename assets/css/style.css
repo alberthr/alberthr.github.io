@@ -1,231 +1,573 @@
----
----
-/* CONTROL TOTAL DE LA MAQUETA INDEPENDENT DEL TEMA */
+/* Importa la fuente desde Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Oxanium&display=swap');
+
 :root {
-    --primary: #3b82f6;       
-    --primary-light: #f1f5f9; 
-    --dark: #1e293b;          
-    --sidebar-bg: #f8fafc;     
-    --text-main: #475569;      
-    --text-light: #64748b;     
-    --bg-body: #e2e8f0;        
-    --card-bg: #ffffff;        
-    --border: #e2e8f0;         
+  /* Paleta de colors: blancs, grisos amb toc de color accent */
+  --bg-color: #ffffff;           /* Blanc gairebé pur, molt lleuger (ORIGINAL: #fafaf8;) */
+  --bg-secondary: #f5f3f0;       /* Gris molt clar per a contrast subtle */
+  --text-color: #1a1a1a;         /* Negre molt fosc per a llegibilitat */
+  --text-muted: #666666;         /* Gris mig */
+  --text-light: #999999;         /* Gris clar */
+  --accent-color: #0066cc;       /* Blau vibrant (accent principal) */
+  --accent-hover: #0052a3;       /* Blau més fosc per a hover */
+  --border-color: #e0e0e0;       /* Gris clar per a separadors */
+  --code-bg: #1e293b;            /* Gris fosc per a blocs de codi */
+  --code-text: #f8fafc;          /* Gris molt clar per a text del codi */
+  --tag-bg: #f0f4f8;             /* Fons molt clar per a tags */
+  --tag-color: #0066cc;          /* Color dels tags = accent */
+  --success-color: #10b981;      /* Verd per a destacats positius */
+  --warning-color: #f59e0b;      /* Taronja per a destacats */
 }
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+/* Estructura global */
+html {
+  height: 100%;
+  scroll-behavior: smooth;
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background-color: var(--bg-body);
-    color: var(--text-main);
-    line-height: 1.5;
-    padding: 40px 20px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", sans-serif;
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  line-height: 1.65;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow-y: scroll;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* AMPLADA EXACTA DEL CV (1050px) */
-.cv-container {
-    max-width: 1050px;
-    margin: 0 auto;
-    background: var(--card-bg);
-    display: flex;
-    flex-wrap: nowrap; /* Evita que la barra es mogui a dalt en pantalles grans */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+/* Contenidor principal */
+.site-wrapper {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 0 1.5rem;
+  box-sizing: border-box;
 }
 
-/* BARRA LATERAL GRISA IDENTICA */
-.sidebar {
-    flex: 0 0 260px; /* Amplada fixa estricta */
-    width: 260px;
-    background-color: var(--sidebar-bg);
-    color: var(--text-main);
-    padding: 40px 25px;
-    border-right: 1px solid var(--border);
+/* ===== CAPÇALERA ===== */
+header {
+  margin-bottom: 1rem;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
-.sidebar-section {
-    margin-bottom: 30px;
+.site-title {
+  font-family: "Oxanium", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+  font-weight: 700;
+  font-size: 1.7rem;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  color: var(--text-color);
+  margin: 0;
+  transition: color 0.3s ease;
+  text-transform: uppercase;
 }
 
-.sidebar-title {
-    font-size: 11px;
-    color: var(--dark);
-    border-bottom: 1px solid var(--border);
-    padding-bottom: 4px;
-    margin-bottom: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+.site-title::before {
+  content: "📒 ";
+  font-size: 1.5rem;
 }
 
-.contact-link a {
-    color: var(--dark);
-    text-decoration: none;
-    font-weight: 500;
-    display: block;			 
-    margin-bottom: 6px; 	 
-}
-.contact-link a:hover {
-    text-decoration: underline;
-    color: var(--primary);
+.site-title:hover {
+  color: var(--accent-color);  
 }
 
-.skills-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
+/* Barra de cerca */
+.search-container {
+  flex: 1;
+  min-width: 200px;
+  max-width: 350px;
 }
 
-.badge {
-    background: #ffffff;
-    color: var(--text-main);
-    padding: 3px 8px;
-    font-size: 12px;
-    border: 1px solid var(--border);
-    font-weight: 400;
-    border-radius: 3px;
-    cursor: pointer;
-}
-.badge:hover {
-    border-color: var(--primary);
-    color: var(--primary);
+.search-input {
+  width: 100%;
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background-color: var(--bg-secondary);
+  color: var(--text-color);
+  transition: all 0.2s ease;
+  box-sizing: border-box;
 }
 
-/* ESTRUCTURA DE RECURSIÓ D'ENLLAÇOS DEL POST (TOC) */
-.toc-container {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-.toc-link {
-    font-size: 13px;
-    color: var(--text-main);
-    text-decoration: none;
-}
-.toc-link:hover {
-    color: var(--primary);
-    text-decoration: underline;
-}
-.toc-h3 {
-    padding-left: 12px;
-    font-size: 12px;
-    color: var(--text-light);
+.search-input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
 }
 
-/* SECCIÓ PRINCIPAL DELS POSTS */
-.main-content {
-    flex: 1; /* Ocupa la resta de l'espai */
-    padding: 40px 45px;
-    background: #ffffff;
-    min-width: 0; /* Important perquè el codi pre o iframe no trenqui el layout */
+.search-input::placeholder {
+  color: var(--text-light);
 }
 
-.philosophy-banner {
-    background: var(--primary-light);
-    border-left: 3px solid var(--text-light);
-    padding: 15px;
-    margin-bottom: 40px;
-    font-size: 13.5px;
-    color: var(--dark);
+/* Contingut principal */
+.site-content {
+  width: 100%;
+  font-size: 0.95rem;
 }
 
-/* CONTENIDOR DELS POSTS EN LA LLISTA (TIMELINE) */
-.timeline {
-    position: relative;
-    padding-left: 18px;
-    border-left: 1px solid var(--border);
+/* ===== TIPOGRAFIA ===== */
+a {
+  color: var(--accent-color);
+  text-decoration: none;
+  transition: color 0.2s ease;
+  position: relative;
 }
 
-/* ESPACIAT I DESTACAT DELS POSTS (PUNT 5 I 6 DE LA HOME) */
-.timeline-item {
-    position: relative;
-    margin-bottom: 35px; /* Espai augmentat entre posts */
-    padding: 15px;
-    border-radius: 4px;
-    transition: background-color 0.2s ease, transform 0.2s ease;
+a:hover {
+  color: var(--accent-hover);
 }
 
-/* EFECTE DESTACAT EN PASSAR EL RATOLÍ PER SOBRE DEL POST */
-.timeline-item:hover {
-    background-color: #f8fafc; /* Color griset subtil de fons */
-    transform: translateX(4px); /* Lleuger desplaçament dinàmic */
-    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+/* Títols */
+h1, h2, h3, h4 {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+  color: var(--text-color);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
 }
 
-.timeline-item::before {
-    content: '';
-    position: absolute;
-    left: -22px;
-    top: 22px; /* Ajustat al padding nou del títol del post */
-    width: 7px;
-    height: 7px;
-    background: #ffffff;
-    border: 1.5px solid var(--text-light);
+h1 {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  margin-top: 0;
+  text-transform: uppercase;
+  letter-spacing: 0em;
 }
 
-.item-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    flex-wrap: wrap;
-    margin-bottom: 6px;
+h2 {
+  font-size: 1.2rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  border-left: 4px solid var(--accent-color);
+  padding-left: 1rem;
 }
 
-.company {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--dark);
-}
-.company a {
-    color: var(--dark);
-    text-decoration: none;
-}
-.company a:hover {
-    color: var(--primary);
+h3 {
+  font-size: 1.1rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.8rem;
+  color: var(--text-color);
 }
 
-.date {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--text-light);
+h4 {
+  font-size: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 0.6rem;
 }
 
-/* CORRECCIÓ DE LA FONT DEL CODI (PUNT 2 DELS POSTS) */
-pre, code {
-    font-family: Consolas, "Liberation Mono", Courier, monospace;
-    font-size: 12px !important; /* Mida petita i neta */
+/* Descripció del blog */
+.about {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-style: italic;
+  line-height: 1.7;
 }
+
+/* ===== FILTRES I TAGS ===== */
+.tags-filter-container {
+  margin-bottom: 3rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.tag-filter-btn {
+  background-color: var(--tag-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  padding: 0.35rem 0.5rem;
+  border-radius: 8px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.tag-filter-btn:hover {
+  background-color: #e8eef7;
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.tag-filter-btn.active {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 102, 204, 0.15);
+}
+
+/* ===== LLISTAT DE POSTS ===== */
+ul {
+  padding: 0;
+  list-style: none;
+}
+
+.posts-list {
+  margin-bottom: 3rem;
+}
+
+.post-item {
+  background: transparent;
+  padding: 1.5rem 0;
+  margin-bottom: 0;
+  border-bottom: 1px solid var(--border-color);
+  border-radius: 0;
+  border-left: 4px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.post-item:last-child {
+  border-bottom: none;
+}
+
+.post-item:hover {
+  border-left-color: var(--accent-color);
+  padding-left: 0.8rem;
+}
+
+.post-link {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-color);
+  display: block;
+  margin-bottom: 0.5rem;
+  transition: color 0.2s ease;
+}
+
+.post-link:hover {
+  color: var(--accent-color);
+}
+
+/* Resums dels posts */
+.post-excerpt {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin-bottom: 0.8rem;
+  line-height: 1.65;
+}
+
+/* Metadades del post (data, tags, etc.) */
+.post-meta {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  font-size: 0.85rem;
+  color: var(--text-light);
+  flex-wrap: wrap;
+}
+
+.post-date {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.post-date::before {
+  content: "📅";
+  font-size: 0.9rem;
+}
+
+/* Tags dins del llistat */
+.list-tags {
+  display: flex;
+  gap: 0.2rem;
+  flex-wrap: wrap;
+  margin-top: 0.6rem;
+}
+
+.tag-sm {
+  font-size: 0.75rem;
+  color: var(--tag-color);
+  background-color: var(--tag-bg);
+  padding: 0.3rem 0.6rem;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.tag-sm::before {
+  content: "#";
+}
+
+/* ===== CONTINGUT DEL POST ===== */
+.post-content {
+  line-height: 1.8;
+  word-wrap: break-word;
+}
+
+.post-content h1 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.post-content h1::before {
+  content: "📃";
+  font-size: 1.5rem;
+} 
+
+.post-content p {
+  margin-bottom: 1rem;
+}
+
+.post-tags {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border-color);
+  flex-wrap: wrap;
+}
+
+/* ===== POSTS RELACIONATS ===== */
+.related-posts {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 2px solid var(--border-color);
+}
+
+.related-posts-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-color);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.related-posts-title::before {
+  content: "🔗";
+  font-size: 1.1rem;
+}
+
+.related-posts-list {
+  padding-left: 1.5rem;
+  list-style: none;
+}
+
+.related-posts-list li {
+  margin-bottom: 0.8rem;
+  line-height: 1.6;
+}
+
+.related-posts-list a {
+  color: var(--accent-color);
+  font-weight: 500;
+  transition: color 0.2s ease;
+  text-decoration: none;
+}
+
+.related-posts-list a:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
+
+
+/* ===== BLOCS DE CODI ===== */
 pre {
-    background: #f8fafc;
-    border: 1px solid var(--border);
-    padding: 12px;
-    overflow-x: auto; /* Permet scroll horitzontal sense deformar l'ample de pàgina */
-    margin-bottom: 18px;
+  background-color: var(--code-bg);
+  color: var(--code-text);
+  padding: 1.5rem;
+  overflow-x: auto;
+  border-radius: 8px;
+  font-family: "SFMono-Regular", Consolas, "Monaco", "Courier New", monospace;
+  font-size: 0.85rem;
+  margin: 1.5rem 0;
+  line-height: 1.5;
+  border: 1px solid #334155;
 }
 
-/* ASSEGURAR QUE ELS COMENTARIS O IFRAMES NO EXPANDREIXIN L'AMPLADA */
-#disqus_thread, .comments, iframe {
-    max-width: 100% !important;
-    width: 100% !important;
-    margin-top: 40px;
+code {
+  font-family: "SFMono-Regular", Consolas, "Monaco", "Courier New", monospace;
+  background-color: #f5f3f0;
+  color: #c0392b;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
 }
 
-/* RESPONSIVE */
+pre code {
+  background-color: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+/* Ressaltat de sintaxi (Rouge) */
+pre.highlight, .highlight pre {
+  background: var(--code-bg);
+  color: var(--code-text);
+}
+
+.highlight .c, .highlight .cm, .highlight .c1 {
+  color: #64748b;
+  font-style: italic;
+}
+
+.highlight .k, .highlight .kc, .highlight .kd, .highlight .kn {
+  color: #f43f5e;
+  font-weight: bold;
+}
+
+.highlight .nf, .highlight .fm {
+  color: #38bdf8;
+}
+
+.highlight .s, .highlight .s1, .highlight .s2 {
+  color: #10b981;
+}
+
+.highlight .mi, .highlight .mf, .highlight .mo, .hightlight .m {
+  color: #fbbf24;
+}
+
+.highlight .nn {
+  color: #e2e8f0;
+}
+
+.highlight .nb {
+  color: #a855f7;
+}
+
+.highlight .o, .highlight .ow {
+  color: #f43f5e;
+}
+
+/* ===== BLOCS ESPECIALS ===== */
+blockquote {
+  border-left: 4px solid var(--accent-color);
+  padding-left: 1rem;
+  margin-left: 0;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* ===== TAULA ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.9rem;
+}
+
+th, td {
+  border: 1px solid var(--border-color);
+  padding: 0.8rem;
+  text-align: left;
+}
+
+th {
+  background-color: var(--tag-bg);
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+tr:nth-child(even) {
+  background-color: var(--bg-secondary);
+}
+
+/* ===== FOOTER ===== */
+footer {
+  margin-top: 0.5rem;
+  padding: 0.5rem 0;
+  border-top: 1px solid var(--border-color);
+  font-size: 0.8rem;
+  color: var(--text-light);
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
-    .cv-container {
-        flex-direction: column;
-    }
-    .sidebar {
-        width: 100%;
-        flex: 1 1 100%;
-        border-right: none;
-        border-bottom: 1px solid var(--border);
-    }
-    .main-content {
-        padding: 20px;
-    }
+  .site-wrapper {
+    padding: 1.5rem 1rem 0 1rem;
+  }
+
+  header {
+    flex-direction: column;
+    margin-bottom: 1.5rem;
+  }
+
+  .search-container {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .site-title {
+    font-size: 1.5rem;
+  }
+
+  .site-title::before {
+    content: "📒 ";
+    font-size: 1.35rem;
+  }
+  
+  h1 {
+    font-size: 1.35rem;
+  }
+
+  h2 {
+    font-size: 1.15rem;
+  }
+
+  .related-posts-list {
+    grid-template-columns: 1fr;
+  }
+
+  .post-item {
+    padding: 1.2rem 0;
+  }
+
+  .post-item:hover {
+    padding-left: 0.5rem;
+  }
+
+  .post-meta {
+    font-size: 0.8rem;
+  }
+}
+
+/* ===== UTILITATS ===== */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Animacions suaus */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.post-item {
+  animation: fadeIn 0.3s ease;
 }

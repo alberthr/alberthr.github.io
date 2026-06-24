@@ -65,30 +65,30 @@ Per experiencia, encara que els mitjans tradicionals no siguin inmediats, també
 
 Si el teu producte es ven més a l'hivern, has d'aïllar aquest patró perquè el model no atribueixi erròniament aquestes vendes orgàniques a les campanyes publicitàries que fas per Nadal. L'objectiu és sempre el mateix: separar les vendes "normals" de les vendes que genera realment la publicitat. Aquí tens quatre maneres d'aconseguir-ho, de la més bàsica a la més refinada.
 
-### Variables Dummy (per mes o setmana)
+### 1. Variables Dummy (per mes o setmana)
 La més directa: una variable binària (0/1) per cada mes o setmana de l'any.
 * **Avantatge:** fàcil d'entendre i d'explicar a qualsevol, no cal cap càlcul previ.
 * **Inconvenient:** si treballes amb dades setmanals, afegir 52 variables fictícies consumeix massa graus de llibertat del model, augmentant el risc de sobreajust (*overfitting*).
 
-### Descomposició clàssica de sèries temporals
+### 2. Descomposició clàssica de sèries temporals
 Algorismes com `decompose()` separen automàticament la sèrie en tres trossos —tendència, estacionalitat i soroll— normalment fent servir mitjanes mòbils.
 * **Avantatge:** ràpid d'aplicar, et dona un índex estacional net que pots utilitzar com a *input* fix del model.
 * **Inconvenient:** assumeix un patró estacional força rígid, igual any rere any.
 
-### Loess
+### 3. STL / Loess
 És una versió més flexible de l'anterior: en lloc de mitjanes mòbils fa servir *loess* (una regressió local) per suavitzar la corba.
 * **Avantatge:** s'adapta millor si l'estacionalitat canvia lleugerament d'un any a l'altre, o si la tendència no segueix una línia recta.
 * **Quan triar-la sobre la clàssica?** Quan tens prou anys d'històric i sospites que el patró estacional "respira" una mica d'un any a l'altre.
 
-### Mirar el total Categoria (FMCG)
+### 4. Mirar la categoria total (o els competidors sense palanques) — el truc del FMCG
 En lloc de calcular l'estacionalitat amb matemàtiques, la treus directament del mercat: si tens dades de panell, mires com es mou la categoria sencera, o específicament aquelles marques que no fan publicitat ni promocions. Si aquestes marques "passives" pugen un 30% a l'estiu, aquest 30% és estacionalitat pura de mercat, no un artefacte estadístic.
 * **Avantatge:** és la més "real": no surt d'un model, surt directament del comportament del consumidor.
 * **Inconvenient:** necessites dades de categoria o panell, i has de verificar bé que aquests competidors "sense palanques" realment no facin res (ni distribució agressiva, ni moviments de preu).
 
-### Quina triar?
-Les quatre opcions són independents del tipus de baseline que facis servir, però hi ha una afinitat natural que val la pena tenir present: les **dummies** sumen unitats fixes, així que casen millor amb una **baseline aditiva**; en canvi, la **descomposició clàssica**, o fixar-se en la **categoria** dona, de manera natural, un índex (un multiplicador), que s'integra més bé en una **baseline multiplicativa**. No és una regla estricta, però sí el camí de menys resistència.
+### Quina tries?
+Les quatre opcions són independents del tipus de baseline que facis servir, però hi ha una afinitat natural que val la pena tenir present: les **dummies** sumen unitats fixes, així que casen millor amb una **baseline aditiva**; en canvi, la **descomposició clàssica**, l'**STL** i el mètode de la **categoria** et donen, de manera natural, un índex (un multiplicador), que s'integra més bé en una **baseline multiplicativa**. No és una regla estricta, però sí el camí de menys resistència.
 
-La tria final depèn sobretot de les dades que es tinguin: si només es compta amb la pròpia sèrie, millor fer servir dummies o descomposició. Si es te accés a dades de mercat, l'opció fixar-se en la categoría pot ser la més robusta perquè no depèn de cap supòsit matemàtic.
+La tria final depèn sobretot de les dades que tinguis: si només comptes amb la teva pròpia sèrie, vas amb dummies o descomposició/STL; si tens accés a dades de mercat, l'opció 4 sol ser la més robusta perquè no depèn de cap supòsit matemàtic.
 
 
 ---

@@ -1,204 +1,14 @@
 <!DOCTYPE html>
 <html lang="ca">
 {% include head.html %}
-<head>
-  <style>
-    :root {
-        --primary: #3b82f6;
-        --primary-light: #f1f5f9;
-        --dark: #1e293b;
-        --sidebar-bg: #f8fafc;
-        --text-main: #475569;
-        --text-light: #64748b;
-        --bg-body: #e2e8f0;
-        --card-bg: #ffffff;
-        --border: #e2e8f0;
-    }
-
-    body {
-        background-color: var(--bg-body);
-        color: var(--text-main);
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        padding: 40px 20px;
-        margin: 0;
-    }
-
-    .site-wrapper {
-        max-width: 1050px;
-        margin: 0 auto;
-        background: var(--card-bg);
-        display: flex;
-        flex-wrap: wrap;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-    }
-
-    /* Barra lateral estil CV */
-    .sidebar {
-        flex: 1 1 260px;
-        background-color: var(--sidebar-bg);
-        color: var(--text-main);
-        padding: 40px 25px;
-        border-right: 1px solid var(--border);
-    }
-
-    .sidebar-section {
-        margin-bottom: 30px;
-    }
-
-    .sidebar-title {
-        font-size: 11px;
-        color: var(--dark);
-        border-bottom: 1px solid var(--border);
-        padding-bottom: 4px;
-        margin-bottom: 12px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px !important;
-    }
-
-    /* Estils de l'estructura/TOC a la sidebar */
-    .toc-list {
-        list-style: none;
-        padding-left: 0;
-    }
-    .toc-item {
-        margin-bottom: 8px;
-        font-size: 13px;
-    }
-    .toc-item a {
-        color: var(--text-main);
-        text-decoration: none;
-    }
-    .toc-item a:hover {
-        color: var(--primary);
-        text-decoration: underline;
-    }
-    .toc-h3 {
-        padding-left: 12px;
-        font-size: 12px;
-        color: var(--text-light);
-    }
-
-    /* Contingut del post */
-    .site-content {
-        flex: 3 1 600px;
-        padding: 40px 45px;
-        background: #ffffff;
-    }
-
-    header {
-        margin-bottom: 30px;
-        border-bottom: 1px solid var(--border);
-        padding-bottom: 20px;
-        width: 100%;
-    }
-
-    .site-title {
-        font-size: 20px;
-        font-weight: 600;
-        color: var(--dark);
-        text-decoration: none;
-    }
-
-    .post-content h1 {
-        font-size: 24px;
-        color: var(--dark);
-        margin-bottom: 10px;
-    }
-
-    .post-tags {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 5px;
-        margin-bottom: 25px;
-    }
-
-    .tag-sm {
-        background: var(--primary-light);
-        color: var(--text-light);
-        padding: 2px 6px;
-        font-size: 11px;
-        border-radius: 3px !important;
-    }
-
-    /* Articles relacionats estil llista de l'educació */
-    .related-posts {
-        margin-top: 40px;
-        border-top: 1px solid var(--border);
-        padding-top: 20px;
-    }
-    .related-posts-title {
-        font-size: 14px;
-        color: var(--dark);
-        text-transform: uppercase;
-        margin-bottom: 15px;
-    }
-    .related-posts-list {
-        list-style: none;
-        padding-left: 0;
-    }
-    .related-posts-list li {
-        margin-bottom: 8px;
-        font-size: 13.5px;
-    }
-    .related-posts-list a {
-        color: var(--primary);
-        text-decoration: none;
-    }
-    .related-posts-list a:hover {
-        text-decoration: underline;
-    }
-
-    .btn-tornar {
-        display: inline-block; 
-        padding: 0.5rem 1rem; 
-        border: 1px solid var(--border); 
-        color: var(--text-main);
-        text-decoration: none;
-        font-size: 13px;
-        transition: all 0.2s ease;
-        margin-top: 3rem;
-    }
-    .btn-tornar:hover {
-        border-color: var(--primary);
-        color: var(--primary);
-    }
-
-    footer {
-        width: 100%;
-        padding: 20px 45px;
-        border-top: 1px solid var(--border);
-        font-size: 12px;
-        color: var(--text-light);
-        background: #ffffff;
-    }
-
-    @media (max-width: 768px) {
-        .site-wrapper { flex-direction: column; }
-        .sidebar { border-right: none; border-bottom: 1px solid var(--border); flex: 1 1 100%; }
-        .site-content { flex: 1 1 100%; padding: 30px 20px; }
-    }
-  </style>
-</head>
 <body>
   <div class="site-wrapper">
-    
-    <!-- BARRA LATERAL DEL POST (ESTRUCTURA DINÀMICA) -->
-    <aside class="sidebar">
-        <div class="sidebar-section">
-            <div class="sidebar-title">Estructura del Post</div>
-            <!-- El JavaScript omplirà aquesta llista automàticament -->
-            <ul id="toc-container" class="toc-list"></ul>
-        </div>
-    </aside>
+    <header>
+      <a href="{{ '/' | relative_url }}" class="site-title">{{ site.title }}</a>
+    </header>
 
-    <!-- MAIN CONTENT -->
     <main class="site-content">
-      <header>
-        <a href="{{ '/' | relative_url }}" class="site-title">{{ site.title }}</a>
-      </header>
-
-      <article class="post-content" id="markdown-content">
+      <article class="post-content">
         <h1>{{ page.title }}</h1>
         
         <div class="post-tags">
@@ -210,7 +20,7 @@
         {{ content }}
       </article>
 
-      <!-- Secció de posts relacionats -->
+      <!-- Secció de posts relacionats (llista senzilla) -->
       {% assign current_post_tags = page.tags %}
       {% assign related_posts = "" | split: "" %}
       {% assign max_related = 3 %}
@@ -243,14 +53,13 @@
         </section>
       {% endif %}
 
-      <div style="text-align: center;">
-        <a href="{{ '/' | relative_url }}" class="btn-tornar">
+      <p style="margin-top: 3rem; text-align: center;">
+        <a href="{{ '/' | relative_url }}" style="display: inline-block; padding: 0.5rem 1rem; border: 1px solid #e0e0e0; border-radius: 4px; transition: all 0.2s ease;">
           &larr; Tornar a l'inici
         </a>
-      </div>
+      </p>
     </main>
 
-    <!-- Giscus Comments -->
     <script src="https://giscus.app/client.js"
             data-repo="alberthr/alberthr.github.io"
             data-repo-id="R_kgDOS1HLmA"
@@ -270,38 +79,7 @@
     {% include footer.html %}
   </div>
 
+  <!-- Script per a la funcionalitat de cerca -->
   <script src="{{ '/assets/js/search.js' | relative_url }}"></script>
-
-  <!-- SCRIPT PER GENERAR L'ESTRUCTURA DINÀMICA DE HEADERS (TOC) -->
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      const container = document.getElementById('toc-container');
-      const article = document.getElementById('markdown-content');
-      if (!container || !article) return;
-
-      // Busquem tots els H2 i H3 dins de l'article
-      const headers = article.querySelectorAll('h2, h3');
-      
-      headers.forEach((header, index) => {
-        // Si el header no té una ID assignada per Kramdown, li posem una
-        if (!header.id) {
-          header.id = 'header-' + index;
-        }
-
-        const li = document.createElement('li');
-        li.classList.add('toc-item');
-        if (header.tagName.toLowerCase() === 'h3') {
-          li.classList.add('toc-h3');
-        }
-
-        const a = document.createElement('a');
-        a.href = '#' + header.id;
-        a.textContent = header.textContent;
-
-        li.appendChild(a);
-        container.appendChild(li);
-      });
-    });
-  </script>
 </body>
 </html>
