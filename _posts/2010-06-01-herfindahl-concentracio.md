@@ -4,6 +4,7 @@ title: "L'index de Herfindahl (o de Concentracio)"
 tags:
   - estadistica
   - publicitat
+excerpt: "L'índex d'Herfindahl mesura el grau de concentració d'un mercat sumant els quadrats de les quotes de cada empresa. Una eina d'economia i dret de la competència que també es pot aplicar en altre àmbits."
 ---
 
 L’índex d’Herfindahl (H-Index) és una mesura utilitzada en economia i dret de la competència per avaluar el grau de concentració de mercat d’un sector o una indústria. En poques paraules, aquest indicador ens ajuda a determinar com de concentrat o competitius són els mercats, i si existeix un risc d’abús de poder de mercat per part d’algunes empreses dominants.

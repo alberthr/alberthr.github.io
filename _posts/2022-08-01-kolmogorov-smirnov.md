@@ -3,6 +3,7 @@ layout: post
 title: "Comparacio de distribucions amb Kolmogorov-Smirnov"
 tags:
   - estadistica
+excerpt: "Com saber si dues mostres provenen de la mateixa distribució, o si els teus residus segueixen una normal? El test de Kolmogorov-Smirnov compara funcions de distribució acumulades i ofereix un p-valor objectiu."
 ---
 
 Quan treballem en ciència de dades o estadística, sovint ens fem preguntes com: *Aquesta variable segueix una distribució normal?* o *Els usuaris del grup A es comporten igual que els del grup B?* Per respondre a això, solem recórrer a gràfics com histogrames o diagrames Q-Q. Però si necessitem una mètrica objectiva i un p-valor, el **Test de Kolmogorov-Smirnov (K-S)** és una de les eines més versàtils i utilitzades.

@@ -4,6 +4,7 @@ title: "Detecció d'Outliers Multivariants amb la Distància de Mahalanobis"
 tags: 
   - outliers
   - estadistica
+excerpt: "Quan cada variable per separat sembla normal però la seva combinació és impossible, els outliers univariants no serveixen. Descobreix com la Distància de Mahalanobis detecta anomalies multivariants tenint en compte escales i correlacions."
 ---
 
 Quan busquem valors atípics (*outliers*) en un conjunt de dades, el primer impuls sol ser analitzar cada columna per separat (anàlisi univariant). Per exemple, busquem si algú té una edat inusualment alta o uns ingressos desorbitats. 

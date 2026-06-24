@@ -6,6 +6,7 @@ tags:
   - tendencia
   - modelitzacio
   - estadistica
+excerpt: "Quan una regressió lineal és massa rígida i unir punts genera soroll caòtic, LOESS ofereix un suavitzat local i flexible per detectar tendències reals en sèries temporals."
 ---
 
 Quan treballem amb sèries temporals o gràfics de dispersió, sovint ens trobem amb una gran quantitat de soroll que dificulta veure la direcció real de les dades. Una línia recta de regressió lineal clàssica sol ser massa rígida, mentre que unir els punts directament genera un traç caòtic. 
