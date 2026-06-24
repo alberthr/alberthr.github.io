@@ -175,7 +175,7 @@ unir_per2 <- function(d1, d2, clau) {
 
 En definitiva: si ja saps moure't amb `group_by()`, `mutate()` i `summarise()`, en realitat ja saps moure't amb gairebé tot `dplyr`. Els únics paràmetres que trenquen el patró són els que, com `by =` als joins o `.names =` dins `across()`, esperen explícitament text en lloc d'una expressió.
 
-## Exemple final: una funció amb `group_by`, `mutate` i `summarise` totalment dinàmics
+## 📊 Exemple final
 
 Posem-ho tot junt amb un cas real: una funció que, donat un `data.frame` de vendes, agrupa per la columna que li indiquem, crea una columna calculada amb el nom que li indiquem, i en resumeix el total amb el nom que li indiquem també.
 
