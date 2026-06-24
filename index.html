@@ -4,13 +4,11 @@ layout: default
 
 <div class="posts-list">
   {% for post in site.posts %}
-    <!-- Guardem els tags i generem la caixa del post sense línies ni dates -->
     <div class="post-card" data-tags="{% for tag in post.tags %}{{ tag }} {% endfor %}">
         <h2 class="post-card-title">
             <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
         </h2>
         <div class="summary-text">
-            <!-- Agafem l'excerpt complet generat per Jekyll del text del teu post -->
             {{ post.excerpt }}
         </div>
     </div>
