@@ -61,86 +61,117 @@ La funció Gamma és molt més sofisticada. Permet modelar un **efecte retardat 
 Per experiencia, encara que els mitjans tradicionals no siguin inmediats, també funciona be fer servir el Decay si estem mesurant l'efecte de la publicitat al curt plaç i estem analitzant l'efecte en Ventes en productes de gran consum (FMCG) on les bases de dades i els models es solen analitzar amb dades agrupades de manera setmanal. En productes on la decisió de compra es molt més pensada (productes financers, automovils...) pot ser més convenient fer servir una Funció Gamma.
 
 
-## Com capturar l'Estacionalitat segons la teva arquitectura
+## Com capturar l'Estacionalitat: 4 maneres senzilles
 
-Si el teu producte es ven més a l'hivern, has d'aïllar aquest patró perquè el model no atribueixi erròniament aquestes vendes orgàniques a les campanyes publicitàries que fas per Nadal. La teva estratègia d'estacionalitat dependrà de la baseline triada:
+Si el teu producte es ven més a l'hivern, has d'aïllar aquest patró perquè el model no atribueixi erròniament aquestes vendes orgàniques a les campanyes publicitàries que fas per Nadal. L'objectiu és sempre el mateix: separar les vendes "normals" de les vendes que genera realment la publicitat. Aquí tens quatre maneres d'aconseguir-ho, de la més bàsica a la més refinada.
 
-### A. Estacionalitat en Baseline Aditiva (Variables Dummy)
-Si optes per la simplicitat lineal, pots incloure variables *dummy* (binàries) per a cada mes de l'any o setmana.
-* **Inconvenient:** Si treballes amb dades setmanals, afegir 52 variables fictícies consumeix massa graus de llibertat del model, augmentant el risc de sobreajust (*overfitting*).
+### 1. Variables Dummy (per mes o setmana)
+La més directa: una variable binària (0/1) per cada mes o setmana de l'any.
+* **Avantatge:** fàcil d'entendre i d'explicar a qualsevol, no cal cap càlcul previ.
+* **Inconvenient:** si treballes amb dades setmanals, afegir 52 variables fictícies consumeix massa graus de llibertat del model, augmentant el risc de sobreajust (*overfitting*).
 
-### B. Estacionalitat en Baseline Multiplicativa (Components de Fourier)
-Per a models multiplicatius (linearitzats mitjançant logaritmes $\ln(Y)$), s'utilitzen **ones de Fourier** (sinus i cosinus) per crear corbes suaus que pugen i baixen harmònicament al llarg de l'any ($P = 365.25$ per a diari, o $P = 52.18$ per a setmanal).
+### 2. Descomposició clàssica de sèries temporals
+Algorismes com `decompose()` separen automàticament la sèrie en tres trossos —tendència, estacionalitat i soroll— normalment fent servir mitjanes mòbils.
+* **Avantatge:** ràpid d'aplicar, et dona un índex estacional net que pots utilitzar com a *input* fix del model.
+* **Inconvenient:** assumeix un patró estacional força rígid, igual any rere any.
 
-$$\text{Terme Fourier}_t = \sin\left(\frac{2\pi \cdot t}{P}\right) + \cos\left(\frac{2\pi \cdot t}{P}\right)$$
+### 3. STL / Loess
+És una versió més flexible de l'anterior: en lloc de mitjanes mòbils fa servir *loess* (una regressió local) per suavitzar la corba.
+* **Avantatge:** s'adapta millor si l'estacionalitat canvia lleugerament d'un any a l'altre, o si la tendència no segueix una línia recta.
+* **Quan triar-la sobre la clàssica?** Quan tens prou anys d'històric i sospites que el patró estacional "respira" una mica d'un any a l'altre.
 
-* **Avantatge:** Captura patrons complexos i continus utilitzant molt poques variables (només uns quants parells de lletres), actuant com un ràtio que escala de forma dinàmica juntament amb el preu i la distribució.
+### 4. Mirar la categoria total (o els competidors sense palanques) — el truc del FMCG
+En lloc de calcular l'estacionalitat amb matemàtiques, la treus directament del mercat: si tens dades de panell, mires com es mou la categoria sencera, o específicament aquelles marques que no fan publicitat ni promocions. Si aquestes marques "passives" pugen un 30% a l'estiu, aquest 30% és estacionalitat pura de mercat, no un artefacte estadístic.
+* **Avantatge:** és la més "real": no surt d'un model, surt directament del comportament del consumidor.
+* **Inconvenient:** necessites dades de categoria o panell, i has de verificar bé que aquests competidors "sense palanques" realment no facin res (ni distribució agressiva, ni moviments de preu).
 
-### C. Descomposició STL Prèvia
-Una alternativa cada vegada més utilitzada és extreure l'estacionalitat multiplicativa abans de la regressió mitjançant algorismes de descomposició de sèries temporals (com el mètode Loess). Això permet netejar la variable dependent o utilitzar l'índex calculat com un *input* rígid.
+### Quina tries?
+Les quatre opcions són independents del tipus de baseline que facis servir, però hi ha una afinitat natural que val la pena tenir present: les **dummies** sumen unitats fixes, així que casen millor amb una **baseline aditiva**; en canvi, la **descomposició clàssica**, l'**STL** i el mètode de la **categoria** et donen, de manera natural, un índex (un multiplicador), que s'integra més bé en una **baseline multiplicativa**. No és una regla estricta, però sí el camí de menys resistència.
+
+La tria final depèn sobretot de les dades que tinguis: si només comptes amb la teva pròpia sèrie, vas amb dummies o descomposició/STL; si tens accés a dades de mercat, l'opció 4 sol ser la més robusta perquè no depèn de cap supòsit matemàtic.
 
 
 ---
 
-### 🐍 Implementació en Python: Extreure Estacionalitat Multiplicativa
+### 🐍 Implementació en Python: Regressió Aditiva vs. Multiplicativa
 
-Vegem com separar l'estacionalitat d'una baseline multiplicativa utilitzant la llibreria `statsmodels`:
+Vegem amb un exemple senzill com canvia la regressió segons triem una baseline aditiva (OLS clàssica) o multiplicativa (log-log, on els coeficients passen a ser elasticitats):
 
 ```python
 import numpy as np
 import pandas as pd
-from statsmodels.tsa.seasonal import seasonal_decompose
+import statsmodels.api as sm
 
-# 1. Simulem dades diàries d'un negoci amb creixement i estacionalitat multiplicativa
 np.random.seed(42)
-dates = pd.date_range(start='2024-01-01', periods=730, freq='D')
+n = 104  # 2 anys de dades setmanals
 
-# Tendència i Estacionalitat que es multipliquen
-tendencia = np.linspace(100, 200, 730)
-estacionalitat = 1 + 0.2 * np.sin(2 * np.pi * np.arange(730) / 365.25)
-soroll = np.random.normal(1, 0.05, 730)
+# Simulem les variables explicatives
+preu = np.random.normal(10, 1, n)
+distribucio = np.random.normal(500, 50, n)
+estacionalitat = 1 + 0.3 * np.sin(2 * np.pi * np.arange(n) / 52)
+soroll = np.random.normal(1, 0.05, n)
 
-vendes = tendencia * estacionalitat * soroll
-df = pd.DataFrame({'Vendes': vendes}, index=dates)
+# Generem les vendes seguint una lògica multiplicativa real
+vendes = 1000 * (preu ** -0.5) * (distribucio ** 0.8) * estacionalitat * soroll
 
-# 2. Executem la descomposició multiplicativa (període de 365 dies)
-resultat = seasonal_decompose(df['Vendes'], model='multiplicative', period=365)
+df = pd.DataFrame({
+    'vendes': vendes,
+    'preu': preu,
+    'distribucio': distribucio,
+    'estacionalitat': estacionalitat
+})
 
-df['index_estacional'] = resultat.seasonal
-df['tendencia_neta'] = resultat.trend
+# --- Model Aditiu (regressió lineal clàssica) ---
+X_add = sm.add_constant(df[['preu', 'distribucio', 'estacionalitat']])
+model_add = sm.OLS(df['vendes'], X_add).fit()
+print("--- Model Aditiu (coeficients = unitats de venda) ---")
+print(model_add.params)
 
-print(df[['Vendes', 'index_estacional', 'tendencia_neta']].head())
+# --- Model Multiplicatiu (log-log: coeficients = elasticitats) ---
+df['log_vendes'] = np.log(df['vendes'])
+df['log_preu'] = np.log(df['preu'])
+df['log_distribucio'] = np.log(df['distribucio'])
+df['log_estacionalitat'] = np.log(df['estacionalitat'])
+
+X_mult = sm.add_constant(df[['log_preu', 'log_distribucio', 'log_estacionalitat']])
+model_mult = sm.OLS(df['log_vendes'], X_mult).fit()
+print("\n--- Model Multiplicatiu (coeficients = elasticitats) ---")
+print(model_mult.params)
 ```
 
-### 📊 Implementacio en R
+En el model aditiu, cada coeficient s'interpreta en unitats de venda (ex: "cada euro de pujada de preu resta X unitats"). En el model multiplicatiu, com que treballem amb logaritmes, els coeficients s'interpreten com a **elasticitats**: el coeficient del preu (al voltant de -0.5) vol dir que un 1% de pujada de preu redueix les vendes un 0.5%, independentment del nivell de vendes actual.
+
+### 📊 Implementació en R
+
 ```r
-# 1. Simulem dades diàries d'un negoci amb creixement i estacionalitat multiplicativa
 set.seed(42)
-dies <- 1:730
+n <- 104  # 2 anys de dades setmanals
 
-# Tendència i Estacionalitat que es multipliquen
-tendencia <- seq(100, 200, length.out = 730)
-estacionalitat <- 1 + 0.2 * sin(2 * pi * (dies - 1) / 365.25) # (dies - 1) per quadrar amb l'np.arange de Python que comença a 0
-soroll <- rnorm(730, mean = 1, sd = 0.05)
+# Simulem les variables explicatives
+preu <- rnorm(n, mean = 10, sd = 1)
+distribucio <- rnorm(n, mean = 500, sd = 50)
+estacionalitat <- 1 + 0.3 * sin(2 * pi * (0:(n - 1)) / 52)
+soroll <- rnorm(n, mean = 1, sd = 0.05)
 
-vendes <- tendencia * estacionalitat * soroll
+# Generem les vendes seguint una lògica multiplicativa real
+vendes <- 1000 * (preu^-0.5) * (distribucio^0.8) * estacionalitat * soroll
 
-# Convertim a objecte de sèrie temporal (ts) indicant la freqüència diària anual (365)
-vendes_ts <- ts(vendes, frequency = 365, start = c(2024, 1))
+df <- data.frame(vendes, preu, distribucio, estacionalitat)
 
-# 2. Executem la descomposició multiplicativa
-resultat <- decompose(vendes_ts, type = "multiplicative")
+# --- Model Aditiu (regressió lineal clàssica) ---
+model_add <- lm(vendes ~ preu + distribucio + estacionalitat, data = df)
+cat("--- Model Aditiu (coeficients = unitats de venda) ---\n")
+print(coef(model_add))
 
-# Creem el data frame final equivalent
-df <- data.frame(
-  Vendes = vendes,
-  index_estacional = as.vector(resultat$seasonal),
-  tendencia_neta = as.vector(resultat$trend)
-)
+# --- Model Multiplicatiu (log-log: coeficients = elasticitats) ---
+df$log_vendes <- log(df$vendes)
+df$log_preu <- log(df$preu)
+df$log_distribucio <- log(df$distribucio)
+df$log_estacionalitat <- log(df$estacionalitat)
 
-# Establim les dates com a nom de les files (equivalent a l'índex de Pandas)
-dates <- seq(as.Date("2024-01-01"), by = "day", length.out = 730)
-rownames(df) <- dates
-
-print(head(df[, c("Vendes", "index_estacional", "tendencia_neta")]))
+model_mult <- lm(log_vendes ~ log_preu + log_distribucio + log_estacionalitat, data = df)
+cat("\n--- Model Multiplicatiu (coeficients = elasticitats) ---\n")
+print(coef(model_mult))
 ```
+
+Com que les dades s'han generat seguint una lògica multiplicativa, fixa't com el model log-log recupera coeficients molt propers als reals (-0.5 per al preu, 0.8 per a la distribució), mentre que el model aditiu, en forçar relacions lineals sobre una realitat que no ho és, dona coeficients esbiaixats i més difícils d'interpretar correctament fora del rang de dades observat.
