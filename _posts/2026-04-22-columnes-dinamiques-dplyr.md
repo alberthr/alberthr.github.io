@@ -6,7 +6,6 @@ excerpt: "Quan fem servir dplyr dins de funcions pròpies, el nom de columna sov
 
 ---
 
-
 Quan comencem a fer servir `dplyr` dins de funcions pròpies, més d'hora que tard ens trobem amb el mateix problema: volem que el nom de la columna sobre la qual agrupem, calculem o resumim **no estigui fixat al codi**, sinó que es passi com a paràmetre.
 
 El problema és que `dplyr` està pensat per fer-se servir de manera interactiva, amb noms de columna escrits literalment (`group_by(botiga)`, `mutate(total = preu * unitats)`...). Aquesta sintaxi és molt còmoda quan escrivim codi a mà, però es torna un problema quan el nom de la columna és una variable (un `string`, o un símbol que ens arriba com a argument d'una funció).
@@ -175,9 +174,9 @@ unir_per2 <- function(d1, d2, clau) {
 
 En definitiva: si ja saps moure't amb `group_by()`, `mutate()` i `summarise()`, en realitat ja saps moure't amb gairebé tot `dplyr`. Els únics paràmetres que trenquen el patró són els que, com `by =` als joins o `.names =` dins `across()`, esperen explícitament text en lloc d'una expressió.
 
-## Exemple final: una funció amb `group_by`, `mutate` i `summarise` totalment dinàmics
+## 📊 Exemple final
 
-Posem-ho tot junt amb un cas real: una funció que, donat un `data.frame` de vendes, agrupa per la columna que li indiquem, crea una columna calculada amb el nom que li indiquem, i en resumeix el total amb el nom que li indiquem també.
+Posem-ho tot junt amb un cas real: una funció que, donat un `data.frame` de vendes, agrupa per la columna que li indiquem, crea una columna calculada amb el nom que li indiquem, resumeix un conjunt variable de columnes amb `across()`, i finalment en resumeix el total amb el nom que li indiquem també.
 
 ```r
 library(dplyr)
@@ -188,39 +187,46 @@ vendes <- tibble(
   botiga   = c("A", "A", "B", "B", "C"),
   producte = c("Llet", "Pa", "Llet", "Oli", "Pa"),
   preu     = c(1.2, 0.9, 1.3, 4.5, 0.95),
-  unitats  = c(10, 25, 8, 4, 30)
+  unitats  = c(10, 25, 8, 4, 30),
+  devolucions = c(1, 0, 2, 0, 3)
 )
 
-resum_dinamic <- function(dades, agrupar_per, nom_calcul, nom_resum) {
+resum_dinamic <- function(dades, agrupar_per, nom_calcul, columnes_a_sumar, nom_resum) {
   dades %>%
     group_by(.data[[agrupar_per]]) %>%
     mutate("{nom_calcul}" := preu * unitats) %>%
-    summarise("{nom_resum}" := sum(.data[[nom_calcul]]), .groups = "drop")
+    summarise(
+      across(all_of(columnes_a_sumar), sum, .names = "total_{.col}"),
+      "{nom_resum}" := sum(.data[[nom_calcul]]),
+      .groups = "drop"
+    )
 }
 
-# Cas 1: agrupar per botiga
+# Cas 1: agrupar per botiga, sumant unitats i devolucions a banda del càlcul principal
 resum_dinamic(vendes, agrupar_per = "botiga",
-              nom_calcul = "import", nom_resum = "total_import")
+              nom_calcul = "import", columnes_a_sumar = c("unitats", "devolucions"),
+              nom_resum = "total_import")
 
-# Cas 2: el mateix codi, agrupant per producte
+# Cas 2: el mateix codi, agrupant per producte i sumant només les devolucions
 resum_dinamic(vendes, agrupar_per = "producte",
-              nom_calcul = "import", nom_resum = "total_venut")
+              nom_calcul = "import", columnes_a_sumar = "devolucions",
+              nom_resum = "total_venut")
 ```
 
 Resultat del primer cas:
 
 ```
-# A tibble: 3 × 2
-  botiga total_import
-  <chr>         <dbl>
-1 A              34.5
-2 B              28.4
-3 C              28.5
+# A tibble: 3 × 4
+  botiga total_unitats total_devolucions total_import
+  <chr>          <dbl>             <dbl>        <dbl>
+1 A                 35                 1         34.5
+2 B                 12                 2         28.4
+3 C                 30                 3         28.5
 ```
 
-Fixa't que la **mateixa funció** serveix per agrupar per `botiga` o per `producte` sense tocar ni una línia de codi: tant el `group_by`, com el nom de la columna calculada dins del `mutate`, com el nom final de la columna resum, són paràmetres.
+Fixa't que la **mateixa funció** serveix per agrupar per `botiga` o per `producte`, canviar quina columna es calcula dins del `mutate`, i decidir quantes i quines columnes es sumen dins del `across()`, sense tocar ni una línia de codi: tot són paràmetres.
 
-Un detall important: dins de `mutate()` he fet servir `"{nom_calcul}" :=` (interpolació de glue dins de cometes) en lloc de `{{ nom_calcul }}`, perquè `nom_calcul` arriba com a text i estem definint un **nom nou** de columna, no referenciant-ne una d'existent. I després, per llegir aquesta columna acabada de crear dins del `summarise`, faig servir `.data[[nom_calcul]]`, ja que en aquell punt `nom_calcul` torna a ser una referència (string) a una columna que ja existeix.
+Un detall important: dins de `mutate()` he fet servir `"{nom_calcul}" :=` (interpolació de glue dins de cometes) en lloc de `{{ nom_calcul }}`, perquè `nom_calcul` arriba com a text i estem definint un **nom nou** de columna, no referenciant-ne una d'existent. Per al `across()`, com que `columnes_a_sumar` és un vector de strings (no un sol símbol), fem servir `all_of()` en lloc de `{{ }}`: és la manera correcta de dir-li a `dplyr` "aquests noms de text són columnes que ja existeixen". I després, per llegir la columna acabada de crear dins del `summarise`, faig servir `.data[[nom_calcul]]`, ja que en aquell punt `nom_calcul` torna a ser una referència (string) a una columna que ja existeix.
 
 ## Conclusió
 
