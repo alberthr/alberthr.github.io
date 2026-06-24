@@ -30,9 +30,14 @@ title: "Inici"
   <ul id="llista-posts">
     {% for post in site.posts %}
       {% comment %}
-        Generar resums automàtics: primeres 30 paraules del contingut sense HTML
+        Resum: utilitzem l'excerpt definit al front matter del post.
+        Si algun post no té excerpt propi, fem servir un fallback amb les primeres 30 paraules.
       {% endcomment %}
-      {% assign excerpt = post.content | strip_html | truncatewords: 30 %}
+      {% if post.excerpt and post.excerpt != empty %}
+        {% assign excerpt = post.excerpt | strip_html %}
+      {% else %}
+        {% assign excerpt = post.content | strip_html | truncatewords: 30 %}
+      {% endif %}
       
 	  {% assign full_content = post.content | strip_html | downcase %}
 	  <li class="post-item" data-tags="{{ post.tags | join: ',' }}" data-search="{{ post.title | downcase }} {{ post.tags | join: ' ' | downcase }} {{ excerpt | downcase }} {{ full_content }}">
