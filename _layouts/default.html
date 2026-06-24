@@ -204,28 +204,72 @@
         }
 
         /* DINS DELS POSTS PROPIS */
-        .blog-post-body h1, .blog-post-body h2, .blog-post-body h3 {
-            color: var(--dark);
-            font-weight: 600;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 4px;
-            margin-top: 28px;
-            margin-bottom: 14px;
-            text-transform: uppercase;
-            font-size: 14px;
-            letter-spacing: 0.5px;
-        }
-        .blog-post-body h3 {
-            border-bottom: none;
-            font-size: 13px;
-            text-transform: none;
-        }
-        .blog-post-body p {
-            font-size: 13.5px;
+		/* ==========================================================================
+           REGLA UNIFICADA PER AL TEXT INTERN DELS POSTS (MIDES EXACTES DEL CV)
+           ========================================================================== */
+        .blog-post-body {
+            font-size: 13.5px; /* Mida del text principal del CV */
             color: var(--text-main);
-            text-align: justify;
-            margin-bottom: 16px;
-            line-height: 1.6;
+            line-height: 1.5;
+        }
+
+        /* Títols principals dins del post (Equivalents a .section-title del CV) */
+        .blog-post-body h1, 
+        .blog-post-body h2 {
+            font-size: 14px !important; /* Mida exacta de les seccions del CV */
+            color: var(--dark) !important;
+            font-weight: 600 !important;
+            text-transform: uppercase !important; /* Força majúscules com al CV */
+            letter-spacing: 0.5px !important;
+            border-bottom: 1px solid var(--border) !important; /* Línia neta a sota */
+            padding-bottom: 4px !important;
+            margin-top: 30px !important;
+            margin-bottom: 18px !important;
+        }
+
+        /* Subtítols dins del post (Equivalents a l'estil d'empresa/càrrec del CV) */
+        .blog-post-body h3 {
+            font-size: 13.5px !important; /* Mateixa mida del text però destacat */
+            color: var(--dark) !important;
+            font-weight: 600 !important;
+            text-transform: none !important; /* Els subtítols no van en majúscules */
+            border-bottom: none !important; /* Sense línia inferior */
+            padding-bottom: 0 !important;
+            margin-top: 22px !important;
+            margin-bottom: 10px !important;
+        }
+
+        /* Paràgrafs interns del post */
+        .blog-post-body p {
+            font-size: 13.5px !important; /* Mida exacta de les llistes i sumari del CV */
+            color: var(--text-main) !important;
+            text-align: justify !important;
+            line-height: 1.5 !important;
+            margin-bottom: 16px !important;
+        }
+
+        /* Llistes de punts dins del post (idèntiques a les de l'experiència del CV) */
+        .blog-post-body ul, 
+        .blog-post-body ol {
+            padding-left: 18px !important;
+            margin-bottom: 16px !important;
+        }
+
+        .blog-post-body li {
+            font-size: 13.5px !important;
+            color: var(--text-main) !important;
+            margin-bottom: 6px !important;
+            text-align: justify !important;
+        }
+
+        /* Enllaços clics de dins del text */
+        .blog-post-body a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .blog-post-body a:hover {
+            text-decoration: underline;
         }
 
         pre, code {
