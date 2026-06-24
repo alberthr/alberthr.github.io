@@ -6,16 +6,19 @@
     <title>{{ site.title }}</title>
     
     <style>
+        /* ==========================================================================
+           VARIABLES I RESET COMPARTITS (ESTIL CORPORATIU DEL TEU CV)
+           ========================================================================== */
         :root {
-            --primary: #3b82f6;       
-            --primary-light: #f1f5f9; 
-            --dark: #1e293b;          
-            --sidebar-bg: #f8fafc;     
-            --text-main: #475569;      
-            --text-light: #64748b;     
-            --bg-body: #e2e8f0;        
-            --card-bg: #ffffff;        
-            --border: #e2e8f0;         
+            --primary: #3b82f6;       /* Blau corporatiu suau per a petits detalls */
+            --primary-light: #f1f5f9; /* Fons del banner superior molt integrat */
+            --dark: #1e293b;          /* Gris fosc elegant per a títols */
+            --sidebar-bg: #f8fafc;     /* Fons clar i discret per a la barra lateral */
+            --text-main: #475569;      /* Text principal */
+            --text-light: #64748b;     /* Text secundari i detalls */
+            --bg-body: #e2e8f0;        /* Fons de pantalla neutral */
+            --card-bg: #ffffff;        /* Fons de la part principal (blanc) */
+            --border: #e2e8f0;         /* Línies de separació fines i netes */
         }
 
         * {
@@ -34,7 +37,7 @@
             padding: 40px 20px;
         }
 
-        /* CONTENIDOR PRINCIPAL (ESTIL CV) */
+        /* CONTENIDOR PRINCIPAL ESTIL "FULL DE PAPER" (AMPLADA FIJA 1050px) */
         .cv-container {
             max-width: 1050px;
             margin: 0 auto;
@@ -44,7 +47,9 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
         }
 
-        /* BARRA LATERAL GRISA */
+        /* ==========================================================================
+           BARRA LATERAL GRISA (IGUAL QUE AL CV)
+           ========================================================================== */
         .sidebar {
             flex: 0 0 260px; 
             width: 260px;
@@ -88,7 +93,7 @@
             color: var(--primary);
         }
 
-        /* TAGS */
+        /* BADGES DE TAGS (ESTIL SKILLS DEL CV) */
         .skills-container {
             display: flex;
             flex-wrap: wrap;
@@ -110,7 +115,7 @@
             color: var(--primary);
         }
 
-        /* TOC POSTS */
+        /* ENLLAÇOS DE L'ESTRUCTURA DEL POST (TOC) */
         .toc-container {
             display: flex;
             flex-direction: column;
@@ -132,7 +137,9 @@
             color: var(--text-light);
         }
 
-        /* PARTE CENTRAL */
+        /* ==========================================================================
+           SECCIÓ DE CONTINGUT PRINCIPAL (CENTRAL)
+           ========================================================================== */
         .main-content {
             flex: 1; 
             padding: 40px 45px;
@@ -140,17 +147,17 @@
             min-width: 0; 
         }
 
-        /* NOU ENCAPÇALAMENT: SENSE CAIXA GRISA, TITOL GRAN, CENTRAT I AMB LINIA INFERIOR */
+        /* ENCAPÇALAMENT DEL BLOG: NET, CENTRAT, SENSE CAIXA GRISA I AMB LÍNIA DE SEPARACIÓ */
         .blog-header {
             text-align: center;
             padding-bottom: 25px;
             margin-bottom: 30px;
-            border-bottom: 1px solid var(--border); /* Línia que separa l'encapçalament dels posts */
+            border-bottom: 1px solid var(--border);
         }
         .blog-header h1 {
-            font-size: 28px; /* Font més gran */
+            font-size: 28px; 
             font-weight: 700;
-            text-transform: uppercase; /* Títol del blog en majúscules */
+            text-transform: uppercase; 
             margin-bottom: 6px;
         }
         .blog-header h1 a {
@@ -163,29 +170,29 @@
             font-weight: 400;
         }
 
-        /* LLISTAT DE POSTS (SENSE LINIA TEMPORAL) */
+        /* ==========================================================================
+           LLISTAT DE POSTS A LA HOME (SENSE LÍNIA TEMPORAL I MÉS JUNTETS)
+           ========================================================================== */
         .posts-list {
             display: flex;
             flex-direction: column;
-            gap: 15px; /* Menys espai entre posts */
+            gap: 15px; 
         }
 
-        /* NOU ESTIL PER ALS POSTS AMB HOVER DESTACAT */
         .post-card {
             padding: 14px 18px;
             transition: background-color 0.2s ease, transform 0.2s ease;
             border-radius: 3px !important;
         }
         .post-card:hover {
-            background-color: var(--sidebar-bg); /* Es destaca quan passes per sobre */
+            background-color: var(--sidebar-bg); 
             transform: translateX(4px);
         }
 
-        /* TITOLS DELS POSTS EN MAJUSCULES */
         .post-card-title {
             font-size: 15px;
             font-weight: 600;
-            text-transform: uppercase; /* Títols dels posts en majúscules */
+            text-transform: uppercase; 
             margin-bottom: 6px;
         }
         .post-card-title a {
@@ -200,55 +207,54 @@
             font-size: 13.5px;
             color: var(--text-main);
             text-align: justify;
-            line-height: 1.6;
-        }
-
-        /* DINS DELS POSTS PROPIS */
-		/* ==========================================================================
-           REGLA UNIFICADA PER AL TEXT INTERN DELS POSTS (MIDES EXACTES DEL CV)
-           ========================================================================== */
-        .blog-post-body {
-            font-size: 13.5px; /* Mida del text principal del CV */
-            color: var(--text-main);
             line-height: 1.5;
         }
 
-        /* Títols principals dins del post (Equivalents a .section-title del CV) */
+        /* ==========================================================================
+           ESTRUCTURA DE TEXT INTERN DELS POSTS (MIDES EXACTES DEL CV)
+           ========================================================================== */
+        .blog-post-body {
+            font-size: 13.5px !important;
+            color: var(--text-main) !important;
+            line-height: 1.5 !important;
+        }
+
+        /* Títols grans als posts (Equivalents a .section-title del CV) */
         .blog-post-body h1, 
         .blog-post-body h2 {
-            font-size: 14px !important; /* Mida exacta de les seccions del CV */
+            font-size: 14px !important; 
             color: var(--dark) !important;
             font-weight: 600 !important;
-            text-transform: uppercase !important; /* Força majúscules com al CV */
+            text-transform: uppercase !important; 
             letter-spacing: 0.5px !important;
-            border-bottom: 1px solid var(--border) !important; /* Línia neta a sota */
+            border-bottom: 1px solid var(--border) !important; 
             padding-bottom: 4px !important;
             margin-top: 30px !important;
             margin-bottom: 18px !important;
         }
 
-        /* Subtítols dins del post (Equivalents a l'estil d'empresa/càrrec del CV) */
+        /* Subtítols als posts (Equivalents a l'estil d'empresa del CV) */
         .blog-post-body h3 {
-            font-size: 13.5px !important; /* Mateixa mida del text però destacat */
+            font-size: 13.5px !important; 
             color: var(--dark) !important;
             font-weight: 600 !important;
-            text-transform: none !important; /* Els subtítols no van en majúscules */
-            border-bottom: none !important; /* Sense línia inferior */
+            text-transform: none !important; 
+            border-bottom: none !important; 
             padding-bottom: 0 !important;
             margin-top: 22px !important;
             margin-bottom: 10px !important;
         }
 
-        /* Paràgrafs interns del post */
+        /* Paràgrafs de text dels posts */
         .blog-post-body p {
-            font-size: 13.5px !important; /* Mida exacta de les llistes i sumari del CV */
+            font-size: 13.5px !important; 
             color: var(--text-main) !important;
             text-align: justify !important;
             line-height: 1.5 !important;
             margin-bottom: 16px !important;
         }
 
-        /* Llistes de punts dins del post (idèntiques a les de l'experiència del CV) */
+        /* Llistes amb punts dins del post */
         .blog-post-body ul, 
         .blog-post-body ol {
             padding-left: 18px !important;
@@ -262,7 +268,7 @@
             text-align: justify !important;
         }
 
-        /* Enllaços clics de dins del text */
+        /* Enllaços de text interns */
         .blog-post-body a {
             color: var(--primary);
             text-decoration: none;
@@ -272,6 +278,7 @@
             text-decoration: underline;
         }
 
+        /* Blocs de codi reduïts i compactes (Evita fonts gegants) */
         pre, code {
             font-family: Consolas, "Liberation Mono", Courier, monospace;
             font-size: 12px !important; 
@@ -284,12 +291,14 @@
             margin-bottom: 18px;
         }
 
+        /* Forçar comentaris i iframes a no trencar l'ample */
         #disqus_thread, .comments, iframe {
             max-width: 100% !important;
             width: 100% !important;
             margin-top: 40px;
         }
 
+        /* RESPONSIVE PER A MÒBILS */
         @media (max-width: 768px) {
             .cv-container {
                 flex-direction: column;
@@ -321,8 +330,10 @@
 
 <div class="cv-container">
     
+    <!-- BARRA LATERAL GRISA INTEGRADA -->
     <aside class="sidebar">
         {% if page.url == "/" %}
+          <!-- ELEMENTS EXCLUSIUS DE LA PÀGINA PRINCIPAL -->
           <div class="sidebar-section">
             <div class="sidebar-title">Filtra per Tags</div>
             <div class="skills-container">
@@ -349,6 +360,7 @@
             <span class="contact-link"></span>
           </div>
         {% else %}
+          <!-- ELEMENTS EXCLUSIUS DE LES PÀGINES DE POSTS -->
           <div class="sidebar-section">
             <div class="sidebar-title">Estructura del Post</div>
             <div id="toc" class="toc-container"></div>
@@ -361,14 +373,16 @@
         {% endif %}
     </aside>
 
+    <!-- BLOCK DE CONTINGUT CENTRAL -->
     <main class="main-content">
         
-        <!-- ENCAPÇALAMENT CENTRAT I NET -->
+        <!-- ENCAPÇALAMENT DEL BLOG (CENTRADA I SENSE CAIXA) -->
         <div class="blog-header">
             <h1><a href="{{ '/' | relative_url }}">{{ site.title }}</a></h1>
             <p>{{ site.description }}</p>
         </div>
 
+        <!-- COS DE TEXT DEL POST O LLISTAT DE LA HOME -->
         <div class="blog-post-body">
             {{ content }}
         </div>
@@ -376,6 +390,7 @@
     </main>
 </div>
 
+<!-- LÒGICA JAVASCRIPT DE SUPORT -->
 {% if page.url == "/" %}
 <script>
   function filterByTag(element, tag) {
