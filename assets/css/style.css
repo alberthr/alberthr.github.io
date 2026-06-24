@@ -1,20 +1,19 @@
-/* Importa la fuente desde Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Oxanium&display=swap');
-
 :root {
-  /* Paleta de colors: blancs, grisos amb toc de color accent */
-  --bg-color: #ffffff;           /* Blanc gairebé pur, molt lleuger (ORIGINAL: #fafaf8;) */
-  --bg-secondary: #f5f3f0;       /* Gris molt clar per a contrast subtle */
-  --text-color: #1a1a1a;         /* Negre molt fosc per a llegibilitat */
-  --text-muted: #666666;         /* Gris mig */
-  --text-light: #999999;         /* Gris clar */
-  --accent-color: #0066cc;       /* Blau vibrant (accent principal) */
-  --accent-hover: #0052a3;       /* Blau més fosc per a hover */
-  --border-color: #e0e0e0;       /* Gris clar per a separadors */
+  /* Paleta extreta del CV: fons gris, "full de paper" blanc, blau corporatiu */
+  --bg-color: #ffffff;           /* Fons de la "targeta" principal (= card-bg del CV) */
+  --bg-page: #e2e8f0;            /* Fons de pantalla neutral (= bg-body del CV) */
+  --bg-secondary: #f8fafc;       /* Fons clar i discret (= sidebar-bg del CV) */
+  --text-color: #1e293b;         /* Gris fosc elegant per a títols (= dark del CV) */
+  --text-muted: #475569;         /* Text principal (= text-main del CV) */
+  --text-light: #64748b;         /* Text secundari (= text-light del CV) */
+  --accent-color: #3b82f6;       /* Blau corporatiu (= primary del CV) */
+  --accent-hover: #2563eb;       /* Blau més fosc per a hover */
+  --accent-light: #f1f5f9;       /* Fons banner/destacat (= primary-light del CV) */
+  --border-color: #e2e8f0;       /* Línies de separació fines (= border del CV) */
   --code-bg: #1e293b;            /* Gris fosc per a blocs de codi */
   --code-text: #f8fafc;          /* Gris molt clar per a text del codi */
-  --tag-bg: #f0f4f8;             /* Fons molt clar per a tags */
-  --tag-color: #0066cc;          /* Color dels tags = accent */
+  --tag-bg: #ffffff;             /* Badges sobre blanc amb vora (estil CV) */
+  --tag-color: #475569;          /* Text neutre dels badges */
   --success-color: #10b981;      /* Verd per a destacats positius */
   --warning-color: #f59e0b;      /* Taronja per a destacats */
 }
@@ -26,27 +25,38 @@ html {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", sans-serif;
-  color: var(--text-color);
-  background-color: var(--bg-color);
-  line-height: 1.65;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--text-muted);
+  background-color: var(--bg-page);
+  line-height: 1.5;
   margin: 0;
-  padding: 0;
+  padding: 40px 20px;
   height: 100%;
   overflow-y: scroll;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Contenidor principal */
+/* Contenidor principal: estil "full de paper", igual que el .cv-container */
 .site-wrapper {
   display: grid;
   grid-template-rows: auto 1fr auto;
-  min-height: 100vh;
-  max-width: 900px;
+  min-height: calc(100vh - 80px);
+  max-width: 1050px;
   margin: 0 auto;
-  padding: 2rem 1.5rem 0 1.5rem;
+  padding: 0 45px;
   box-sizing: border-box;
+  background: var(--bg-color);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Donem una mica d'aire a dalt i a baix del contingut dins de la targeta */
+header {
+  padding-top: 2rem;
+}
+
+footer {
+  padding-bottom: 1.5rem;
 }
 
 /* ===== CAPÇALERA ===== */
@@ -62,15 +72,14 @@ header {
 }
 
 .site-title {
-  font-family: "Oxanium", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
-  font-weight: 700;
-  font-size: 1.7rem;
-  letter-spacing: -0.01em;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-weight: 600;
+  font-size: 1.5rem;
+  letter-spacing: normal;
   text-decoration: none;
   color: var(--text-color);
   margin: 0;
   transition: color 0.3s ease;
-  text-transform: uppercase;
 }
 
 .site-title::before {
@@ -94,7 +103,7 @@ header {
   padding: 0.6rem 1rem;
   font-size: 0.9rem;
   border: 1px solid var(--border-color);
-  border-radius: 6px;
+  border-radius: 3px;
   background-color: var(--bg-secondary);
   color: var(--text-color);
   transition: all 0.2s ease;
@@ -105,7 +114,7 @@ header {
   outline: none;
   border-color: var(--accent-color);
   background-color: #ffffff;
-  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .search-input::placeholder {
@@ -132,38 +141,44 @@ a:hover {
 
 /* Títols */
 h1, h2, h3, h4 {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   color: var(--text-color);
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  font-weight: 600;
+  letter-spacing: normal;
   line-height: 1.3;
 }
 
 h1 {
-  font-size: 1.3rem;
-  margin-bottom: 1rem;
+  font-size: 1.4rem;
+  margin-bottom: 1.2rem;
   margin-top: 0;
   text-transform: uppercase;
-  letter-spacing: 0em;
+  letter-spacing: 0.5px;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--border-color);
 }
 
 h2 {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   margin-top: 2rem;
   margin-bottom: 1rem;
-  border-left: 4px solid var(--accent-color);
-  padding-left: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--border-color);
+  border-left: none;
+  padding-left: 0;
 }
 
 h3 {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   margin-top: 1.5rem;
   margin-bottom: 0.8rem;
   color: var(--text-color);
 }
 
 h4 {
-  font-size: 1rem;
+  font-size: 0.95rem;
   margin-top: 1rem;
   margin-bottom: 0.6rem;
 }
@@ -191,11 +206,11 @@ h4 {
 .tag-filter-btn {
   background-color: var(--tag-bg);
   border: 1px solid var(--border-color);
-  color: var(--text-muted);
-  padding: 0.35rem 0.5rem;
-  border-radius: 8px;
+  color: var(--text-light);
+  padding: 0.3rem 0.6rem;
+  border-radius: 3px;
   font-size: 0.7rem;
-  font-weight: 500;
+  font-weight: 400;
   cursor: pointer;
   transition: all 0.2s ease;
   user-select: none;
@@ -211,7 +226,7 @@ h4 {
   background-color: var(--accent-color);
   border-color: var(--accent-color);
   color: #ffffff;
-  box-shadow: 0 2px 8px rgba(0, 102, 204, 0.15);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
 }
 
 /* ===== LLISTAT DE POSTS ===== */
@@ -294,12 +309,13 @@ ul {
 }
 
 .tag-sm {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--tag-color);
   background-color: var(--tag-bg);
-  padding: 0.3rem 0.6rem;
-  border-radius: 8px;
-  font-weight: 500;
+  border: 1px solid var(--border-color);
+  padding: 0.25rem 0.55rem;
+  border-radius: 3px;
+  font-weight: 400;
 }
 
 .tag-sm::before {
@@ -386,7 +402,7 @@ pre {
   color: var(--code-text);
   padding: 1.5rem;
   overflow-x: auto;
-  border-radius: 8px;
+  border-radius: 4px;
   font-family: "SFMono-Regular", Consolas, "Monaco", "Courier New", monospace;
   font-size: 0.85rem;
   margin: 1.5rem 0;
@@ -396,10 +412,10 @@ pre {
 
 code {
   font-family: "SFMono-Regular", Consolas, "Monaco", "Courier New", monospace;
-  background-color: #f5f3f0;
+  background-color: var(--bg-secondary);
   color: #c0392b;
   padding: 0.2rem 0.4rem;
-  border-radius: 4px;
+  border-radius: 3px;
   font-size: 0.85rem;
 }
 
@@ -473,7 +489,7 @@ th, td {
 }
 
 th {
-  background-color: var(--tag-bg);
+  background-color: var(--bg-secondary);
   font-weight: 700;
   color: var(--text-color);
 }
@@ -495,13 +511,18 @@ footer {
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
+  body {
+    padding: 20px 10px;
+  }
+
   .site-wrapper {
-    padding: 1.5rem 1rem 0 1rem;
+    padding: 0 1.2rem;
   }
 
   header {
     flex-direction: column;
     margin-bottom: 1.5rem;
+    padding-top: 1.5rem;
   }
 
   .search-container {
