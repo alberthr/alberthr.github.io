@@ -3,16 +3,17 @@ description: "Notes personals sobre data analysis, i altres temes d'interès."
 baseurl: "" 
 url: ""
 
-remote_theme: pages-themes/minimal@v0.2.0
+# Eliminat el control de remote_theme i afegit el layout natiu
+theme: null
+
 plugins:
-- jekyll-remote-theme # add this line to the plugins list if you already have one
+  - jekyll-feed # Opcional per a subscripcions RSS si el fas servir
 
 # Configuració de Google Analytics
 google_analytics: "G-24FW05JLVP"
 
 permalink: /:title/
 markdown: kramdown
-theme: null
 
 kramdown:
   syntax_highlighter: rouge
