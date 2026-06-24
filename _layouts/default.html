@@ -6,17 +6,16 @@
     <title>{{ site.title }}</title>
     
     <style>
-        /* ESTILS DIRECTES COPIATS I ADAPTATS DEL TEU CV */
         :root {
-            --primary: #3b82f6;       /* Blau corporatiu suau per a petits detalls */
-            --primary-light: #f1f5f9; /* Fons del banner superior molt integrat */
-            --dark: #1e293b;          /* Gris fosc elegant per a títols */
-            --sidebar-bg: #f8fafc;     /* Fons clar i discret per a la barra lateral */
-            --text-main: #475569;      /* Text principal */
-            --text-light: #64748b;     /* Text secundari i detalls */
-            --bg-body: #e2e8f0;        /* Fons de pantalla neutral */
-            --card-bg: #ffffff;        /* Fons de la part principal (blanc) */
-            --border: #e2e8f0;         /* Línies de separació fines i netes */
+            --primary: #3b82f6;       
+            --primary-light: #f1f5f9; 
+            --dark: #1e293b;          
+            --sidebar-bg: #f8fafc;     
+            --text-main: #475569;      
+            --text-light: #64748b;     
+            --bg-body: #e2e8f0;        
+            --card-bg: #ffffff;        
+            --border: #e2e8f0;         
         }
 
         * {
@@ -35,19 +34,19 @@
             padding: 40px 20px;
         }
 
-        /* CONTENIDOR PRINCIPAL ESTIL "FULL DE PAPER" (AMPLADA FIJA EXACTA DEL CV) */
+        /* CONTENIDOR PRINCIPAL (ESTIL CV) */
         .cv-container {
             max-width: 1050px;
             margin: 0 auto;
             background: var(--card-bg);
             display: flex;
-            flex-direction: row; /* Força que sigui lateral sempre en pantalles grans */
+            flex-direction: row;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
         }
 
-        /* BARRA LATERAL GRISA DISCRETA I CLARA (MATEIXA ESTRUCTURA) */
+        /* BARRA LATERAL GRISA */
         .sidebar {
-            flex: 0 0 260px; /* Amplada fixa estricta de 260px com al CV */
+            flex: 0 0 260px; 
             width: 260px;
             background-color: var(--sidebar-bg);
             color: var(--text-main);
@@ -84,13 +83,12 @@
             display: block;			 
             margin-bottom: 6px; 	 
         }
-
         .contact-link a:hover {
             text-decoration: underline;
             color: var(--primary);
         }
 
-        /* BADGES DE TAGS INTEGRATS (ESTIL CONEIXEMENTS CV) */
+        /* TAGS */
         .skills-container {
             display: flex;
             flex-wrap: wrap;
@@ -112,7 +110,7 @@
             color: var(--primary);
         }
 
-        /* ENLLAÇOS DE L'ESTRUCTURA INTERNA DELS POSTS */
+        /* TOC POSTS */
         .toc-container {
             display: flex;
             flex-direction: column;
@@ -134,105 +132,78 @@
             color: var(--text-light);
         }
 
-        /* CONTINGUT PRINCIPAL DE LA PARTE CENTRAL */
+        /* PARTE CENTRAL */
         .main-content {
-            flex: 1; /* Ocupa tota la resta de l'espai */
+            flex: 1; 
             padding: 40px 45px;
             background: #ffffff;
-            min-width: 0; /* Evita que components amples com codi trenquin el disseny */
+            min-width: 0; 
         }
 
-        /* TITOL I SUBTITOL CENTRATS (ESTIL BANNER DEL CV) */
-        .philosophy-banner {
-            background: var(--primary-light);
-            border-left: 3px solid var(--text-light);
-            padding: 15px;
-            margin-bottom: 40px;
-            font-size: 13.5px;
-            color: var(--dark);
+        /* NOU ENCAPÇALAMENT: SENSE CAIXA GRISA, TITOL GRAN, CENTRAT I AMB LINIA INFERIOR */
+        .blog-header {
+            text-align: center;
+            padding-bottom: 25px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border); /* Línia que separa l'encapçalament dels posts */
         }
-        .philosophy-banner h1 {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 4px;
+        .blog-header h1 {
+            font-size: 28px; /* Font més gran */
+            font-weight: 700;
+            text-transform: uppercase; /* Títol del blog en majúscules */
+            margin-bottom: 6px;
         }
-        .philosophy-banner h1 a {
+        .blog-header h1 a {
             color: var(--dark);
             text-decoration: none;
         }
-        .philosophy-banner p {
+        .blog-header p {
             color: var(--text-light);
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 400;
         }
 
-        /* MAQUETACIÓ DE LA LLISTA DE POSTS (TIMELINE) */
-        .timeline {
-            position: relative;
-            padding-left: 18px;
-            border-left: 1px solid var(--border);
-        }
-
-        /* CORRECCIÓ: POSTS MÉS ESPACIATS I AMB BLOC INTEGRAT */
-        .timeline-item {
-            position: relative;
-            margin-bottom: 35px; /* Espai ampliat entre els posts */
-            padding: 12px 16px;
-            border-radius: 4px !important;
-            transition: background-color 0.2s ease, transform 0.2s ease;
-        }
-
-        /* DESTACAT EN PASSAR EL RATOLÍ (HOVER) */
-        .timeline-item:hover {
-            background-color: var(--sidebar-bg); /* Fons griset subtil */
-            transform: translateX(4px); /* Lleuger efecte de moviment cap a la dreta */
-        }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -22px;
-            top: 20px;
-            width: 7px;
-            height: 7px;
-            background: #ffffff;
-            border: 1.5px solid var(--text-light);
-        }
-
-        .item-header {
+        /* LLISTAT DE POSTS (SENSE LINIA TEMPORAL) */
+        .posts-list {
             display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            flex-wrap: wrap;
-            margin-bottom: 4px;
+            flex-direction: column;
+            gap: 15px; /* Menys espai entre posts */
         }
 
-        .company {
+        /* NOU ESTIL PER ALS POSTS AMB HOVER DESTACAT */
+        .post-card {
+            padding: 14px 18px;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            border-radius: 3px !important;
+        }
+        .post-card:hover {
+            background-color: var(--sidebar-bg); /* Es destaca quan passes per sobre */
+            transform: translateX(4px);
+        }
+
+        /* TITOLS DELS POSTS EN MAJUSCULES */
+        .post-card-title {
             font-size: 15px;
             font-weight: 600;
-            color: var(--dark);
+            text-transform: uppercase; /* Títols dels posts en majúscules */
+            margin-bottom: 6px;
         }
-        .company a {
+        .post-card-title a {
             color: var(--dark);
             text-decoration: none;
         }
-        .company a:hover {
+        .post-card-title a:hover {
             color: var(--primary);
-        }
-
-        .date {
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--text-light);
         }
 
         .summary-text {
             font-size: 13.5px;
             color: var(--text-main);
             text-align: justify;
+            line-height: 1.6;
         }
 
-        /* TEXT INTERN DELS POSTS */
+        /* DINS DELS POSTS PROPIS */
         .blog-post-body h1, .blog-post-body h2, .blog-post-body h3 {
             color: var(--dark);
             font-weight: 600;
@@ -257,27 +228,24 @@
             line-height: 1.6;
         }
 
-        /* CORRECCIÓ: BLOCS DE CODI MÉS PETITS I COMPACTES */
         pre, code {
             font-family: Consolas, "Liberation Mono", Courier, monospace;
-            font-size: 12px !important; /* Mida reduïda i neta */
+            font-size: 12px !important; 
         }
         pre {
             background: var(--sidebar-bg);
             border: 1px solid var(--border);
             padding: 12px;
-            overflow-x: auto; /* Scroll horitzontal net sense trencar la caixa */
+            overflow-x: auto; 
             margin-bottom: 18px;
         }
 
-        /* LIMITAR CAIXES DE COMENTARIS I IFRAMES AL 100% DEL CONTEXT */
         #disqus_thread, .comments, iframe {
             max-width: 100% !important;
             width: 100% !important;
             margin-top: 40px;
         }
 
-        /* RESPONSIVE PER A MÒBILS */
         @media (max-width: 768px) {
             .cv-container {
                 flex-direction: column;
@@ -309,10 +277,8 @@
 
 <div class="cv-container">
     
-    <!-- BARRA LATERAL GRISA FIXA -->
     <aside class="sidebar">
         {% if page.url == "/" %}
-          <!-- ELEMENTS EXCLUSIUS DE LA PÀGINA PRINCIPAL -->
           <div class="sidebar-section">
             <div class="sidebar-title">Filtra per Tags</div>
             <div class="skills-container">
@@ -331,24 +297,17 @@
 
           <div class="sidebar-section">
             <div class="sidebar-title">Network</div>
-            <span class="contact-link">
-                <!-- En blanc provisionalment -->
-            </span>
+            <span class="contact-link"></span>
           </div>
 
           <div class="sidebar-section">
             <div class="sidebar-title">Links d'interès</div>
-            <span class="contact-link">
-                <!-- En blanc provisionalment -->
-            </span>
+            <span class="contact-link"></span>
           </div>
         {% else %}
-          <!-- ELEMENTS EXCLUSIUS DE LES PÀGINES DE POSTS -->
           <div class="sidebar-section">
             <div class="sidebar-title">Estructura del Post</div>
-            <div id="toc" class="toc-container">
-              <!-- S'omple dinàmicament via JavaScript -->
-            </div>
+            <div id="toc" class="toc-container"></div>
           </div>
           <div class="sidebar-section" style="margin-top: 40px;">
             <span class="contact-link">
@@ -358,16 +317,14 @@
         {% endif %}
     </aside>
 
-    <!-- BLOCK DE CONTINGUT CENTRAL -->
     <main class="main-content">
         
-        <!-- TITOL I SUBTITOL DEL BLOG (DINS LA SECCIÓ CENTRAL) -->
-        <div class="philosophy-banner">
+        <!-- ENCAPÇALAMENT CENTRAT I NET -->
+        <div class="blog-header">
             <h1><a href="{{ '/' | relative_url }}">{{ site.title }}</a></h1>
             <p>{{ site.description }}</p>
         </div>
 
-        <!-- DETALL O LLISTAT DE CONTINGUTS -->
         <div class="blog-post-body">
             {{ content }}
         </div>
@@ -375,11 +332,10 @@
     </main>
 </div>
 
-<!-- LÒGICA JAVASCRIPT PER ENLLAÇOS INTERNS I FILTRES -->
 {% if page.url == "/" %}
 <script>
   function filterByTag(element, tag) {
-    const posts = document.querySelectorAll('.timeline-item');
+    const posts = document.querySelectorAll('.post-card');
     posts.forEach(post => {
       const postTags = post.getAttribute('data-tags').split(' ');
       if (postTags.includes(tag)) {
@@ -395,7 +351,7 @@
   }
 
   function clearTagFilter() {
-    const posts = document.querySelectorAll('.timeline-item');
+    const posts = document.querySelectorAll('.post-card');
     posts.forEach(post => post.style.display = 'block');
     document.querySelectorAll('.tag-filter-btn').forEach(btn => btn.classList.remove('active'));
     document.getElementById('clear-filter-btn').style.display = 'none';
