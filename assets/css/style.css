@@ -1,594 +1,171 @@
+---
+---
+@import "{{ site.theme }}";
+
+/* VARIABLES DEL TEU CV */
 :root {
-  /* Paleta extreta del CV: fons gris, "full de paper" blanc, blau corporatiu */
-  --bg-color: #ffffff;           /* Fons de la "targeta" principal (= card-bg del CV) */
-  --bg-page: #e2e8f0;            /* Fons de pantalla neutral (= bg-body del CV) */
-  --bg-secondary: #f8fafc;       /* Fons clar i discret (= sidebar-bg del CV) */
-  --text-color: #1e293b;         /* Gris fosc elegant per a títols (= dark del CV) */
-  --text-muted: #475569;         /* Text principal (= text-main del CV) */
-  --text-light: #64748b;         /* Text secundari (= text-light del CV) */
-  --accent-color: #3b82f6;       /* Blau corporatiu (= primary del CV) */
-  --accent-hover: #2563eb;       /* Blau més fosc per a hover */
-  --accent-light: #f1f5f9;       /* Fons banner/destacat (= primary-light del CV) */
-  --border-color: #e2e8f0;       /* Línies de separació fines (= border del CV) */
-  --code-bg: #1e293b;            /* Gris fosc per a blocs de codi */
-  --code-text: #f8fafc;          /* Gris molt clar per a text del codi */
-  --tag-bg: #ffffff;             /* Badges sobre blanc amb vora (estil CV) */
-  --tag-color: #475569;          /* Text neutre dels badges */
-  --success-color: #10b981;      /* Verd per a destacats positius */
-  --warning-color: #f59e0b;      /* Taronja per a destacats */
+    --primary: #3b82f6;       /* Blau corporatiu suau */
+    --primary-light: #f1f5f9; /* Fons del banner superior */
+    --dark: #1e293b;          /* Gris fosc elegant per a títols */
+    --sidebar-bg: #f8fafc;     /* Fons clar i discret per a la barra lateral */
+    --text-main: #475569;      /* Text principal */
+    --text-light: #64748b;     /* Text secundari */
+    --bg-body: #e2e8f0;        /* Fons de pantalla neutral */
+    --card-bg: #ffffff;        /* Fons blanc de la part principal */
+    --border: #e2e8f0;         /* Línies de separació */
 }
 
-/* Estructura global */
-html {
-  height: 100%;
-  scroll-behavior: smooth;
-}
-
+/* RESET I TIPOGRAFIA DEL CV */
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  color: var(--text-muted);
-  background-color: var(--bg-page);
-  line-height: 1.5;
-  margin: 0;
-  padding: 40px 20px;
-  height: 100%;
-  overflow-y: scroll;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+    background-color: var(--bg-body) !important;
+    color: var(--text-main) !important;
+    padding: 40px 20px !important;
 }
 
-/* Contenidor principal: estil "full de paper", igual que el .cv-container */
-.site-wrapper {
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  min-height: calc(100vh - 80px);
-  max-width: 1050px;
-  margin: 0 auto;
-  padding: 0 45px;
-  box-sizing: border-box;
-  background: var(--bg-color);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+/* CONTENIDOR ESTIL "FULL DE PAPER" (COPSANT L'ESTRUCTURA DEL MINIMAL) */
+.wrapper {
+    max-width: 1050px !important;
+    margin: 0 auto !important;
+    background: var(--card-bg) !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+    padding: 0 !important;
 }
 
-/* Donem una mica d'aire a dalt i a baix del contingut dins de la targeta */
+/* BARRA LATERAL GRISA DISCRETA */
 header {
-  padding-top: 2rem;
-}
-
-footer {
-  padding-bottom: 1.5rem;
-}
-
-/* ===== CAPÇALERA ===== */
-header {
-  margin-bottom: 1rem;
-  border-bottom: 2px solid var(--border-color);
-  padding-bottom: 1.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.site-title {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  font-weight: 600;
-  font-size: 1.5rem;
-  letter-spacing: normal;
-  text-decoration: none;
-  color: var(--text-color);
-  margin: 0;
-  transition: color 0.3s ease;
-}
-
-.site-title::before {
-  content: "📒 ";
-  font-size: 1.5rem;
-}
-
-.site-title:hover {
-  color: var(--accent-color);  
-}
-
-/* Barra de cerca */
-.search-container {
-  flex: 1;
-  min-width: 200px;
-  max-width: 350px;
-}
-
-.search-input {
-  width: 100%;
-  padding: 0.6rem 1rem;
-  font-size: 0.9rem;
-  border: 1px solid var(--border-color);
-  border-radius: 3px;
-  background-color: var(--bg-secondary);
-  color: var(--text-color);
-  transition: all 0.2s ease;
-  box-sizing: border-box;
-}
-
-.search-input:focus {
-  outline: none;
-  border-color: var(--accent-color);
-  background-color: #ffffff;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.search-input::placeholder {
-  color: var(--text-light);
-}
-
-/* Contingut principal */
-.site-content {
-  width: 100%;
-  font-size: 0.95rem;
-}
-
-/* ===== TIPOGRAFIA ===== */
-a {
-  color: var(--accent-color);
-  text-decoration: none;
-  transition: color 0.2s ease;
-  position: relative;
-}
-
-a:hover {
-  color: var(--accent-hover);
-}
-
-/* Títols */
-h1, h2, h3, h4 {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  color: var(--text-color);
-  font-weight: 600;
-  letter-spacing: normal;
-  line-height: 1.3;
-}
-
-h1 {
-  font-size: 1.4rem;
-  margin-bottom: 1.2rem;
-  margin-top: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding-bottom: 0.6rem;
-  border-bottom: 1px solid var(--border-color);
-}
-
-h2 {
-  font-size: 1.1rem;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding-bottom: 0.4rem;
-  border-bottom: 1px solid var(--border-color);
-  border-left: none;
-  padding-left: 0;
-}
-
-h3 {
-  font-size: 1.05rem;
-  margin-top: 1.5rem;
-  margin-bottom: 0.8rem;
-  color: var(--text-color);
-}
-
-h4 {
-  font-size: 0.95rem;
-  margin-top: 1rem;
-  margin-bottom: 0.6rem;
-}
-
-/* Descripció del blog */
-.about {
-  font-size: 1rem;
-  color: var(--text-muted);
-  margin-bottom: 1.5rem;
-  text-align: center;
-  font-style: italic;
-  line-height: 1.7;
-}
-
-/* ===== FILTRES I TAGS ===== */
-.tags-filter-container {
-  margin-bottom: 3rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.2rem;
-  justify-content: center;
-  align-items: center;
-}
-
-.tag-filter-btn {
-  background-color: var(--tag-bg);
-  border: 1px solid var(--border-color);
-  color: var(--text-light);
-  padding: 0.3rem 0.6rem;
-  border-radius: 3px;
-  font-size: 0.7rem;
-  font-weight: 400;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  user-select: none;
-}
-
-.tag-filter-btn:hover {
-  background-color: #e8eef7;
-  border-color: var(--accent-color);
-  color: var(--accent-color);
-}
-
-.tag-filter-btn.active {
-  background-color: var(--accent-color);
-  border-color: var(--accent-color);
-  color: #ffffff;
-  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
-}
-
-/* ===== LLISTAT DE POSTS ===== */
-ul {
-  padding: 0;
-  list-style: none;
-}
-
-.posts-list {
-  margin-bottom: 3rem;
-}
-
-.post-item {
-  background: transparent;
-  padding: 1.5rem 0;
-  margin-bottom: 0;
-  border-bottom: 1px solid var(--border-color);
-  border-radius: 0;
-  border-left: 4px solid transparent;
-  transition: all 0.3s ease;
-}
-
-.post-item:last-child {
-  border-bottom: none;
-}
-
-.post-item:hover {
-  border-left-color: var(--accent-color);
-  padding-left: 0.8rem;
-}
-
-.post-link {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--text-color);
-  display: block;
-  margin-bottom: 0.5rem;
-  transition: color 0.2s ease;
-}
-
-.post-link:hover {
-  color: var(--accent-color);
-}
-
-/* Resums dels posts */
-.post-excerpt {
-  font-size: 0.95rem;
-  color: var(--text-muted);
-  margin-bottom: 0.8rem;
-  line-height: 1.65;
-}
-
-/* Metadades del post (data, tags, etc.) */
-.post-meta {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  font-size: 0.85rem;
-  color: var(--text-light);
-  flex-wrap: wrap;
-}
-
-.post-date {
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-}
-
-.post-date::before {
-  content: "📅";
-  font-size: 0.9rem;
-}
-
-/* Tags dins del llistat */
-.list-tags {
-  display: flex;
-  gap: 0.2rem;
-  flex-wrap: wrap;
-  margin-top: 0.6rem;
-}
-
-.tag-sm {
-  font-size: 0.7rem;
-  color: var(--tag-color);
-  background-color: var(--tag-bg);
-  border: 1px solid var(--border-color);
-  padding: 0.25rem 0.55rem;
-  border-radius: 3px;
-  font-weight: 400;
-}
-
-.tag-sm::before {
-  content: "#";
-}
-
-/* ===== CONTINGUT DEL POST ===== */
-.post-content {
-  line-height: 1.8;
-  word-wrap: break-word;
-}
-
-.post-content h1 {
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-}
-
-.post-content h1::before {
-  content: "📃";
-  font-size: 1.5rem;
-} 
-
-.post-content p {
-  margin-bottom: 1rem;
-}
-
-.post-tags {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 2rem;
-  padding-bottom: 2rem;
-  border-bottom: 1px solid var(--border-color);
-  flex-wrap: wrap;
-}
-
-/* ===== POSTS RELACIONATS ===== */
-.related-posts {
-  margin-top: 3rem;
-  padding-top: 2rem;
-  border-top: 2px solid var(--border-color);
-}
-
-.related-posts-title {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--text-color);
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-}
-
-.related-posts-title::before {
-  content: "🔗";
-  font-size: 1.1rem;
-}
-
-.related-posts-list {
-  padding-left: 1.5rem;
-  list-style: none;
-}
-
-.related-posts-list li {
-  margin-bottom: 0.8rem;
-  line-height: 1.6;
-}
-
-.related-posts-list a {
-  color: var(--accent-color);
-  font-weight: 500;
-  transition: color 0.2s ease;
-  text-decoration: none;
-}
-
-.related-posts-list a:hover {
-  color: var(--accent-hover);
-  text-decoration: underline;
-}
-
-
-/* ===== BLOCS DE CODI ===== */
-pre {
-  background-color: var(--code-bg);
-  color: var(--code-text);
-  padding: 1.5rem;
-  overflow-x: auto;
-  border-radius: 4px;
-  font-family: "SFMono-Regular", Consolas, "Monaco", "Courier New", monospace;
-  font-size: 0.85rem;
-  margin: 1.5rem 0;
-  line-height: 1.5;
-  border: 1px solid #334155;
-}
-
-code {
-  font-family: "SFMono-Regular", Consolas, "Monaco", "Courier New", monospace;
-  background-color: var(--bg-secondary);
-  color: #c0392b;
-  padding: 0.2rem 0.4rem;
-  border-radius: 3px;
-  font-size: 0.85rem;
-}
-
-pre code {
-  background-color: transparent;
-  color: inherit;
-  padding: 0;
-}
-
-/* Ressaltat de sintaxi (Rouge) */
-pre.highlight, .highlight pre {
-  background: var(--code-bg);
-  color: var(--code-text);
-}
-
-.highlight .c, .highlight .cm, .highlight .c1 {
-  color: #64748b;
-  font-style: italic;
-}
-
-.highlight .k, .highlight .kc, .highlight .kd, .highlight .kn {
-  color: #f43f5e;
-  font-weight: bold;
-}
-
-.highlight .nf, .highlight .fm {
-  color: #38bdf8;
-}
-
-.highlight .s, .highlight .s1, .highlight .s2 {
-  color: #10b981;
-}
-
-.highlight .mi, .highlight .mf, .highlight .mo, .hightlight .m {
-  color: #fbbf24;
-}
-
-.highlight .nn {
-  color: #e2e8f0;
-}
-
-.highlight .nb {
-  color: #a855f7;
-}
-
-.highlight .o, .highlight .ow {
-  color: #f43f5e;
-}
-
-/* ===== BLOCS ESPECIALS ===== */
-blockquote {
-  border-left: 4px solid var(--accent-color);
-  padding-left: 1rem;
-  margin-left: 0;
-  color: var(--text-muted);
-  font-style: italic;
-}
-
-/* ===== TAULA ===== */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 1.5rem 0;
-  font-size: 0.9rem;
-}
-
-th, td {
-  border: 1px solid var(--border-color);
-  padding: 0.8rem;
-  text-align: left;
-}
-
-th {
-  background-color: var(--bg-secondary);
-  font-weight: 700;
-  color: var(--text-color);
-}
-
-tr:nth-child(even) {
-  background-color: var(--bg-secondary);
-}
-
-/* ===== FOOTER ===== */
-footer {
-  margin-top: 0.5rem;
-  padding: 0.5rem 0;
-  border-top: 1px solid var(--border-color);
-  font-size: 0.8rem;
-  color: var(--text-light);
-  text-align: center;
-  line-height: 1.6;
-}
-
-/* ===== RESPONSIVE ===== */
+    flex: 1 1 260px !important;
+    width: auto !important;
+    background-color: var(--sidebar-bg) !important;
+    padding: 40px 25px !important;
+    border-right: 1px solid var(--border) !important;
+    position: static !important; /* Desactivem el posicionament fix del tema minimal */
+}
+
+header h1 {
+    font-size: 22px !important;
+    font-weight: 600 !important;
+    line-height: 1.3 !important;
+    color: var(--dark) !important;
+    margin-bottom: 6px !important;
+}
+
+header p {
+    color: var(--text-light) !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    margin-bottom: 35px !important;
+}
+
+/* SECCIONS DE LA BARRA LATERAL */
+.sidebar-section {
+    margin-bottom: 30px;
+}
+
+.sidebar-title {
+    font-size: 11px;
+    color: var(--dark);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 4px;
+    margin-bottom: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px !important;
+}
+
+/* Enllaços de la barra lateral */
+.sidebar-section a {
+    color: var(--dark) !important;
+    text-decoration: none !important;
+    font-weight: 500 !important;
+    display: block !important;
+    margin-bottom: 6px !important;
+    font-size: 13.5px !important;
+}
+
+.sidebar-section a:hover {
+    text-decoration: underline !important;
+    color: var(--primary) !important;
+}
+
+/* NÚVOL DE TAGS (ESTIL BADGES CV) */
+.skills-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.badge {
+    background: #ffffff;
+    color: var(--text-main);
+    padding: 3px 8px;
+    font-size: 12px;
+    border: 1px solid var(--border);
+    font-weight: 400;
+    border-radius: 3px !important;
+    text-decoration: none !important;
+}
+.badge:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+/* ÍNDEX DINÀMIC DELS POSTS (TOC) */
+.toc-link {
+    font-size: 13px !important;
+    color: var(--text-main) !important;
+    font-weight: 400 !important;
+    margin-bottom: 4px !important;
+    padding-left: 0;
+}
+.toc-h3 {
+    padding-left: 10px !important;
+    font-size: 12px !important;
+    color: var(--text-light) !important;
+}
+
+/* CONTINGUT PRINCIPAL */
+section {
+    flex: 3 1 600px !important;
+    width: auto !important;
+    padding: 40px 45px !important;
+    background: #ffffff !important;
+}
+
+section h1, section h2, section h3 {
+    color: var(--dark) !important;
+    font-weight: 600 !important;
+    border-bottom: 1px solid var(--border) !important;
+    padding-bottom: 4px !important;
+    margin-top: 24px !important;
+    margin-bottom: 16px !important;
+}
+section h1 { font-size: 20px !important; }
+section h2 { font-size: 16px !important; }
+section h3 { font-size: 14px !important; border-bottom: none !important; }
+
+section p {
+    font-size: 13.5px !important;
+    color: var(--text-main) !important;
+    text-align: justify !important;
+    line-height: 1.6 !important;
+    margin-bottom: 15px !important;
+}
+
+/* RESPONSIVE */
 @media (max-width: 768px) {
-  body {
-    padding: 20px 10px;
-  }
-
-  .site-wrapper {
-    padding: 0 1.2rem;
-  }
-
-  header {
-    flex-direction: column;
-    margin-bottom: 1.5rem;
-    padding-top: 1.5rem;
-  }
-
-  .search-container {
-    width: 100%;
-    max-width: 100%;
-  }
-
-  .site-title {
-    font-size: 1.5rem;
-  }
-
-  .site-title::before {
-    content: "📒 ";
-    font-size: 1.35rem;
-  }
-  
-  h1 {
-    font-size: 1.35rem;
-  }
-
-  h2 {
-    font-size: 1.15rem;
-  }
-
-  .related-posts-list {
-    grid-template-columns: 1fr;
-  }
-
-  .post-item {
-    padding: 1.2rem 0;
-  }
-
-  .post-item:hover {
-    padding-left: 0.5rem;
-  }
-
-  .post-meta {
-    font-size: 0.8rem;
-  }
-}
-
-/* ===== UTILITATS ===== */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
-}
-
-/* Animacions suaus */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.post-item {
-  animation: fadeIn 0.3s ease;
+    .wrapper {
+        flex-direction: column !important;
+    }
+    header {
+        border-right: none !important;
+        border-bottom: 1px solid var(--border) !important;
+        flex: 1 1 100% !important;
+    }
+    section {
+        flex: 1 1 100% !important;
+        padding: 20px !important;
+    }
 }
