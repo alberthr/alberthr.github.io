@@ -1,0 +1,222 @@
+<!-- ===================================================================
+     CALCULADORA DE COBERTURA n+ A PARTIR DE GRPs I COBERTURA 1+
+     Estil alineat amb el CV (paleta, tipografia, cantonades rectes).
+     Només cal enganxar aquest bloc sencer dins del .md del post.
+     =================================================================== -->
+<div class="ccob-widget">
+  <style>
+    .ccob-widget {
+      --cc-primary: var(--primary, #3b82f6);
+      --cc-primary-light: var(--primary-light, #f1f5f9);
+      --cc-dark: var(--dark, #1e293b);
+      --cc-text: var(--text-main, #475569);
+      --cc-text-light: var(--text-light, #64748b);
+      --cc-card-bg: var(--card-bg, #ffffff);
+      --cc-border: var(--border, #e2e8f0);
+      --cc-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+      box-sizing: border-box;
+      max-width: 760px;
+      margin: 2rem auto;
+      background: var(--cc-card-bg);
+      border: 1px solid var(--cc-border);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      padding: 32px 36px;
+      font-family: var(--cc-font);
+      color: var(--cc-text);
+      font-size: 13.5px;
+      line-height: 1.5;
+    }
+    .ccob-widget *, .ccob-widget *::before, .ccob-widget *::after { box-sizing: border-box; }
+
+    .ccob-widget .ccob-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--cc-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--cc-border);
+      padding-bottom: 6px;
+      margin-bottom: 22px;
+    }
+
+    .ccob-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px 20px;
+    }
+    .ccob-field { display: flex; flex-direction: column; gap: 6px; }
+    .ccob-field label { font-size: 12.5px; color: var(--cc-text-light); }
+    .ccob-field input {
+      font: inherit;
+      font-family: var(--cc-font);
+      padding: 9px 10px;
+      border: 1px solid var(--cc-border);
+      border-radius: 0;
+      background: #fff;
+      color: var(--cc-dark);
+      width: 100%;
+    }
+    .ccob-field input:focus {
+      outline: none;
+      border-color: var(--cc-primary);
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+    }
+    @media (max-width: 600px) {
+      .ccob-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .ccob-summary {
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    @media (max-width: 600px) {
+      .ccob-summary { grid-template-columns: 1fr; }
+    }
+    .ccob-card {
+      padding: 14px 16px;
+      border: 1px solid var(--cc-border);
+      background: #fff;
+    }
+    .ccob-card.active { background: var(--cc-primary-light); border-color: var(--cc-primary); }
+    .ccob-card .lab { font-size: 11px; color: var(--cc-text-light); text-transform: uppercase; letter-spacing: 0.5px; }
+    .ccob-card .val { font-size: 19px; font-weight: 700; color: var(--cc-dark); margin-top: 5px; }
+
+    .ccob-table-wrap { margin-top: 24px; }
+    .ccob-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--cc-text-light);
+      padding: 4px 0;
+    }
+    .ccob-row > span:first-child { width: 48px; flex: 0 0 auto; color: var(--cc-dark); font-weight: 600; }
+    .ccob-bar-track { flex: 1; height: 14px; background: var(--cc-primary-light); border: 1px solid var(--cc-border); overflow: hidden; }
+    .ccob-bar-fill { height: 100%; background: var(--cc-primary); }
+    .ccob-bar-val { font-size: 12.5px; color: var(--cc-dark); font-weight: 600; width: 4.5em; text-align: right; }
+
+    .ccob-note { margin-top: 18px; font-size: 12.5px; color: var(--cc-text-light); }
+    .ccob-note strong { color: var(--cc-dark); }
+    .ccob-note code {
+      font-family: var(--cc-font);
+      background: var(--cc-primary-light);
+      padding: 1px 5px;
+      color: var(--cc-dark);
+    }
+  </style>
+
+  <div class="ccob-title">Calculadora de cobertura n+ (a partir de GRPs i Cobertura 1+)</div>
+
+  <div class="ccob-grid">
+    <div class="ccob-field">
+      <label for="cc-grp">GRPs totals</label>
+      <input id="cc-grp" type="number" min="0.01" step="1" value="250">
+    </div>
+    <div class="ccob-field">
+      <label for="cc-c1">Cobertura 1+ (%)</label>
+      <input id="cc-c1" type="number" min="0.01" max="100" step="0.1" value="60">
+    </div>
+  </div>
+
+  <div class="ccob-summary">
+    <div class="ccob-card active">
+      <div class="lab">Freqüència mitjana</div>
+      <div class="val" id="cc-out-freq">—</div>
+    </div>
+    <div class="ccob-card">
+      <div class="lab">Ràtio de decaïment (k)</div>
+      <div class="val" id="cc-out-k">—</div>
+    </div>
+    <div class="ccob-card">
+      <div class="lab">Suma C&#8321;…&#8734; (= GRP)</div>
+      <div class="val" id="cc-out-sum">—</div>
+    </div>
+  </div>
+
+  <div class="ccob-table-wrap" id="cc-table"></div>
+
+  <div class="ccob-note" id="cc-note"></div>
+
+  <div class="ccob-note">
+    Model: <code>C<sub>n</sub> = C&#8321; &middot; (1 &minus; C&#8321;/GRP)<sup>n&minus;1</sup></code>,
+    derivat assumint que la cobertura decau amb una ràtio constant entre nivells consecutius i que
+    <code>&sum; C<sub>n</sub> (n=1..&#8734;) = GRP</code>. És una aproximació de planificació ràpida
+    (decaïment geomètric), no el model exacte que faria servir un software de mitjans amb dades de panell
+    (Poisson, NBD, Beta-Binomial…).
+  </div>
+
+  <script>
+  (function () {
+    var $ = function (id) { return document.getElementById(id); };
+    var elGrp = $('cc-grp'), elC1 = $('cc-c1');
+    var outFreq = $('cc-out-freq'), outK = $('cc-out-k'), outSum = $('cc-out-sum');
+    var table = $('cc-table'), note = $('cc-note');
+
+    function fmt(x, d) {
+      if (d === undefined) d = 2;
+      return x.toFixed(d);
+    }
+
+    function calc() {
+      var grp = parseFloat(elGrp.value);
+      var c1 = parseFloat(elC1.value);
+
+      if (!isFinite(grp) || grp <= 0 || !isFinite(c1) || c1 <= 0 || c1 > 100) {
+        note.textContent = 'Revisa els valors: GRP > 0 i 0 < Cobertura 1+ ≤ 100.';
+        table.innerHTML = '';
+        outFreq.textContent = outK.textContent = outSum.textContent = '—';
+        return;
+      }
+
+      if (c1 > grp) {
+        note.innerHTML = 'La Cobertura 1+ no pot ser superior als GRPs (implicaria freqüència mitjana &lt; 1). Revisa les dades.';
+        table.innerHTML = '';
+        outFreq.textContent = outK.textContent = outSum.textContent = '—';
+        return;
+      }
+
+      var k = 1 - c1 / grp;
+      var freq = grp / c1;
+
+      outFreq.textContent = fmt(freq) + 'x';
+      outK.textContent = fmt(k, 3);
+
+      var levels = [];
+      var sumAll = 0; // suma teòrica n=1..infinit
+      var cPrev = c1;
+      for (var n = 1; n <= 10; n++) {
+        var cn = c1 * Math.pow(k, n - 1);
+        levels.push(cn);
+      }
+      // suma infinita de la sèrie geomètrica completa (n=1..infinit) = c1 / (1-k) = grp
+      sumAll = (k < 1) ? c1 / (1 - k) : grp;
+      outSum.textContent = fmt(sumAll) + '%';
+
+      var maxC = levels[0];
+      var rowsHtml = '';
+      for (var i = 0; i < levels.length; i++) {
+        var pct = Math.max(0, Math.min(100, (levels[i] / maxC) * 100));
+        rowsHtml += '<div class="ccob-row">' +
+          '<span>' + (i + 1) + '+</span>' +
+          '<div class="ccob-bar-track"><div class="ccob-bar-fill" style="width:' + pct + '%"></div></div>' +
+          '<span class="ccob-bar-val">' + fmt(levels[i]) + '%</span>' +
+          '</div>';
+      }
+      table.innerHTML = rowsHtml;
+
+      note.innerHTML = 'Amb GRP = ' + grp + ' i Cobertura 1+ = ' + c1 + '%, la freqüència mitjana és ' +
+        '<strong>' + fmt(freq) + '</strong> contactes per individu exposat, i la ràtio de decaïment estimada és ' +
+        '<strong>k = ' + fmt(k, 3) + '</strong>. La Cobertura 10+ estimada és <strong>' + fmt(levels[9]) + '%</strong>.';
+    }
+
+    [elGrp, elC1].forEach(function (el) {
+      el.addEventListener('input', calc);
+      el.addEventListener('change', calc);
+    });
+    calc();
+  })();
+  </script>
+</div>

@@ -1,95 +1,106 @@
 <!-- ===================================================================
      CALCULADORA DE P-VALOR — TEST BINOMIAL EXACTE
-     Widget autònom (HTML+CSS+JS) per enganxar dins d'un post de Jekyll.
-     Escopat sota .cbinom-* per no col·lidir amb l'estil del blog.
+     Estil alineat amb el CV (paleta, tipografia, cantonades rectes).
+     Només cal enganxar aquest bloc sencer dins del .md del post.
      =================================================================== -->
 <div class="cbinom-widget">
   <style>
     .cbinom-widget {
-      --cb-bg: var(--card-bg, #fafafa);
-      --cb-border: var(--border-color, #ddd);
-      --cb-text: var(--text-color, #222);
-      --cb-muted: #6b7280;
-      --cb-accent: #1d4ed8;
-      --cb-accent-soft: #dbeafe;
-      --cb-tail: #b91c1c;
-      --cb-tail-soft: #fee2e2;
-      --cb-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      --cb-primary: var(--primary, #3b82f6);
+      --cb-primary-light: var(--primary-light, #f1f5f9);
+      --cb-dark: var(--dark, #1e293b);
+      --cb-text: var(--text-main, #475569);
+      --cb-text-light: var(--text-light, #64748b);
+      --cb-card-bg: var(--card-bg, #ffffff);
+      --cb-border: var(--border, #e2e8f0);
+      --cb-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
       box-sizing: border-box;
       max-width: 720px;
-      margin: 2rem 0;
-      padding: 1.25rem 1.5rem 1.5rem;
+      margin: 2rem auto;
+      background: var(--cb-card-bg);
       border: 1px solid var(--cb-border);
-      border-radius: 10px;
-      background: var(--cb-bg);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      padding: 32px 36px;
+      font-family: var(--cb-font);
       color: var(--cb-text);
-      font-family: inherit;
-      font-size: 0.95rem;
+      font-size: 13.5px;
+      line-height: 1.5;
     }
-    .cbinom-widget * { box-sizing: border-box; }
-    .cbinom-widget h4 {
-      margin: 0 0 0.9rem;
-      font-size: 0.78rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--cb-muted);
+    .cbinom-widget *, .cbinom-widget *::before, .cbinom-widget *::after { box-sizing: border-box; }
+
+    .cbinom-widget .cbinom-title {
+      font-size: 14px;
       font-weight: 600;
+      color: var(--cb-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--cb-border);
+      padding-bottom: 6px;
+      margin-bottom: 22px;
     }
+
     .cbinom-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 0.9rem 1rem;
+      gap: 18px 20px;
     }
-    .cbinom-field { display: flex; flex-direction: column; gap: 0.3rem; }
-    .cbinom-field label { font-size: 0.82rem; color: var(--cb-muted); }
+    .cbinom-field { display: flex; flex-direction: column; gap: 6px; }
+    .cbinom-field label { font-size: 12.5px; color: var(--cb-text-light); }
     .cbinom-field input, .cbinom-field select {
       font: inherit;
-      font-family: var(--cb-mono);
-      padding: 0.45rem 0.55rem;
+      font-family: var(--cb-font);
+      padding: 9px 10px;
       border: 1px solid var(--cb-border);
-      border-radius: 6px;
+      border-radius: 0;
       background: #fff;
-      color: var(--cb-text);
+      color: var(--cb-dark);
       width: 100%;
     }
     .cbinom-field input:focus, .cbinom-field select:focus {
-      outline: 2px solid var(--cb-accent);
-      outline-offset: 1px;
+      outline: none;
+      border-color: var(--cb-primary);
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
     }
     @media (max-width: 560px) {
       .cbinom-grid { grid-template-columns: repeat(2, 1fr); }
     }
 
     .cbinom-results {
-      margin-top: 1.1rem;
+      margin-top: 22px;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 0.7rem;
+      gap: 14px;
     }
     @media (max-width: 560px) {
       .cbinom-results { grid-template-columns: 1fr; }
     }
     .cbinom-card {
-      padding: 0.6rem 0.8rem;
-      border-radius: 8px;
-      background: #f3f4f6;
+      padding: 14px 16px;
       border: 1px solid var(--cb-border);
+      background: #fff;
     }
-    .cbinom-card.active { background: var(--cb-accent-soft); border-color: var(--cb-accent); }
-    .cbinom-card .lab { font-size: 0.72rem; color: var(--cb-muted); text-transform: uppercase; letter-spacing: 0.04em; }
-    .cbinom-card .val { font-family: var(--cb-mono); font-size: 1.25rem; font-weight: 700; margin-top: 0.15rem; }
+    .cbinom-card.active { background: var(--cb-primary-light); border-color: var(--cb-primary); }
+    .cbinom-card .lab { font-size: 11px; color: var(--cb-text-light); text-transform: uppercase; letter-spacing: 0.5px; }
+    .cbinom-card .val { font-size: 19px; font-weight: 700; color: var(--cb-dark); margin-top: 5px; }
 
-    .cbinom-chart-wrap { margin-top: 1.1rem; }
-    .cbinom-chart-wrap canvas { width: 100%; height: 160px; display: block; }
-    .cbinom-legend { display: flex; gap: 1.1rem; font-size: 0.75rem; color: var(--cb-muted); margin-top: 0.4rem; }
-    .cbinom-legend span { display: inline-flex; align-items: center; gap: 0.35rem; }
-    .cbinom-legend i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+    .cbinom-chart-wrap { margin-top: 24px; }
+    .cbinom-chart-wrap canvas { width: 100%; height: 150px; display: block; }
+    .cbinom-legend { display: flex; gap: 18px; font-size: 11.5px; color: var(--cb-text-light); margin-top: 8px; flex-wrap: wrap; }
+    .cbinom-legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .cbinom-legend i { width: 10px; height: 10px; display: inline-block; }
 
-    .cbinom-note { margin-top: 0.9rem; font-size: 0.82rem; color: var(--cb-text); line-height: 1.45; }
-    .cbinom-note code { font-family: var(--cb-mono); background: #f3f4f6; padding: 0.05rem 0.3rem; border-radius: 4px; }
+    .cbinom-note { margin-top: 18px; font-size: 12.5px; color: var(--cb-text-light); }
+    .cbinom-note strong { color: var(--cb-dark); }
+    .cbinom-note code {
+      font-family: var(--cb-font);
+      background: var(--cb-primary-light);
+      padding: 1px 5px;
+      color: var(--cb-dark);
+    }
   </style>
 
-  <h4>Calculadora de p-valor — test binomial exacte</h4>
+  <div class="cbinom-title">Calculadora de p-valor — test binomial exacte</div>
 
   <div class="cbinom-grid">
     <div class="cbinom-field">
@@ -130,11 +141,11 @@
   </div>
 
   <div class="cbinom-chart-wrap">
-    <canvas id="cb-canvas" width="900" height="160"></canvas>
+    <canvas id="cb-canvas" width="900" height="150"></canvas>
     <div class="cbinom-legend">
-      <span><i style="background:#cbd5e1"></i> P(X=k) sota H&#8320;</span>
-      <span><i style="background:var(--cb-tail-soft); border:1px solid var(--cb-tail)"></i> regió considerada en el p-valor</span>
-      <span><i style="background:var(--cb-accent)"></i> valor observat (x)</span>
+      <span><i style="background:#e2e8f0"></i> P(X=k) sota H&#8320;</span>
+      <span><i style="background:#bfdbfe"></i> regió considerada en el p-valor</span>
+      <span><i style="background:#3b82f6"></i> valor observat (x)</span>
     </div>
   </div>
 
@@ -251,25 +262,25 @@
           alt === 'less' ? k <= x :
           included[k];
 
-        ctx.fillStyle = inTail ? '#fecaca' : '#cbd5e1';
+        ctx.fillStyle = inTail ? '#bfdbfe' : '#e2e8f0';
         ctx.fillRect(xPos, yPos, Math.max(barW - 1, 0.5), h);
 
         if (k === x) {
-          ctx.fillStyle = '#1d4ed8';
+          ctx.fillStyle = '#3b82f6';
           ctx.fillRect(xPos, yPos, Math.max(barW - 1, 0.5), Math.max(h, 2));
         }
       }
 
       // baseline
-      ctx.strokeStyle = '#9ca3af';
+      ctx.strokeStyle = '#cbd5e1';
       ctx.beginPath();
       ctx.moveTo(padL, padT + plotH + 0.5);
       ctx.lineTo(padL + plotW, padT + plotH + 0.5);
       ctx.stroke();
 
-      // x-axis ticks (every ~5 units or adapted to n)
-      ctx.fillStyle = '#6b7280';
-      ctx.font = '11px ' + getComputedStyle(document.body).fontFamily;
+      // x-axis ticks
+      ctx.fillStyle = '#64748b';
+      ctx.font = '11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
       ctx.textAlign = 'center';
       var step = Math.max(1, Math.round(n1 / 10));
       for (k = 0; k < n1; k += step) {
