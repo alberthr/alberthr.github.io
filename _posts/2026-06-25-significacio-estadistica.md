@@ -11,7 +11,6 @@ En el món de l'analisis de dades, és comú trobar-se amb resultats que, a simp
 
 Com a nota personal, m'agradaria divagar una mica sobre com interpretar resultats que, tot i mostrar tendències prometedores o negatives, no aconsegueixen ser estadísticament significatius, i quines accions seguir per prendre decisions fonamentades.
 
----
 
 ## Entendre què significa la manca de significança estadística
 
@@ -26,7 +25,6 @@ Per tant, aquesta manca de significància pot deure’s a diversos factors:
 
 Per això, pensar que "no funciona" només perquè no és estadísticament significatiu pot ser un error. La manca de significància no ha de portar-nos a conclusions precipitads.
 
----
 
 ## Què pensar quan els resultats mostren tendències positives o negatives sense ser significatius?
 
@@ -34,7 +32,6 @@ Per això, pensar que "no funciona" només perquè no és estadísticament signi
 - **Escepticisme saludable:** Però tampoc cal sobreinterpretar aquests resultats com a prova definitiva. La absència de significància estadística és un indicador que cal ser prudent i no treure conclusions apresurades.
 - **Considera el context:** Avalua si l’efecte observat té sentit clínic o pràctic, i no només estadístic. De vegades, el valor clínic pot ser rellevant tot i que no assoleixi la significància estadística.
 
----
 
 ## Quines accions seguir en aquests casos?
 
@@ -45,7 +42,6 @@ Algunes estratègies recomanades són:
 - **Evaluar la rellevància clínica:** Determina si els efectes observats, encara que no siguin estadísticament significatius, poden ser rellevants en la pràctica.
 - **Realitzar anàlisis addicionals:** Explora subgrups, diferents mètriques o mètodes estadístics que puguin aportar més informació.
 
----
 
 ## Quina ha de ser la recomanació?
 
@@ -58,7 +54,6 @@ La recomanació clau en aquests casos és mantenir una actitud equilibrada:
 
 En definitiva, els resultats parcialment positius o negatius, encara que no assoleixin la significància estadística, s’han de considerar com una part del procés de construcció de coneixement, i no com conclusions definitives.
 
----
 
 ## Conclusió
 
