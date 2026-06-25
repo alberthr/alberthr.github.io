@@ -1,0 +1,290 @@
+<!-- ===================================================================
+     CALCULADORA DE P-VALOR — TEST BINOMIAL EXACTE
+     Widget autònom (HTML+CSS+JS) per enganxar dins d'un post de Jekyll.
+     Escopat sota .cbinom-* per no col·lidir amb l'estil del blog.
+     =================================================================== -->
+<div class="cbinom-widget">
+  <style>
+    .cbinom-widget {
+      --cb-bg: var(--card-bg, #fafafa);
+      --cb-border: var(--border-color, #ddd);
+      --cb-text: var(--text-color, #222);
+      --cb-muted: #6b7280;
+      --cb-accent: #1d4ed8;
+      --cb-accent-soft: #dbeafe;
+      --cb-tail: #b91c1c;
+      --cb-tail-soft: #fee2e2;
+      --cb-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      box-sizing: border-box;
+      max-width: 720px;
+      margin: 2rem 0;
+      padding: 1.25rem 1.5rem 1.5rem;
+      border: 1px solid var(--cb-border);
+      border-radius: 10px;
+      background: var(--cb-bg);
+      color: var(--cb-text);
+      font-family: inherit;
+      font-size: 0.95rem;
+    }
+    .cbinom-widget * { box-sizing: border-box; }
+    .cbinom-widget h4 {
+      margin: 0 0 0.9rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--cb-muted);
+      font-weight: 600;
+    }
+    .cbinom-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.9rem 1rem;
+    }
+    .cbinom-field { display: flex; flex-direction: column; gap: 0.3rem; }
+    .cbinom-field label { font-size: 0.82rem; color: var(--cb-muted); }
+    .cbinom-field input, .cbinom-field select {
+      font: inherit;
+      font-family: var(--cb-mono);
+      padding: 0.45rem 0.55rem;
+      border: 1px solid var(--cb-border);
+      border-radius: 6px;
+      background: #fff;
+      color: var(--cb-text);
+      width: 100%;
+    }
+    .cbinom-field input:focus, .cbinom-field select:focus {
+      outline: 2px solid var(--cb-accent);
+      outline-offset: 1px;
+    }
+    @media (max-width: 560px) {
+      .cbinom-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .cbinom-results {
+      margin-top: 1.1rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.7rem;
+    }
+    @media (max-width: 560px) {
+      .cbinom-results { grid-template-columns: 1fr; }
+    }
+    .cbinom-card {
+      padding: 0.6rem 0.8rem;
+      border-radius: 8px;
+      background: #f3f4f6;
+      border: 1px solid var(--cb-border);
+    }
+    .cbinom-card.active { background: var(--cb-accent-soft); border-color: var(--cb-accent); }
+    .cbinom-card .lab { font-size: 0.72rem; color: var(--cb-muted); text-transform: uppercase; letter-spacing: 0.04em; }
+    .cbinom-card .val { font-family: var(--cb-mono); font-size: 1.25rem; font-weight: 700; margin-top: 0.15rem; }
+
+    .cbinom-chart-wrap { margin-top: 1.1rem; }
+    .cbinom-chart-wrap canvas { width: 100%; height: 160px; display: block; }
+    .cbinom-legend { display: flex; gap: 1.1rem; font-size: 0.75rem; color: var(--cb-muted); margin-top: 0.4rem; }
+    .cbinom-legend span { display: inline-flex; align-items: center; gap: 0.35rem; }
+    .cbinom-legend i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+
+    .cbinom-note { margin-top: 0.9rem; font-size: 0.82rem; color: var(--cb-text); line-height: 1.45; }
+    .cbinom-note code { font-family: var(--cb-mono); background: #f3f4f6; padding: 0.05rem 0.3rem; border-radius: 4px; }
+  </style>
+
+  <h4>Calculadora de p-valor — test binomial exacte</h4>
+
+  <div class="cbinom-grid">
+    <div class="cbinom-field">
+      <label for="cb-n">Mida de la mostra (n)</label>
+      <input id="cb-n" type="number" min="1" step="1" value="20">
+    </div>
+    <div class="cbinom-field">
+      <label for="cb-x">Èxits observats (x)</label>
+      <input id="cb-x" type="number" min="0" step="1" value="15">
+    </div>
+    <div class="cbinom-field">
+      <label for="cb-p0">p sota H&#8320;</label>
+      <input id="cb-p0" type="number" min="0.001" max="0.999" step="0.001" value="0.5">
+    </div>
+    <div class="cbinom-field">
+      <label for="cb-alt">Hipòtesi alternativa</label>
+      <select id="cb-alt">
+        <option value="two" selected>bilateral (p ≠ p&#8320;)</option>
+        <option value="greater">unilateral (p &gt; p&#8320;)</option>
+        <option value="less">unilateral (p &lt; p&#8320;)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="cbinom-results">
+    <div class="cbinom-card" id="cb-card-greater">
+      <div class="lab">P(X ≥ x)</div>
+      <div class="val" id="cb-out-greater">—</div>
+    </div>
+    <div class="cbinom-card" id="cb-card-less">
+      <div class="lab">P(X ≤ x)</div>
+      <div class="val" id="cb-out-less">—</div>
+    </div>
+    <div class="cbinom-card" id="cb-card-two">
+      <div class="lab">p-valor bilateral</div>
+      <div class="val" id="cb-out-two">—</div>
+    </div>
+  </div>
+
+  <div class="cbinom-chart-wrap">
+    <canvas id="cb-canvas" width="900" height="160"></canvas>
+    <div class="cbinom-legend">
+      <span><i style="background:#cbd5e1"></i> P(X=k) sota H&#8320;</span>
+      <span><i style="background:var(--cb-tail-soft); border:1px solid var(--cb-tail)"></i> regió considerada en el p-valor</span>
+      <span><i style="background:var(--cb-accent)"></i> valor observat (x)</span>
+    </div>
+  </div>
+
+  <div class="cbinom-note" id="cb-note"></div>
+
+  <script>
+  (function () {
+    var $ = function (id) { return document.getElementById(id); };
+    var elN = $('cb-n'), elX = $('cb-x'), elP0 = $('cb-p0'), elAlt = $('cb-alt');
+    var outG = $('cb-out-greater'), outL = $('cb-out-less'), outT = $('cb-out-two');
+    var cardG = $('cb-card-greater'), cardL = $('cb-card-less'), cardT = $('cb-card-two');
+    var note = $('cb-note');
+    var canvas = $('cb-canvas'), ctx = canvas.getContext('2d');
+
+    // ---- lgamma (Lanczos approximation) ----
+    var LG = [
+      676.5203681218851, -1259.1392167224028, 771.32342877765313,
+      -176.61502916214059, 12.507343278686905, -0.13857109526572012,
+      9.9843695780195716e-6, 1.5056327351493116e-7
+    ];
+    function lgamma(x) {
+      if (x < 0.5) {
+        return Math.log(Math.PI / Math.sin(Math.PI * x)) - lgamma(1 - x);
+      }
+      x -= 1;
+      var g = 7;
+      var a = 0.99999999999980993;
+      for (var i = 0; i < LG.length; i++) a += LG[i] / (x + i + 1);
+      var t = x + g + 0.5;
+      return 0.5 * Math.log(2 * Math.PI) + (x + 0.5) * Math.log(t) - t + Math.log(a);
+    }
+    function logChoose(n, k) {
+      return lgamma(n + 1) - lgamma(k + 1) - lgamma(n - k + 1);
+    }
+    function pmf(k, n, p) {
+      if (k < 0 || k > n) return 0;
+      if (p <= 0) return k === 0 ? 1 : 0;
+      if (p >= 1) return k === n ? 1 : 0;
+      var lp = logChoose(n, k) + k * Math.log(p) + (n - k) * Math.log(1 - p);
+      return Math.exp(lp);
+    }
+
+    function fmt(x) {
+      if (x < 0.0001 && x > 0) return x.toExponential(2);
+      return x.toFixed(4);
+    }
+
+    function calc() {
+      var n = parseInt(elN.value, 10);
+      var x = parseInt(elX.value, 10);
+      var p0 = parseFloat(elP0.value);
+      var alt = elAlt.value;
+
+      if (!isFinite(n) || n < 1 || !isFinite(x) || x < 0 || x > n || !isFinite(p0) || p0 <= 0 || p0 >= 1) {
+        note.textContent = 'Revisa els valors: 0 ≤ x ≤ n i 0 < p₀ < 1.';
+        return;
+      }
+
+      var pmfs = [];
+      for (var k = 0; k <= n; k++) pmfs.push(pmf(k, n, p0));
+
+      var pGreater = 0, pLess = 0;
+      for (k = x; k <= n; k++) pGreater += pmfs[k];
+      for (k = 0; k <= x; k++) pLess += pmfs[k];
+      pGreater = Math.min(1, pGreater);
+      pLess = Math.min(1, pLess);
+
+      // two-sided: suma de totes les probabilitats <= P(X=x) * (1+tol) — mètode de R::binom.test
+      var px = pmfs[x];
+      var tol = 1 + 1e-7;
+      var pTwo = 0;
+      var included = [];
+      for (k = 0; k <= n; k++) {
+        if (pmfs[k] <= px * tol) { pTwo += pmfs[k]; included.push(true); }
+        else included.push(false);
+      }
+      pTwo = Math.min(1, pTwo);
+
+      outG.textContent = fmt(pGreater);
+      outL.textContent = fmt(pLess);
+      outT.textContent = fmt(pTwo);
+
+      cardG.classList.toggle('active', alt === 'greater');
+      cardL.classList.toggle('active', alt === 'less');
+      cardT.classList.toggle('active', alt === 'two');
+
+      var chosen = alt === 'greater' ? pGreater : alt === 'less' ? pLess : pTwo;
+      var sig = chosen < 0.05 ? 'és <strong>inferior</strong> a 0,05: hi ha evidència per rebutjar H&#8320; al nivell habitual del 5%.'
+                                : 'és <strong>superior</strong> a 0,05: no hi ha prou evidència per rebutjar H&#8320; al nivell habitual del 5%.';
+      note.innerHTML = 'Amb n = ' + n + ', x = ' + x + ' i p&#8320; = ' + p0 + ', el p-valor ' +
+        (alt === 'greater' ? 'unilateral P(X ≥ x)' : alt === 'less' ? 'unilateral P(X ≤ x)' : 'bilateral') +
+        ' és <code>' + fmt(chosen) + '</code>, que ' + sig;
+
+      drawChart(pmfs, n, x, alt, included);
+    }
+
+    function drawChart(pmfs, n, x, alt, included) {
+      var W = canvas.width, H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+      var n1 = pmfs.length;
+      var padL = 6, padR = 6, padB = 18, padT = 10;
+      var plotW = W - padL - padR, plotH = H - padT - padB;
+      var barW = plotW / n1;
+      var maxP = Math.max.apply(null, pmfs);
+      if (maxP <= 0) maxP = 1;
+
+      for (var k = 0; k < n1; k++) {
+        var h = (pmfs[k] / maxP) * plotH;
+        var xPos = padL + k * barW;
+        var yPos = padT + (plotH - h);
+
+        var inTail =
+          alt === 'greater' ? k >= x :
+          alt === 'less' ? k <= x :
+          included[k];
+
+        ctx.fillStyle = inTail ? '#fecaca' : '#cbd5e1';
+        ctx.fillRect(xPos, yPos, Math.max(barW - 1, 0.5), h);
+
+        if (k === x) {
+          ctx.fillStyle = '#1d4ed8';
+          ctx.fillRect(xPos, yPos, Math.max(barW - 1, 0.5), Math.max(h, 2));
+        }
+      }
+
+      // baseline
+      ctx.strokeStyle = '#9ca3af';
+      ctx.beginPath();
+      ctx.moveTo(padL, padT + plotH + 0.5);
+      ctx.lineTo(padL + plotW, padT + plotH + 0.5);
+      ctx.stroke();
+
+      // x-axis ticks (every ~5 units or adapted to n)
+      ctx.fillStyle = '#6b7280';
+      ctx.font = '11px ' + getComputedStyle(document.body).fontFamily;
+      ctx.textAlign = 'center';
+      var step = Math.max(1, Math.round(n1 / 10));
+      for (k = 0; k < n1; k += step) {
+        ctx.fillText(k, padL + k * barW + barW / 2, H - 4);
+      }
+      if ((n1 - 1) % step !== 0) {
+        ctx.fillText(n1 - 1, padL + (n1 - 1) * barW + barW / 2, H - 4);
+      }
+    }
+
+    [elN, elX, elP0, elAlt].forEach(function (el) {
+      el.addEventListener('input', calc);
+      el.addEventListener('change', calc);
+    });
+    calc();
+  })();
+  </script>
+</div>
