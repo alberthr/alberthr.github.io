@@ -3,6 +3,7 @@ layout: post
 title: "Resultats no significatius en analisis estadistics"
 tags:
   - estadistica
+excerpt: "Trobar-se amb resultats no significatius quan s'analitzen dades, es una situació molt comuna. Què significa aixo exactament? Què hem de pensar quan això passa? Com hauriem d'actuar? Quines recomanacions hauriem de donar?
 ---
 
 
