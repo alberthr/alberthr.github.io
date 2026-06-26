@@ -1,13 +1,9 @@
-<!DOCTYPE html>
-<html lang="ca">
-<head>
-<meta charset="UTF-8" />
-<title>Processar Cobertures Multipantalla</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
+<div class="ccob-widget">
+  <title>Calculadora de Cobertures Multimèdia</title>
+  <style>
   .ccob-widget {
     --cc-primary: var(--primary, #3b82f6);
-    --cc-primary-light: var(--primary-light, #f1f5f9);
+    --cc-primary-light: #f1f5f9; /* Gris claret de fons */
     --cc-dark: var(--dark, #1e293b);
     --cc-text: var(--text-main, #475569);
     --cc-text-light: var(--text-light, #64748b);
@@ -16,6 +12,9 @@
     --cc-disabled-bg: #f3f4f6;
     --cc-error-bg: #fef2f2;
     --cc-error-border: #fca5a5;
+    --cc-radius: 6px;
+    --cc-bar-color: rgba(59, 130, 246, 0.18);
+    --cc-bar-border: rgba(59, 130, 246, 0.45);
     --cc-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
     box-sizing: border-box;
@@ -30,7 +29,6 @@
     color: var(--cc-text);
     font-size: 13.5px;
     line-height: 1.5;
-    user-select: none; /* Evita selecció de text nativa de HTML durant l'arrossegament */
   }
   .ccob-widget *, .ccob-widget *::before, .ccob-widget *::after { box-sizing: border-box; }
 
@@ -54,46 +52,49 @@
   /* Graella d'introducció de dades i resultats */
   .ccob-table-wrapper {
     width: 100%;
-    overflow-x: auto; /* Permet que la taula sigui responsive en pantalles petites */
+    overflow-x: auto;
     margin-bottom: 20px;
     -webkit-overflow-scrolling: touch;
   }
   .ccob-table {
     width: 100%;
-    min-width: 600px; /* Garanteix que les columnes no s'aixafin en mòbils */
+    min-width: 600px;
     border-collapse: collapse;
-    font-size: 13.5px;
     font-family: var(--cc-font);
   }
+  
+  /* Cel·les generals de la taula (unificació de font, mida i color a tot arreu) */
   .ccob-table th, .ccob-table td {
     border: 1px solid var(--cc-border);
     padding: 8px 10px;
     text-align: right;
+    font-family: var(--cc-font) !important;
+    font-size: 12px;                                /* Mida unificada a 12px per a tot */
+    font-weight: normal !important;                 /* Sense negreta a cap lloc */
+    color: var(--cc-dark) !important;
+    font-variant-numeric: tabular-nums;
   }
-  .ccob-table th:first-child, .ccob-table td:first-child { 
-    text-align: left; 
-    font-weight: 600;
-    background: #fff;
-    color: var(--cc-dark);
-    min-width: 80px;
+  
+  /* Encapçalaments de les columnes i de les files (Mitjans) */
+  .ccob-table th, .ccob-table td.row-header {
+    background: var(--cc-primary-light) !important; /* Gris claret de fons */
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
     user-select: none;
-    position: sticky; /* Manté el nom del mitjà visible si es fa scroll lateral */
+    text-align: left;
+  }
+  
+  .ccob-table th { text-align: right; }
+  .ccob-table th:first-child { text-align: left; position: sticky; left: 0; z-index: 3; }
+
+  .ccob-table td.row-header {
+    position: sticky;
     left: 0;
     z-index: 2;
     box-shadow: 1px 0 0 var(--cc-border);
   }
-  .ccob-table th {
-    background: var(--cc-primary-light);
-    color: var(--cc-dark);
-    font-weight: 600;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    user-select: none;
-  }
-  .ccob-table td { color: var(--cc-dark); font-variant-numeric: tabular-nums; }
   
-  /* Cel·les editables estil full de càlcul */
+  /* Cel·les editables estil full de càlcul (mateixa mida i font que la resta) */
   .ccob-table td[contenteditable="true"] {
     background: #fff;
     cursor: cell;
@@ -104,7 +105,7 @@
     box-shadow: inset 0 0 0 2px var(--cc-primary);
   }
   
-  /* Estil de selecció múltiple (estil Excel) */
+  /* Estil de selecció múltiple */
   .ccob-table td.selected {
     background: rgba(59, 130, 246, 0.15) !important;
     box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.4);
@@ -118,17 +119,19 @@
     background: #fee2e2 !important;
   }
 
-  /* Fila especial per al Total Cobertura de resultats */
+  /* Fila de totals: mateixa font, mida i estil que els encapçalaments, sense negreta */
   .ccob-table tr.row-total td {
-    background: var(--cc-primary-light);
-    font-weight: 600;
+    background: var(--cc-primary-light) !important; 
+    text-transform: uppercase;                      /* Majúscules */
+    letter-spacing: 0.3px;                          /* Mateix espaiat */
     user-select: none;
   }
   .ccob-table tr.row-total td:first-child {
-    background: var(--cc-primary-light);
-    text-transform: uppercase;
-    font-size: 12px;
-    letter-spacing: 0.3px;
+    text-align: left;
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    box-shadow: 1px 0 0 var(--cc-border);
   }
 
   .ccob-actions {
@@ -137,7 +140,7 @@
     align-items: center;
     margin-bottom: 24px;
     gap: 12px;
-    flex-wrap: wrap; /* Fa els botons responsive si la pantalla és molt estreta */
+    flex-wrap: wrap;
   }
   .ccob-actions-left {
     display: flex;
@@ -148,13 +151,13 @@
     font: inherit;
     font-size: 13px;
     font-family: var(--cc-font);
-    font-weight: 600;
+    font-weight: 400;
     border: 1px solid var(--cc-primary);
     background: var(--cc-primary);
     color: #fff;
     padding: 9px 18px;
     cursor: pointer;
-    border-radius: 0;
+    border-radius: var(--cc-radius);
     transition: all 0.2s ease;
   }
   .ccob-btn:hover { 
@@ -178,51 +181,109 @@
     color: var(--cc-primary);
   }
 
-  /* Contenidor del gràfic responsive */
-  .ccob-chart-container {
-    width: 100%;
-    margin-top: 26px;
-    border-top: 1px solid var(--cc-border);
-    padding-top: 24px;
+  /* Gràfic de barres */
+  .ccob-chart-wrap { margin-top: 26px; border-top: 1px solid var(--cc-border); padding-top: 24px; }
+  .ccob-chart {
     position: relative;
-    height: 320px; /* Alçada fixa controlada per garantir responsivitat amb Chart.js */
+    display: flex;
+    align-items: stretch;
+    height: 240px;
+  }
+  .ccob-yaxis {
+    flex: 0 0 32px;
+    position: relative;
+    height: 100%;
+  }
+  .ccob-yaxis-label {
+    position: absolute;
+    right: 8px;
+    transform: translateY(50%);
+    font-size: 11.5px;
+    color: var(--cc-text-light);
+    white-space: nowrap;
+  }
+  .ccob-plot {
+    position: relative;
+    flex: 1;
+    height: 100%;
+    border-left: 1px solid var(--cc-border);
+    border-bottom: 1px solid var(--cc-border);
+  }
+  .ccob-gridline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    border-top: 1px solid var(--cc-border);
+  }
+  .ccob-bars {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    height: 100%;
+    gap: 10px;
+    padding: 0 10px;
+  }
+  .ccob-bar-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+    min-width: 0;
+  }
+  .ccob-bar-value {
+    font-size: 11.5px;
+    font-weight: 400;
+    color: var(--cc-dark);
+    margin-bottom: 5px;
+    white-space: nowrap;
+  }
+  .ccob-bar {
+    width: 100%;
+    max-width: 38px;
+    background: var(--cc-bar-color);
+    border: 1px solid var(--cc-bar-border);
+    border-bottom: none;
+    border-radius: 3px 3px 0 0;
+    transition: height 0.2s ease;
+  }
+  .ccob-xlabels {
+    display: flex;
+    gap: 10px;
+    padding: 8px 10px 0;
+  }
+  .ccob-xlabel {
+    flex: 1;
+    text-align: center;
+    font-size: 12px;
+    color: var(--cc-text-light);
   }
 
-  /* Ajustos adaptatius per a mòbils */
+  .ccob-note { margin-top: 18px; font-size: 12.5px; color: var(--cc-text-light); }
+  .ccob-note strong { color: var(--cc-dark); }
+  .ccob-note code {
+    font-family: var(--cc-font);
+    background: var(--cc-primary-light);
+    padding: 1px 5px;
+    color: var(--cc-dark);
+  }
+
   @media (max-width: 480px) {
-    .ccob-widget {
-      padding: 20px 16px;
-      margin: 1rem auto;
-    }
-    .ccob-actions {
-      flex-direction: column;
-      align-items: stretch;
-    }
-    .ccob-actions-left {
-      flex-direction: column;
-    }
-    .ccob-btn {
-      width: 100%;
-      text-align: center;
-    }
-    .ccob-chart-container {
-      height: 260px;
-    }
+    .ccob-widget { padding: 20px 16px; margin: 1rem auto; }
+    .ccob-actions { flex-direction: column; align-items: stretch; }
+    .ccob-actions-left { flex-direction: column; }
+    .ccob-btn { width: 100%; text-align: center; }
   }
 </style>
-</head>
-<body>
 
-<div class="ccob-widget">
-  <div class="ccob-title">Calculadora de Cobertures Multimedia (Suma de Cobertures)</div>
+  <div class="ccob-title">Calculadora de Cobertures Multimèdia</div>
   <p>Pots arrossegar el ratolí per <strong>seleccionar diverses cel·les</strong>. Fes servir <code>Ctrl+C</code> per copiar-les, <code>Supr</code> o <code>Backspace</code> per esborrar-les, o enganxa directament des d'Excel.</p>
 
   <div class="ccob-table-wrapper">
     <table class="ccob-table" id="dataGrid">
-      <thead>
-        </thead>
-      <tbody id="dataGridBody">
-        </tbody>
+      <thead></thead>
+      <tbody id="dataGridBody"></tbody>
     </table>
   </div>
 
@@ -233,28 +294,43 @@
     <button class="ccob-btn ccob-btn-secondary" id="cc-copy-btn" onclick="copiarResultats()">Copiar resultats (Excel)</button>
   </div>
 
-  <div class="ccob-chart-container">
-    <canvas id="myChart"></canvas>
+  <div class="ccob-chart-wrap">
+    <div class="ccob-chart">
+      <div class="ccob-yaxis" id="cc-yaxis"></div>
+      <div class="ccob-plot">
+        <div id="cc-gridlines"></div>
+        <div class="ccob-bars" id="cc-bars"></div>
+      </div>
+    </div>
+    <div class="ccob-xlabels" id="cc-xlabels" style="margin-left:32px;"></div>
   </div>
-</div>
 
-<script>
+  <div class="ccob-note">
+    <strong>Avís:</strong> aquest mètode de suma de cobertures només és vàlid si es pot assumir
+    <strong>independència</strong> en el consum dels mitjans combinats (per exemple, diferents tipus
+    de mitjans online sense un solapament sistemàtic d'audiència entre ells, o mitjans amb perfils
+    de consum prou diferenciats). Si els mitjans comparteixen una part important d'audiència de
+    manera no aleatòria, aquest càlcul sobreestimarà la cobertura combinada real.
+  </div>
+
+  <script>
 const filas = 6;
 const columnas = 10;
 let tablaBody;
 let tablaHead;
-let chartInstance = null;
 let ultimoResultadoFinal = Array(10).fill(0);
 
-// Variables per al control de la selecció múltiple
+const valorsDefecteFila1 = [65, 50, 40, 30, 22, 15, 10, 5, 2, 1];
+
 let isSelecting = false;
+let isMultiSelection = false;
 let startRow = null, startCol = null;
 
 function crearGrid() {
   tablaHead = document.getElementById('dataGrid').getElementsByTagName('thead')[0];
   tablaBody = document.getElementById('dataGridBody');
 
-  let headHtml = '<tr><th>Mitjans</th>';
+  let headHtml = '<tr><th>MITJANS</th>';
   for(let j = 1; j <= columnas; j++) {
     headHtml += `<th>${j}+</th>`;
   }
@@ -263,14 +339,15 @@ function crearGrid() {
 
   let bodyHtml = '';
   for(let i = 0; i < filas; i++) {
-    bodyHtml += `<tr><td>Mitjà ${i+1}</td>`;
+    bodyHtml += `<tr><td class="row-header">MITJÀ ${i+1}</td>`;
     for(let j = 0; j < columnas; j++) {
-      bodyHtml += `<td contenteditable="true" data-row="${i}" data-col="${j}" oninput="validarYCalcular()">0</td>`;
+      let valorInicial = (i === 0) ? valorsDefecteFila1[j] : 0;
+      bodyHtml += `<td contenteditable="true" tabindex="0" data-row="${i}" data-col="${j}" oninput="validarYCalcular()">${valorInicial}</td>`;
     }
     bodyHtml += '</tr>';
   }
 
-  bodyHtml += `<tr class="row-total" id="rowTotalFinal"><td>Total Cob.</td>`;
+  bodyHtml += `<tr class="row-total" id="rowTotalFinal"><td>TOTAL</td>`;
   for(let j = 0; j < columnas; j++) {
     bodyHtml += `<td id="total-c${j}">0.00</td>`;
   }
@@ -278,10 +355,8 @@ function crearGrid() {
 
   tablaBody.innerHTML = bodyHtml;
 
-  // Inicialització dels esdeveniments
   inicialitzarEsdevenimentsSeleccio();
 
-  // Gestionar l'enganxat de dades d'Excel
   document.getElementById('dataGrid').addEventListener('paste', function(e) {
     e.preventDefault();
     const pasteData = (e.clipboardData || window.clipboardData).getData('Text');
@@ -308,9 +383,8 @@ function crearGrid() {
 
 function inicialitzarEsdevenimentsSeleccio() {
   const cells = tablaBody.querySelectorAll('td[contenteditable="true"]');
-  
+
   cells.forEach(cell => {
-    // SELECCIÓ TOTAL AL REBRE EL FOCUS (Clic o Tabulador estil Excel)
     cell.addEventListener('focus', function() {
       setTimeout(() => {
         const range = document.createRange();
@@ -340,15 +414,44 @@ function inicialitzarEsdevenimentsSeleccio() {
     isSelecting = false;
   });
 
-  // Capturar esdeveniments de teclat globals
+  document.addEventListener('selectstart', function(e) {
+    if (isSelecting) e.preventDefault();
+  });
+
+  tablaBody.addEventListener('keydown', function(e) {
+    const cell = e.target;
+    if (!cell || cell.tagName !== 'TD' || cell.getAttribute('contenteditable') !== 'true') return;
+
+    const row = parseInt(cell.getAttribute('data-row'));
+    const col = parseInt(cell.getAttribute('data-col'));
+    let targetRow = row, targetCol = col;
+
+    if (e.key === 'ArrowUp') { targetRow = row - 1; }
+    else if (e.key === 'ArrowDown' || e.key === 'Enter') { targetRow = row + 1; }
+    else if (e.key === 'ArrowLeft') { targetCol = col - 1; }
+    else if (e.key === 'ArrowRight') { targetCol = col + 1; }
+    else { return; }
+
+    if (targetRow < 0 || targetRow >= filas || targetCol < 0 || targetCol >= columnas) return;
+
+    e.preventDefault();
+    const rows = tablaBody.getElementsByTagName('tr');
+    const targetCell = rows[targetRow].getElementsByTagName('td')[targetCol + 1];
+    if (targetCell) {
+      targetCell.focus();
+      startRow = targetRow;
+      startCol = targetCol;
+      actualitzarSeleccio(targetRow, targetCol);
+    }
+  });
+
   window.addEventListener('keydown', function(e) {
     const seleccionats = tablaBody.querySelectorAll('td.selected');
     if (seleccionats.length === 0) return;
 
     if (e.key === 'Delete' || e.key === 'Backspace') {
-      if (document.activeElement.tagName !== 'TD' || seleccionats.length > 1) {
-        e.preventDefault();
-      }
+      if (!isMultiSelection) return;
+      e.preventDefault();
       seleccionats.forEach(cell => {
         cell.innerText = '0';
       });
@@ -369,6 +472,8 @@ function actualitzarSeleccio(endRow, endCol) {
   const maxRow = Math.max(startRow, endRow);
   const minCol = Math.min(startCol, endCol);
   const maxCol = Math.max(startCol, endCol);
+
+  isMultiSelection = (minRow !== maxRow) || (minCol !== maxCol);
 
   for (let i = 0; i < filas; i++) {
     const cells = rows[i].getElementsByTagName('td');
@@ -552,85 +657,53 @@ function fallbackCopy(text, cb) {
   if (cb) cb();
 }
 
-function graficar(finalData) {
-  const ctx = document.getElementById('myChart').getContext('2d');
-  const primaryColor = '#3b82f6';
-  const gridColor = '#e2e8f0';
-  const textColor = '#64748b';
-  const darkColor = '#1e293b';
+var ccYaxis = document.getElementById('cc-yaxis');
+var ccGridlines = document.getElementById('cc-gridlines');
+var ccBars = document.getElementById('cc-bars');
+var ccXlabels = document.getElementById('cc-xlabels');
+var CC_Y_MAX = 110; 
+var CC_Y_STEPS = [0, 20, 40, 60, 80, 100];
 
-  const cleanData = finalData.map(v => Math.max(0, v));
-
-  if (chartInstance) { chartInstance.destroy(); }
-  chartInstance = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: Array.from({ length: 10 }, (_, i) => (i+1) + '+'),
-      datasets: [{
-        data: cleanData,
-        fill: false,
-        borderColor: primaryColor,
-        backgroundColor: primaryColor,
-        pointStyle: 'circle',
-        pointRadius: 4,
-        pointHoverRadius: 6,
-        tension: 0.2
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false, // Permet l'adaptabilitat perfecta mitjançant CSS
-      plugins: {
-        legend: {
-          display: false // Eliminada per complet ja que no aporta informació extra
-        },
-        title: {
-          display: true,
-          text: 'Suma de Cobertures Acumulades',
-          align: 'start',
-          color: darkColor,
-          padding: { bottom: 16 },
-          font: { family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', size: 13, weight: '600' }
-        },
-        tooltip: {
-          enabled: true,
-          backgroundColor: '#f8fafc', // Fons gris molt claret i suau
-          borderColor: '#e2e8f0',
-          borderWidth: 1,
-          titleColor: '#64748b',
-          bodyColor: darkColor, // Color de xifra no agressiu
-          padding: 10, // Més espai perquè la xifra respiri
-          cornerRadius: 0, // Seguint el look and feel minimalista recte
-          displayColors: false, // Treu el quadrat de color de la sèrie per simplificar
-          font: { family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', size: 12 },
-          callbacks: {
-            title: function() { return ''; }, // Oculta la capçalera del títol al tooltip
-            label: function(context) {
-              return context.parsed.y.toFixed(2) + '%'; // Només mostra el percentatge
-            }
-          }
-        }
-      },
-      scales: {
-        y: { 
-          min: 0, 
-          max: 100,
-          grid: { color: gridColor },
-          ticks: { color: textColor, font: { family: '-apple-system, sans-serif', size: 11 } }
-        },
-        x: {
-          grid: { color: gridColor },
-          ticks: { color: textColor, font: { family: '-apple-system, sans-serif', size: 11 } }
-        }
-      }
-    }
-  });
+function ccFmt(x, d) {
+  if (d === undefined) d = 1;
+  return x.toFixed(d);
 }
 
-// Inicialització automàtica
+function ccBuildAxis() {
+  var yHtml = '';
+  var gridHtml = '';
+  for (var i = 0; i < CC_Y_STEPS.length; i++) {
+    var val = CC_Y_STEPS[i];
+    var bottomPct = (val / CC_Y_MAX) * 100;
+    yHtml += '<span class="ccob-yaxis-label" style="bottom:' + bottomPct + '%;">' + val + '</span>';
+    gridHtml += '<div class="ccob-gridline" style="bottom:' + bottomPct + '%;"></div>';
+  }
+  ccYaxis.innerHTML = yHtml;
+  ccGridlines.innerHTML = gridHtml;
+}
+
+function ccDrawBars(levels) {
+  var barsHtml = '';
+  var labelsHtml = '';
+  for (var i = 0; i < levels.length; i++) {
+    var pct = Math.max(0, Math.min(100, (levels[i] / CC_Y_MAX) * 100));
+    barsHtml += '<div class="ccob-bar-col">' +
+        '<span class="ccob-bar-value">' + ccFmt(levels[i], 1) + '%</span>' +
+        '<div class="ccob-bar" style="height:' + pct + '%"></div>' +
+      '</div>';
+    labelsHtml += '<span class="ccob-xlabel">' + (i + 1) + '+</span>';
+  }
+  ccBars.innerHTML = barsHtml;
+  ccXlabels.innerHTML = labelsHtml;
+}
+
+function graficar(finalData) {
+  var cleanData = finalData.map(function (v) { return Math.max(0, v); });
+  ccDrawBars(cleanData);
+}
+
+ccBuildAxis();
 crearGrid();
 procesar();
-</script>
-
-</body>
-</html>
+  </script>
+</div>
