@@ -1,8 +1,3 @@
-<!-- ===================================================================
-     CALCULADORA DE P-VALOR — TEST BINOMIAL EXACTE
-     Estil alineat amb el CV (paleta, tipografia, cantonades rectes).
-     Només cal enganxar aquest bloc sencer dins del .md del post.
-     =================================================================== -->
 <div class="cbinom-widget">
   <style>
     .cbinom-widget {
@@ -84,9 +79,81 @@
     .cbinom-card .lab { font-size: 11px; color: var(--cb-text-light); text-transform: uppercase; letter-spacing: 0.5px; }
     .cbinom-card .val { font-size: 19px; font-weight: 700; color: var(--cb-dark); margin-top: 5px; }
 
-    .cbinom-chart-wrap { margin-top: 24px; }
-    .cbinom-chart-wrap canvas { width: 100%; height: 150px; display: block; }
-    .cbinom-legend { display: flex; gap: 18px; font-size: 11.5px; color: var(--cb-text-light); margin-top: 8px; flex-wrap: wrap; }
+    /* --- NOU GRÀFIC EN HTML/CSS --- */
+    .cbinom-chart-container {
+      margin-top: 28px;
+    }
+    .cbinom-chart-area {
+      display: flex;
+      align-items: flex-end;
+      height: 140px;
+      border-bottom: 1px solid #cbd5e1;
+      gap: 1px;
+      position: relative;
+    }
+    .cbinom-bar-wrapper {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      align-items: flex-end;
+      position: relative;
+    }
+    .cbinom-bar {
+      width: 100%;
+      background-color: #e2e8f0;
+      transition: background-color 0.15s ease;
+    }
+    .cbinom-bar.in-tail { background-color: #bfdbfe; }
+    .cbinom-bar.is-observed { background-color: #3b82f6; min-height: 2px; }
+    
+    /* Tooltip basat en CSS pur */
+    .cbinom-bar-wrapper:hover .cbinom-bar {
+      background-color: #1e293b !important;
+    }
+    .cbinom-tooltip {
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-6px);
+      background: #1e293b;
+      color: #fff;
+      padding: 4px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.1s ease;
+      z-index: 10;
+      line-height: 1.3;
+      text-align: center;
+    }
+    .cbinom-tooltip::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 4px solid transparent;
+      border-top-color: #1e293b;
+    }
+    .cbinom-bar-wrapper:hover .cbinom-tooltip {
+      opacity: 1;
+    }
+
+    /* Eix X de text pur */
+    .cbinom-axis-x {
+      display: flex;
+      margin-top: 6px;
+      font-size: 11px;
+      color: var(--cb-text-light);
+    }
+    .cbinom-axis-tick {
+      flex: 1;
+      text-align: center;
+    }
+
+    .cbinom-legend { display: flex; gap: 18px; font-size: 11.5px; color: var(--cb-text-light); margin-top: 14px; flex-wrap: wrap; }
     .cbinom-legend span { display: inline-flex; align-items: center; gap: 6px; }
     .cbinom-legend i { width: 10px; height: 10px; display: inline-block; }
 
@@ -140,12 +207,15 @@
     </div>
   </div>
 
-  <div class="cbinom-chart-wrap">
-    <canvas id="cb-canvas" width="900" height="150"></canvas>
+  <div class="cbinom-chart-container">
+    <div class="cbinom-chart-area" id="cb-chart-bars"></div>
+    <div class="cbinom-axis-x" id="cb-chart-ticks"></div>
+    
     <div class="cbinom-legend">
       <span><i style="background:#e2e8f0"></i> P(X=k) sota H&#8320;</span>
       <span><i style="background:#bfdbfe"></i> regió considerada en el p-valor</span>
       <span><i style="background:#3b82f6"></i> valor observat (x)</span>
+      <span><i style="background:#1e293b"></i> element seleccionat</span>
     </div>
   </div>
 
@@ -158,21 +228,17 @@
     var outG = $('cb-out-greater'), outL = $('cb-out-less'), outT = $('cb-out-two');
     var cardG = $('cb-card-greater'), cardL = $('cb-card-less'), cardT = $('cb-card-two');
     var note = $('cb-note');
-    var canvas = $('cb-canvas'), ctx = canvas.getContext('2d');
+    var chartBars = $('cb-chart-bars'), chartTicks = $('cb-chart-ticks');
 
-    // ---- lgamma (Lanczos approximation) ----
     var LG = [
       676.5203681218851, -1259.1392167224028, 771.32342877765313,
       -176.61502916214059, 12.507343278686905, -0.13857109526572012,
       9.9843695780195716e-6, 1.5056327351493116e-7
     ];
     function lgamma(x) {
-      if (x < 0.5) {
-        return Math.log(Math.PI / Math.sin(Math.PI * x)) - lgamma(1 - x);
-      }
+      if (x < 0.5) return Math.log(Math.PI / Math.sin(Math.PI * x)) - lgamma(1 - x);
       x -= 1;
-      var g = 7;
-      var a = 0.99999999999980993;
+      var g = 7, a = 0.99999999999980993;
       for (var i = 0; i < LG.length; i++) a += LG[i] / (x + i + 1);
       var t = x + g + 0.5;
       return 0.5 * Math.log(2 * Math.PI) + (x + 0.5) * Math.log(t) - t + Math.log(a);
@@ -184,8 +250,7 @@
       if (k < 0 || k > n) return 0;
       if (p <= 0) return k === 0 ? 1 : 0;
       if (p >= 1) return k === n ? 1 : 0;
-      var lp = logChoose(n, k) + k * Math.log(p) + (n - k) * Math.log(1 - p);
-      return Math.exp(lp);
+      return Math.exp(logChoose(n, k) + k * Math.log(p) + (n - k) * Math.log(1 - p));
     }
 
     function fmt(x) {
@@ -208,18 +273,17 @@
       for (var k = 0; k <= n; k++) pmfs.push(pmf(k, n, p0));
 
       var pGreater = 0, pLess = 0;
-      for (k = x; k <= n; k++) pGreater += pmfs[k];
-      for (k = 0; k <= x; k++) pLess += pmfs[k];
+      for (var kg = x; kg <= n; kg++) pGreater += pmfs[kg];
+      for (var kl = 0; kl <= x; kl++) pLess += pmfs[kl];
       pGreater = Math.min(1, pGreater);
       pLess = Math.min(1, pLess);
 
-      // two-sided: suma de totes les probabilitats <= P(X=x) * (1+tol) — mètode de R::binom.test
       var px = pmfs[x];
       var tol = 1 + 1e-7;
       var pTwo = 0;
       var included = [];
-      for (k = 0; k <= n; k++) {
-        if (pmfs[k] <= px * tol) { pTwo += pmfs[k]; included.push(true); }
+      for (var kt = 0; kt <= n; kt++) {
+        if (pmfs[kt] <= px * tol) { pTwo += pmfs[kt]; included.push(true); }
         else included.push(false);
       }
       pTwo = Math.min(1, pTwo);
@@ -239,55 +303,49 @@
         (alt === 'greater' ? 'unilateral P(X ≥ x)' : alt === 'less' ? 'unilateral P(X ≤ x)' : 'bilateral') +
         ' és <code>' + fmt(chosen) + '</code>, que ' + sig;
 
-      drawChart(pmfs, n, x, alt, included);
+      renderHtmlChart(pmfs, n, x, alt, included);
     }
 
-    function drawChart(pmfs, n, x, alt, included) {
-      var W = canvas.width, H = canvas.height;
-      ctx.clearRect(0, 0, W, H);
+    function renderHtmlChart(pmfs, n, x, alt, included) {
+      chartBars.innerHTML = '';
+      chartTicks.innerHTML = '';
+
       var n1 = pmfs.length;
-      var padL = 6, padR = 6, padB = 18, padT = 10;
-      var plotW = W - padL - padR, plotH = H - padT - padB;
-      var barW = plotW / n1;
       var maxP = Math.max.apply(null, pmfs);
       if (maxP <= 0) maxP = 1;
 
-      for (var k = 0; k < n1; k++) {
-        var h = (pmfs[k] / maxP) * plotH;
-        var xPos = padL + k * barW;
-        var yPos = padT + (plotH - h);
+      for (var i = 0; i < n1; i++) {
+        var pctHeight = (pmfs[i] / maxP) * 100;
+        var inTail = alt === 'greater' ? i >= x : alt === 'less' ? i <= x : included[i];
 
-        var inTail =
-          alt === 'greater' ? k >= x :
-          alt === 'less' ? k <= x :
-          included[k];
+        var wrapper = document.createElement('div');
+        wrapper.className = 'cbinom-bar-wrapper';
 
-        ctx.fillStyle = inTail ? '#bfdbfe' : '#e2e8f0';
-        ctx.fillRect(xPos, yPos, Math.max(barW - 1, 0.5), h);
+        var bar = document.createElement('div');
+        bar.className = 'cbinom-bar';
+        if (inTail) bar.classList.add('in-tail');
+        if (i === x) bar.classList.add('is-observed');
+        bar.style.height = pctHeight + '%';
 
-        if (k === x) {
-          ctx.fillStyle = '#3b82f6';
-          ctx.fillRect(xPos, yPos, Math.max(barW - 1, 0.5), Math.max(h, 2));
-        }
+        var tooltip = document.createElement('div');
+        tooltip.className = 'cbinom-tooltip';
+        tooltip.innerHTML = 'k = ' + i + '<br>p = ' + fmt(pmfs[i]);
+
+        wrapper.appendChild(bar);
+        wrapper.appendChild(tooltip);
+        chartBars.appendChild(wrapper);
       }
 
-      // baseline
-      ctx.strokeStyle = '#cbd5e1';
-      ctx.beginPath();
-      ctx.moveTo(padL, padT + plotH + 0.5);
-      ctx.lineTo(padL + plotW, padT + plotH + 0.5);
-      ctx.stroke();
-
-      // x-axis ticks
-      ctx.fillStyle = '#64748b';
-      ctx.font = '11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
-      ctx.textAlign = 'center';
       var step = Math.max(1, Math.round(n1 / 10));
-      for (k = 0; k < n1; k += step) {
-        ctx.fillText(k, padL + k * barW + barW / 2, H - 4);
-      }
-      if ((n1 - 1) % step !== 0) {
-        ctx.fillText(n1 - 1, padL + (n1 - 1) * barW + barW / 2, H - 4);
+      for (var j = 0; j < n1; j++) {
+        var tick = document.createElement('div');
+        tick.className = 'cbinom-axis-tick';
+        if (j % step === 0 || j === n1 - 1) {
+          tick.textContent = j;
+        } else {
+          tick.textContent = '';
+        }
+        chartTicks.appendChild(tick);
       }
     }
 

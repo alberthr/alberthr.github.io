@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8" />
+<title>Processar Cobertures Multipantalla</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  .ccob-widget {
+    --cc-primary: var(--primary, #3b82f6);
+    --cc-primary-light: var(--primary-light, #f1f5f9);
+    --cc-dark: var(--dark, #1e293b);
+    --cc-text: var(--text-main, #475569);
+    --cc-text-light: var(--text-light, #64748b);
+    --cc-card-bg: var(--card-bg, #ffffff);
+    --cc-border: var(--border, #e2e8f0);
+    --cc-disabled-bg: #f3f4f6;
+    --cc-error-bg: #fef2f2;
+    --cc-error-border: #fca5a5;
+    --cc-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+    box-sizing: border-box;
+    max-width: 840px;
+    width: 100%;
+    margin: 2rem auto;
+    background: var(--cc-card-bg);
+    border: 1px solid var(--cc-border);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    padding: 32px 36px;
+    font-family: var(--cc-font);
+    color: var(--cc-text);
+    font-size: 13.5px;
+    line-height: 1.5;
+    user-select: none; /* Evita selecció de text nativa de HTML durant l'arrossegament */
+  }
+  .ccob-widget *, .ccob-widget *::before, .ccob-widget *::after { box-sizing: border-box; }
+
+  .ccob-widget .ccob-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--cc-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--cc-border);
+    padding-bottom: 6px;
+    margin-bottom: 14px;
+  }
+
+  .ccob-widget p {
+    margin: 0 0 20px 0;
+    color: var(--cc-text-light);
+    font-size: 13px;
+  }
+
+  /* Graella d'introducció de dades i resultats */
+  .ccob-table-wrapper {
+    width: 100%;
+    overflow-x: auto; /* Permet que la taula sigui responsive en pantalles petites */
+    margin-bottom: 20px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .ccob-table {
+    width: 100%;
+    min-width: 600px; /* Garanteix que les columnes no s'aixafin en mòbils */
+    border-collapse: collapse;
+    font-size: 13.5px;
+    font-family: var(--cc-font);
+  }
+  .ccob-table th, .ccob-table td {
+    border: 1px solid var(--cc-border);
+    padding: 8px 10px;
+    text-align: right;
+  }
+  .ccob-table th:first-child, .ccob-table td:first-child { 
+    text-align: left; 
+    font-weight: 600;
+    background: #fff;
+    color: var(--cc-dark);
+    min-width: 80px;
+    user-select: none;
+    position: sticky; /* Manté el nom del mitjà visible si es fa scroll lateral */
+    left: 0;
+    z-index: 2;
+    box-shadow: 1px 0 0 var(--cc-border);
+  }
+  .ccob-table th {
+    background: var(--cc-primary-light);
+    color: var(--cc-dark);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    user-select: none;
+  }
+  .ccob-table td { color: var(--cc-dark); font-variant-numeric: tabular-nums; }
+  
+  /* Cel·les editables estil full de càlcul */
+  .ccob-table td[contenteditable="true"] {
+    background: #fff;
+    cursor: cell;
+    user-select: text;
+  }
+  .ccob-table td[contenteditable="true"]:focus {
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--cc-primary);
+  }
+  
+  /* Estil de selecció múltiple (estil Excel) */
+  .ccob-table td.selected {
+    background: rgba(59, 130, 246, 0.15) !important;
+    box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.4);
+  }
+
+  .ccob-table td.cell-error {
+    background: var(--cc-error-bg) !important;
+    box-shadow: inset 0 0 0 1px var(--cc-error-border);
+  }
+  .ccob-table td.cell-error.selected {
+    background: #fee2e2 !important;
+  }
+
+  /* Fila especial per al Total Cobertura de resultats */
+  .ccob-table tr.row-total td {
+    background: var(--cc-primary-light);
+    font-weight: 600;
+    user-select: none;
+  }
+  .ccob-table tr.row-total td:first-child {
+    background: var(--cc-primary-light);
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.3px;
+  }
+
+  .ccob-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    gap: 12px;
+    flex-wrap: wrap; /* Fa els botons responsive si la pantalla és molt estreta */
+  }
+  .ccob-actions-left {
+    display: flex;
+    gap: 10px;
+  }
+
+  .ccob-btn {
+    font: inherit;
+    font-size: 13px;
+    font-family: var(--cc-font);
+    font-weight: 600;
+    border: 1px solid var(--cc-primary);
+    background: var(--cc-primary);
+    color: #fff;
+    padding: 9px 18px;
+    cursor: pointer;
+    border-radius: 0;
+    transition: all 0.2s ease;
+  }
+  .ccob-btn:hover { 
+    background: #2563eb; 
+    border-color: #2563eb;
+  }
+  
+  .ccob-btn-secondary {
+    background: #fff;
+    color: var(--cc-dark);
+    border-color: var(--cc-border);
+  }
+  .ccob-btn-secondary:hover {
+    background: var(--cc-primary-light);
+    border-color: var(--cc-primary);
+    color: var(--cc-primary);
+  }
+  .ccob-btn-secondary.copied {
+    border-color: var(--cc-primary);
+    background: var(--cc-primary-light);
+    color: var(--cc-primary);
+  }
+
+  /* Contenidor del gràfic responsive */
+  .ccob-chart-container {
+    width: 100%;
+    margin-top: 26px;
+    border-top: 1px solid var(--cc-border);
+    padding-top: 24px;
+    position: relative;
+    height: 320px; /* Alçada fixa controlada per garantir responsivitat amb Chart.js */
+  }
+
+  /* Ajustos adaptatius per a mòbils */
+  @media (max-width: 480px) {
+    .ccob-widget {
+      padding: 20px 16px;
+      margin: 1rem auto;
+    }
+    .ccob-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .ccob-actions-left {
+      flex-direction: column;
+    }
+    .ccob-btn {
+      width: 100%;
+      text-align: center;
+    }
+    .ccob-chart-container {
+      height: 260px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="ccob-widget">
+  <div class="ccob-title">Matriu de Cobertures Multipantalla (Suma de mitjans)</div>
+  <p>Pots arrossegar el ratolí per <strong>seleccionar diverses cel·les</strong>. Fes servir <code>Ctrl+C</code> per copiar-les, <code>Supr</code> o <code>Backspace</code> per esborrar-les, o enganxa directament des d'Excel.</p>
+
+  <div class="ccob-table-wrapper">
+    <table class="ccob-table" id="dataGrid">
+      <thead>
+        </thead>
+      <tbody id="dataGridBody">
+        </tbody>
+    </table>
+  </div>
+
+  <div class="ccob-actions">
+    <div class="ccob-actions-left">
+      <button class="ccob-btn ccob-btn-secondary" onclick="netejarGrid()">Netejar tot</button>
+    </div>
+    <button class="ccob-btn ccob-btn-secondary" id="cc-copy-btn" onclick="copiarResultats()">Copiar resultats (Excel)</button>
+  </div>
+
+  <div class="ccob-chart-container">
+    <canvas id="myChart"></canvas>
+  </div>
+</div>
+
+<script>
+const filas = 6;
+const columnas = 10;
+let tablaBody;
+let tablaHead;
+let chartInstance = null;
+let ultimoResultadoFinal = Array(10).fill(0);
+
+// Variables per al control de la selecció múltiple
+let isSelecting = false;
+let startRow = null, startCol = null;
+
+function crearGrid() {
+  tablaHead = document.getElementById('dataGrid').getElementsByTagName('thead')[0];
+  tablaBody = document.getElementById('dataGridBody');
+
+  let headHtml = '<tr><th>Mitjans</th>';
+  for(let j = 1; j <= columnas; j++) {
+    headHtml += `<th>${j}+</th>`;
+  }
+  headHtml += '</tr>';
+  tablaHead.innerHTML = headHtml;
+
+  let bodyHtml = '';
+  for(let i = 0; i < filas; i++) {
+    bodyHtml += `<tr><td>Mitjà ${i+1}</td>`;
+    for(let j = 0; j < columnas; j++) {
+      bodyHtml += `<td contenteditable="true" data-row="${i}" data-col="${j}" oninput="validarYCalcular()">0</td>`;
+    }
+    bodyHtml += '</tr>';
+  }
+
+  bodyHtml += `<tr class="row-total" id="rowTotalFinal"><td>Total Cob.</td>`;
+  for(let j = 0; j < columnas; j++) {
+    bodyHtml += `<td id="total-c${j}">0.00</td>`;
+  }
+  bodyHtml += '</tr>';
+
+  tablaBody.innerHTML = bodyHtml;
+
+  // Inicialització dels esdeveniments
+  inicialitzarEsdevenimentsSeleccio();
+
+  // Gestionar l'enganxat de dades d'Excel
+  document.getElementById('dataGrid').addEventListener('paste', function(e) {
+    e.preventDefault();
+    const pasteData = (e.clipboardData || window.clipboardData).getData('Text');
+    const filasPega = pasteData.trim().split(/\r?\n/);
+    const datosPega = filasPega.map(line => line.split(/\t/));
+
+    const rows = tablaBody.getElementsByTagName('tr');
+    
+    let targetRow = startRow !== null ? startRow : 0;
+    let targetCol = startCol !== null ? startCol : 0;
+
+    for (let i = 0; i < datosPega.length && (targetRow + i) < filas; i++) {
+      const fila = datosPega[i];
+      const cells = rows[targetRow + i].getElementsByTagName('td');
+      for (let j = 0; j < fila.length && (targetCol + j) < columnas; j++) {
+        let valor = fila[j].trim().replace(',', '.'); 
+        if (valor === '' || isNaN(parseFloat(valor))) valor = '0';
+        cells[targetCol + j + 1].innerText = valor;
+      }
+    }
+    validarYCalcular();
+  });
+}
+
+function inicialitzarEsdevenimentsSeleccio() {
+  const cells = tablaBody.querySelectorAll('td[contenteditable="true"]');
+  
+  cells.forEach(cell => {
+    // SELECCIÓ TOTAL AL REBRE EL FOCUS (Clic o Tabulador estil Excel)
+    cell.addEventListener('focus', function() {
+      setTimeout(() => {
+        const range = document.createRange();
+        const selection = window.getSelection();
+        range.selectNodeContents(this);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }, 10);
+    });
+
+    cell.addEventListener('mousedown', function(e) {
+      isSelecting = true;
+      startRow = parseInt(this.getAttribute('data-row'));
+      startCol = parseInt(this.getAttribute('data-col'));
+      actualitzarSeleccio(startRow, startCol);
+    });
+
+    cell.addEventListener('mouseenter', function() {
+      if (!isSelecting) return;
+      const currentRow = parseInt(this.getAttribute('data-row'));
+      const currentCol = parseInt(this.getAttribute('data-col'));
+      actualitzarSeleccio(currentRow, currentCol);
+    });
+  });
+
+  window.addEventListener('mouseup', function() {
+    isSelecting = false;
+  });
+
+  // Capturar esdeveniments de teclat globals
+  window.addEventListener('keydown', function(e) {
+    const seleccionats = tablaBody.querySelectorAll('td.selected');
+    if (seleccionats.length === 0) return;
+
+    if (e.key === 'Delete' || e.key === 'Backspace') {
+      if (document.activeElement.tagName !== 'TD' || seleccionats.length > 1) {
+        e.preventDefault();
+      }
+      seleccionats.forEach(cell => {
+        cell.innerText = '0';
+      });
+      validarYCalcular();
+    }
+
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'c') {
+      e.preventDefault();
+      copiarSeleccioMúltiple();
+    }
+  });
+}
+
+function actualitzarSeleccio(endRow, endCol) {
+  const rows = tablaBody.getElementsByTagName('tr');
+  
+  const minRow = Math.min(startRow, endRow);
+  const maxRow = Math.max(startRow, endRow);
+  const minCol = Math.min(startCol, endCol);
+  const maxCol = Math.max(startCol, endCol);
+
+  for (let i = 0; i < filas; i++) {
+    const cells = rows[i].getElementsByTagName('td');
+    for (let j = 0; j < columnas; j++) {
+      if (i >= minRow && i <= maxRow && j >= minCol && j <= maxCol) {
+        cells[j+1].classList.add('selected');
+      } else {
+        cells[j+1].classList.remove('selected');
+      }
+    }
+  }
+}
+
+function copiarSeleccioMúltiple() {
+  const rows = tablaBody.getElementsByTagName('tr');
+  let lineasEx = [];
+
+  for (let i = 0; i < filas; i++) {
+    let filaTexto = [];
+    const cells = rows[i].getElementsByTagName('td');
+    let teSeleccio = false;
+    
+    for (let j = 0; j < columnas; j++) {
+      if (cells[j+1].classList.contains('selected')) {
+        teSeleccio = true;
+        filaTexto.push(cells[j+1].innerText.trim().replace('.', ','));
+      }
+    }
+    if (teSeleccio) {
+      lineasEx.push(filaTexto.join('\t'));
+    }
+  }
+
+  if (lineasEx.length > 0) {
+    navigator.clipboard.writeText(lineasEx.join('\n'));
+  }
+}
+
+function netejarGrid() {
+  const rows = tablaBody.getElementsByTagName('tr');
+  for (let i = 0; i < filas; i++) {
+    const cells = rows[i].getElementsByTagName('td');
+    for (let j = 0; j < columnas; j++) {
+      cells[j+1].innerText = '0';
+      cells[j+1].classList.remove('cell-error', 'selected');
+    }
+  }
+  validarYCalcular();
+}
+
+function validarYCalcular() {
+  const rows = tablaBody.getElementsByTagName('tr');
+  for (let i = 0; i < filas; i++) {
+    const cells = rows[i].getElementsByTagName('td');
+    let valorAnterior = 100;
+    
+    for (let j = 0; j < columnas; j++) {
+      let valorStr = cells[j+1].innerText.trim().replace(',', '.');
+      let valor = parseFloat(valorStr);
+      if (isNaN(valor)) valor = 0;
+
+      if (valor > valorAnterior) {
+        cells[j+1].classList.add('cell-error');
+      } else {
+        cells[j+1].classList.remove('cell-error');
+      }
+      valorAnterior = valor;
+    }
+  }
+  procesar();
+}
+
+function extraerDatos() {
+  const matriz = [];
+  const rows = tablaBody.getElementsByTagName('tr');
+  
+  for (let i = 0; i < filas; i++) {
+    const filaDatos = [];
+    const cells = rows[i].getElementsByTagName('td');
+    for (let j = 0; j < columnas; j++) {
+      let valorStr = cells[j+1].innerText.trim().replace(',', '.');
+      let valor = parseFloat(valorStr);
+      if (isNaN(valor)) valor = 0;
+      filaDatos.push(valor);
+    }
+    matriz.push(filaDatos);
+  }
+  return matriz;
+}
+
+function procesar() {
+  try {
+    let datos = extraerDatos();
+    let datosArray = JSON.parse(JSON.stringify(datos));
+
+    for (let pareja = 0; pareja < 5; pareja++) {
+      const medios = [datosArray[pareja], datosArray[pareja+1]];
+      const porcentajes = medios.map(row => row.map(val => val/100));
+      const unicas = [Array(10), Array(10)];
+
+      unicas[0][0] = 1 - porcentajes[0][0];
+      unicas[1][0] = 1 - porcentajes[1][0];
+
+      for (let i = 1; i < 10; i++) {
+        unicas[0][i] = porcentajes[0][i-1] - porcentajes[0][i];
+        unicas[1][i] = porcentajes[1][i-1] - porcentajes[1][i];
+      }
+
+      const combinaciones = [];
+      for (let i1 = 1; i1 <= 10; i1++) {
+        for (let i2 = 1; i2 <= 10; i2++) {
+          combinaciones.push([i1,i2]);
+        }
+      }
+
+      const listado = Array(20).fill(0);
+      for (const [i,j] of combinaciones) {
+        listado[i + j - 2] += unicas[0][i-1] * unicas[1][j-1];
+      }
+
+      const sumaCumulativa = [];
+      let acumulado = 0;
+      for (const val of listado) {
+        acumulado += val;
+        sumaCumulativa.push(acumulado);
+      }
+      for(let i = 0; i < 10; i++) {
+        datosArray[pareja+1][i] = 100 * (1 - sumaCumulativa[i]);
+      }
+    }
+
+    ultimoResultadoFinal = datosArray[5];
+    for(let j = 0; j < columnas; j++) {
+      let valFinal = Math.max(0, ultimoResultadoFinal[j]);
+      document.getElementById(`total-c${j}`).innerText = valFinal.toFixed(2);
+    }
+
+    graficar(ultimoResultadoFinal);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function copiarResultats() {
+  const copyBtn = document.getElementById('cc-copy-btn');
+  let headers = [];
+  let values = [];
+  
+  for(let j = 1; j <= columnas; j++) {
+    headers.push(`${j}+`);
+    values.push(Math.max(0, ultimoResultadoFinal[j-1]).toFixed(2).replace('.', ','));
+  }
+  
+  const textACopiar = headers.join('\t') + '\n' + values.join('\t');
+
+  function completat() {
+    copyBtn.classList.add('copied');
+    copyBtn.textContent = 'Copiat ✓';
+    setTimeout(function () {
+      copyBtn.classList.remove('copied');
+      copyBtn.textContent = 'Copiar resultats (Excel)';
+    }, 1800);
+  }
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(textACopiar).then(completat).catch(function () { fallbackCopy(textACopiar, completat); });
+  } else {
+    fallbackCopy(textACopiar, completat);
+  }
+}
+
+function fallbackCopy(text, cb) {
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); } catch (e) {}
+  document.body.removeChild(ta);
+  if (cb) cb();
+}
+
+function graficar(finalData) {
+  const ctx = document.getElementById('myChart').getContext('2d');
+  const primaryColor = '#3b82f6';
+  const gridColor = '#e2e8f0';
+  const textColor = '#64748b';
+  const darkColor = '#1e293b';
+
+  const cleanData = finalData.map(v => Math.max(0, v));
+
+  if (chartInstance) { chartInstance.destroy(); }
+  chartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: Array.from({ length: 10 }, (_, i) => (i+1) + '+'),
+      datasets: [{
+        data: cleanData,
+        fill: false,
+        borderColor: primaryColor,
+        backgroundColor: primaryColor,
+        pointStyle: 'circle',
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        tension: 0.2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false, // Permet l'adaptabilitat perfecta mitjançant CSS
+      plugins: {
+        legend: {
+          display: false // Eliminada per complet ja que no aporta informació extra
+        },
+        title: {
+          display: true,
+          text: 'Suma de Cobertures Acumulades',
+          align: 'start',
+          color: darkColor,
+          padding: { bottom: 16 },
+          font: { family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', size: 13, weight: '600' }
+        },
+        tooltip: {
+          enabled: true,
+          backgroundColor: '#f8fafc', // Fons gris molt claret i suau
+          borderColor: '#e2e8f0',
+          borderWidth: 1,
+          titleColor: '#64748b',
+          bodyColor: darkColor, // Color de xifra no agressiu
+          padding: 10, // Més espai perquè la xifra respiri
+          cornerRadius: 0, // Seguint el look and feel minimalista recte
+          displayColors: false, // Treu el quadrat de color de la sèrie per simplificar
+          font: { family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', size: 12 },
+          callbacks: {
+            title: function() { return ''; }, // Oculta la capçalera del títol al tooltip
+            label: function(context) {
+              return context.parsed.y.toFixed(2) + '%'; // Només mostra el percentatge
+            }
+          }
+        }
+      },
+      scales: {
+        y: { 
+          min: 0, 
+          max: 100,
+          grid: { color: gridColor },
+          ticks: { color: textColor, font: { family: '-apple-system, sans-serif', size: 11 } }
+        },
+        x: {
+          grid: { color: gridColor },
+          ticks: { color: textColor, font: { family: '-apple-system, sans-serif', size: 11 } }
+        }
+      }
+    }
+  });
+}
+
+// Inicialització automàtica
+crearGrid();
+procesar();
+</script>
+
+</body>
+</html>
