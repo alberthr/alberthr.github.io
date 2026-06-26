@@ -1,8 +1,3 @@
-<!-- ===================================================================
-     CALCULADORA DE COBERTURA n+ A PARTIR DE GRPs I COBERTURA 1+
-     Estil alineat amb el CV (paleta, tipografia, cantonades rectes).
-     Només cal enganxar aquest bloc sencer dins del .md del post.
-     =================================================================== -->
 <!DOCTYPE html>
 <html lang="ca">
 <head>
@@ -53,7 +48,7 @@
 
     .ccob-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr 0.7fr;
+      grid-template-columns: 1fr 1fr 1fr;
       gap: 18px 20px;
     }
     .ccob-field { display: flex; flex-direction: column; gap: 6px; }
@@ -138,10 +133,9 @@
       min-width: 0;
     }
     .ccob-bar-value {
-	  font-size: 11.5px;   /* mateixa mida que .ccob-yaxis-label */
-	  font-weight: 400;     /* normal, en lloc de 600 (negreta) */
+	  font-size: 11.5px;
+	  font-weight: 400;
 	  color: var(--cc-dark);
-	  /*color: var(--cc-text-light);*/ /* opcional: també el mateix gris que els eixos, en lloc del fosc */
 	  margin-bottom: 5px;
 	  white-space: nowrap;
     }
@@ -188,6 +182,10 @@
     .ccob-copy-btn:hover { border-color: var(--cc-primary); color: var(--cc-primary); }
     .ccob-copy-btn.copied { border-color: var(--cc-primary); background: var(--cc-primary-light); color: var(--cc-primary); }
 
+    .ccob-table-container {
+      width: 100%;
+      overflow-x: auto;
+    }
     .ccob-table {
       width: 100%;
       border-collapse: collapse;
@@ -197,9 +195,8 @@
     .ccob-table th, .ccob-table td {
       border: 1px solid var(--cc-border);
       padding: 9px 12px;
-      text-align: right;
+      text-align: center;
     }
-    .ccob-table th:first-child, .ccob-table td:first-child { text-align: left; }
     .ccob-table th {
       background: var(--cc-primary-light);
       color: var(--cc-dark);
@@ -207,9 +204,12 @@
       font-size: 12px;
       text-transform: uppercase;
       letter-spacing: 0.3px;
+      text-align: left;
+      width: 120px;
     }
     .ccob-table td { color: var(--cc-dark); font-variant-numeric: tabular-nums; }
-    .ccob-table tbody tr:hover { background: var(--cc-primary-light); }
+    .ccob-table tbody tr:hover { background: transparent; }
+    .ccob-table tbody tr:first-child td { font-weight: 600; background: var(--cc-primary-light); }
 
     .ccob-note { margin-top: 18px; font-size: 12.5px; color: var(--cc-text-light); }
     .ccob-note strong { color: var(--cc-dark); }
@@ -254,12 +254,18 @@
     <button class="ccob-copy-btn" id="cc-copy-btn" type="button">Copiar per a Excel</button>
   </div>
 
-  <table class="ccob-table" id="cc-table">
-    <thead>
-      <tr><th>Cobertura</th><th>%</th></tr>
-    </thead>
-    <tbody id="cc-table-body"></tbody>
-  </table>
+  <div class="ccob-table-container">
+    <table class="ccob-table" id="cc-table">
+      <tbody>
+        <tr id="cc-row-headers">
+          <th>Freqüència</th>
+        </tr>
+        <tr id="cc-row-values">
+          <th>Cobertura</th>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
   <div class="ccob-note" id="cc-note"></div>
 
@@ -275,12 +281,12 @@
     var $ = function (id) { return document.getElementById(id); };
     var elGrp = $('cc-grp'), elC1 = $('cc-c1');
     var outK = $('cc-out-k');
-    var tbody = $('cc-table-body'), note = $('cc-note');
+    var rowHeaders = $('cc-row-headers'), rowValues = $('cc-row-values'), note = $('cc-note');
     var copyBtn = $('cc-copy-btn');
     var yaxis = $('cc-yaxis'), gridlines = $('cc-gridlines'), bars = $('cc-bars'), xlabels = $('cc-xlabels');
 
     var lastLevels = null;
-    var Y_MAX = 110; // marge per sobre del 100% perquè l'etiqueta de la barra hi tingui espai
+    var Y_MAX = 110;
     var Y_STEPS = [0, 20, 40, 60, 80, 100];
 
     function fmt(x, d) {
@@ -320,9 +326,11 @@
       var grp = parseFloat(elGrp.value);
       var c1 = parseFloat(elC1.value);
 
+      rowHeaders.innerHTML = '<th>Freqüència</th>';
+      rowValues.innerHTML = '<th>Cobertura</th>';
+
       if (!isFinite(grp) || grp <= 0 || !isFinite(c1) || c1 <= 0 || c1 > 100) {
         note.textContent = 'Revisa els valors: GRP > 0 i 0 < Cobertura 1+ ≤ 100.';
-        tbody.innerHTML = '';
         outK.textContent = '—';
         lastLevels = null;
         bars.innerHTML = '';
@@ -332,7 +340,6 @@
 
       if (c1 > grp) {
         note.innerHTML = 'La Cobertura 1+ no pot ser superior als GRPs (implicaria freqüència mitjana &lt; 1). Revisa les dades.';
-        tbody.innerHTML = '';
         outK.textContent = '—';
         lastLevels = null;
         bars.innerHTML = '';
@@ -349,11 +356,14 @@
       }
       lastLevels = levels;
 
-      var rowsHtml = '';
+      var headersHtml = '';
+      var valuesHtml = '';
       for (var i = 0; i < levels.length; i++) {
-        rowsHtml += '<tr><td>' + (i + 1) + '+</td><td>' + fmt(levels[i]) + '</td></tr>';
+        headersHtml += '<td>' + (i + 1) + '+</td>';
+        valuesHtml += '<td>' + fmt(levels[i]) + '</td>';
       }
-      tbody.innerHTML = rowsHtml;
+      rowHeaders.insertAdjacentHTML('beforeend', headersHtml);
+      rowValues.insertAdjacentHTML('beforeend', valuesHtml);
 
       note.innerHTML = 'Amb GRP = ' + grp + ' i Cobertura 1+ = ' + c1 +
         '%, la Cobertura 10+ estimada és <strong>' + fmt(levels[9]) + '%</strong>.';
@@ -366,11 +376,16 @@
 
     copyBtn.addEventListener('click', function () {
       if (!lastLevels) return;
-      var lines = ['Cobertura\t%'];
+      
+      var headerLine = ['Freqüència'];
+      var valueLine = ['Cobertura'];
+      
       for (var i = 0; i < lastLevels.length; i++) {
-        lines.push((i + 1) + '+\t' + lastLevels[i].toFixed(2).replace('.', ','));
+        headerLine.push((i + 1) + '+');
+        valueLine.push(lastLevels[i].toFixed(2).replace('.', ','));
       }
-      var text = lines.join('\n');
+      
+      var text = headerLine.join('\t') + '\n' + valueLine.join('\t');
 
       function done() {
         copyBtn.classList.add('copied');
