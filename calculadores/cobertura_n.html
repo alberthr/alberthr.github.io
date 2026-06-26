@@ -13,6 +13,9 @@
       --cc-text-light: var(--text-light, #64748b);
       --cc-card-bg: var(--card-bg, #ffffff);
       --cc-border: var(--border, #e2e8f0);
+      --cc-disabled-bg: #f3f4f6;
+      --cc-bar-color: rgba(59, 130, 246, 0.18);
+      --cc-bar-border: rgba(59, 130, 246, 0.45);
       --cc-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
       box-sizing: border-box;
@@ -42,13 +45,14 @@
 
     .ccob-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: 1fr 1fr 0.7fr;
       gap: 18px 20px;
     }
     .ccob-field { display: flex; flex-direction: column; gap: 6px; }
     .ccob-field label { font-size: 12.5px; color: var(--cc-text-light); }
-    .ccob-field input {
+    .ccob-field input, .ccob-field .ccob-k-box {
       font: inherit;
+      font-size: 13.5px;
       font-family: var(--cc-font);
       padding: 9px 10px;
       border: 1px solid var(--cc-border);
@@ -56,47 +60,148 @@
       background: #fff;
       color: var(--cc-dark);
       width: 100%;
+      line-height: 1.4;
     }
     .ccob-field input:focus {
       outline: none;
       border-color: var(--cc-primary);
       box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
     }
-    @media (max-width: 600px) {
-      .ccob-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-
-    .ccob-summary {
-      margin-top: 22px;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
+    .ccob-field .ccob-k-box {
+      background: var(--cc-disabled-bg);
+      color: var(--cc-text);
+      cursor: default;
+      user-select: none;
     }
     @media (max-width: 600px) {
-      .ccob-summary { grid-template-columns: 1fr; }
+      .ccob-grid { grid-template-columns: 1fr 1fr; }
+      .ccob-grid .ccob-field:nth-child(3) { grid-column: 1 / -1; }
     }
-    .ccob-card {
-      padding: 14px 16px;
-      border: 1px solid var(--cc-border);
-      background: #fff;
-    }
-    .ccob-card.active { background: var(--cc-primary-light); border-color: var(--cc-primary); }
-    .ccob-card .lab { font-size: 11px; color: var(--cc-text-light); text-transform: uppercase; letter-spacing: 0.5px; }
-    .ccob-card .val { font-size: 19px; font-weight: 700; color: var(--cc-dark); margin-top: 5px; }
 
-    .ccob-table-wrap { margin-top: 24px; }
-    .ccob-row {
+    /* -------- Gràfic de barres (HTML/CSS, sense SVG) -------- */
+    .ccob-chart-wrap { margin-top: 26px; }
+    .ccob-chart {
+      position: relative;
       display: flex;
-      align-items: center;
+      align-items: stretch;
+      height: 240px;
+    }
+    .ccob-yaxis {
+      flex: 0 0 32px;
+      position: relative;
+      height: 100%;
+    }
+    .ccob-yaxis-label {
+      position: absolute;
+      right: 8px;
+      transform: translateY(50%);
+      font-size: 11.5px;
+      color: var(--cc-text-light);
+      white-space: nowrap;
+    }
+    .ccob-plot {
+      position: relative;
+      flex: 1;
+      height: 100%;
+      border-left: 1px solid var(--cc-border);
+      border-bottom: 1px solid var(--cc-border);
+    }
+    .ccob-gridline {
+      position: absolute;
+      left: 0;
+      right: 0;
+      border-top: 1px solid var(--cc-border);
+    }
+    .ccob-bars {
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      height: 100%;
       gap: 10px;
+      padding: 0 10px;
+    }
+    .ccob-bar-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      height: 100%;
+      min-width: 0;
+    }
+    .ccob-bar-value {
+	  font-size: 11.5px;   /* mateixa mida que .ccob-yaxis-label */
+	  font-weight: 400;     /* normal, en lloc de 600 (negreta) */
+	  color: var(--cc-dark);
+	  /*color: var(--cc-text-light);*/ /* opcional: també el mateix gris que els eixos, en lloc del fosc */
+	  margin-bottom: 5px;
+	  white-space: nowrap;
+    }
+    .ccob-bar {
+      width: 100%;
+      max-width: 38px;
+      background: var(--cc-bar-color);
+      border: 1px solid var(--cc-bar-border);
+      border-bottom: none;
+      border-radius: 3px 3px 0 0;
+      transition: height 0.2s ease;
+    }
+    .ccob-xlabels {
+      display: flex;
+      gap: 10px;
+      padding: 8px 10px 0;
+    }
+    .ccob-xlabel {
+      flex: 1;
+      text-align: center;
       font-size: 12px;
       color: var(--cc-text-light);
-      padding: 4px 0;
     }
-    .ccob-row > span:first-child { width: 48px; flex: 0 0 auto; color: var(--cc-dark); font-weight: 600; }
-    .ccob-bar-track { flex: 1; height: 14px; background: var(--cc-primary-light); border: 1px solid var(--cc-border); overflow: hidden; }
-    .ccob-bar-fill { height: 100%; background: var(--cc-primary); }
-    .ccob-bar-val { font-size: 12.5px; color: var(--cc-dark); font-weight: 600; width: 4.5em; text-align: right; }
+
+    .ccob-table-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 24px;
+      margin-bottom: 8px;
+    }
+    .ccob-table-head .lab { font-size: 11px; color: var(--cc-text-light); text-transform: uppercase; letter-spacing: 0.5px; }
+    .ccob-copy-btn {
+      font: inherit;
+      font-size: 12.5px;
+      font-family: var(--cc-font);
+      border: 1px solid var(--cc-border);
+      background: #fff;
+      color: var(--cc-dark);
+      padding: 7px 14px;
+      cursor: pointer;
+      border-radius: 0;
+    }
+    .ccob-copy-btn:hover { border-color: var(--cc-primary); color: var(--cc-primary); }
+    .ccob-copy-btn.copied { border-color: var(--cc-primary); background: var(--cc-primary-light); color: var(--cc-primary); }
+
+    .ccob-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+      font-family: var(--cc-font);
+    }
+    .ccob-table th, .ccob-table td {
+      border: 1px solid var(--cc-border);
+      padding: 9px 12px;
+      text-align: right;
+    }
+    .ccob-table th:first-child, .ccob-table td:first-child { text-align: left; }
+    .ccob-table th {
+      background: var(--cc-primary-light);
+      color: var(--cc-dark);
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .ccob-table td { color: var(--cc-dark); font-variant-numeric: tabular-nums; }
+    .ccob-table tbody tr:hover { background: var(--cc-primary-light); }
 
     .ccob-note { margin-top: 18px; font-size: 12.5px; color: var(--cc-text-light); }
     .ccob-note strong { color: var(--cc-dark); }
@@ -119,24 +224,34 @@
       <label for="cc-c1">Cobertura 1+ (%)</label>
       <input id="cc-c1" type="number" min="0.01" max="100" step="0.1" value="60">
     </div>
-  </div>
-
-  <div class="ccob-summary">
-    <div class="ccob-card active">
-      <div class="lab">Freqüència mitjana</div>
-      <div class="val" id="cc-out-freq">—</div>
-    </div>
-    <div class="ccob-card">
-      <div class="lab">Ràtio de decaïment (k)</div>
-      <div class="val" id="cc-out-k">—</div>
-    </div>
-    <div class="ccob-card">
-      <div class="lab">Suma C&#8321;…&#8734; (= GRP)</div>
-      <div class="val" id="cc-out-sum">—</div>
+    <div class="ccob-field">
+      <label>Ràtio Decaïment</label>
+      <div class="ccob-k-box" id="cc-out-k">—</div>
     </div>
   </div>
 
-  <div class="ccob-table-wrap" id="cc-table"></div>
+  <div class="ccob-chart-wrap">
+    <div class="ccob-chart">
+      <div class="ccob-yaxis" id="cc-yaxis"></div>
+      <div class="ccob-plot">
+        <div id="cc-gridlines"></div>
+        <div class="ccob-bars" id="cc-bars"></div>
+      </div>
+    </div>
+    <div class="ccob-xlabels" id="cc-xlabels" style="margin-left:32px;"></div>
+  </div>
+
+  <div class="ccob-table-head">
+    <span class="lab">Taula de resultats</span>
+    <button class="ccob-copy-btn" id="cc-copy-btn" type="button">Copiar per a Excel</button>
+  </div>
+
+  <table class="ccob-table" id="cc-table">
+    <thead>
+      <tr><th>Cobertura</th><th>%</th></tr>
+    </thead>
+    <tbody id="cc-table-body"></tbody>
+  </table>
 
   <div class="ccob-note" id="cc-note"></div>
 
@@ -144,20 +259,53 @@
     Model: <code>C<sub>n</sub> = C&#8321; &middot; (1 &minus; C&#8321;/GRP)<sup>n&minus;1</sup></code>,
     derivat assumint que la cobertura decau amb una ràtio constant entre nivells consecutius i que
     <code>&sum; C<sub>n</sub> (n=1..&#8734;) = GRP</code>. És una aproximació de planificació ràpida
-    (decaïment geomètric), no el model exacte que faria servir un software de mitjans amb dades de panell
-    (Poisson, NBD, Beta-Binomial…).
+    (decaïment geomètric), no el model exacte que faria servir un software de mitjans amb dades de panell.
   </div>
 
   <script>
   (function () {
     var $ = function (id) { return document.getElementById(id); };
     var elGrp = $('cc-grp'), elC1 = $('cc-c1');
-    var outFreq = $('cc-out-freq'), outK = $('cc-out-k'), outSum = $('cc-out-sum');
-    var table = $('cc-table'), note = $('cc-note');
+    var outK = $('cc-out-k');
+    var tbody = $('cc-table-body'), note = $('cc-note');
+    var copyBtn = $('cc-copy-btn');
+    var yaxis = $('cc-yaxis'), gridlines = $('cc-gridlines'), bars = $('cc-bars'), xlabels = $('cc-xlabels');
+
+    var lastLevels = null;
+    var Y_MAX = 100; // eix Y fix de 0 a 100
+    var Y_STEPS = [0, 20, 40, 60, 80, 100];
 
     function fmt(x, d) {
       if (d === undefined) d = 2;
       return x.toFixed(d);
+    }
+
+    function buildAxis() {
+      var yHtml = '';
+      var gridHtml = '';
+      for (var i = 0; i < Y_STEPS.length; i++) {
+        var val = Y_STEPS[i];
+        var bottomPct = (val / Y_MAX) * 100;
+        yHtml += '<span class="ccob-yaxis-label" style="bottom:' + bottomPct + '%;">' + val + '</span>';
+        gridHtml += '<div class="ccob-gridline" style="bottom:' + bottomPct + '%;"></div>';
+      }
+      yaxis.innerHTML = yHtml;
+      gridlines.innerHTML = gridHtml;
+    }
+
+    function drawBars(levels) {
+      var barsHtml = '';
+      var labelsHtml = '';
+      for (var i = 0; i < levels.length; i++) {
+        var pct = Math.max(0, Math.min(100, (levels[i] / Y_MAX) * 100));
+        barsHtml += '<div class="ccob-bar-col">' +
+            '<span class="ccob-bar-value">' + fmt(levels[i], 1) + '%</span>' +
+            '<div class="ccob-bar" style="height:' + pct + '%"></div>' +
+          '</div>';
+        labelsHtml += '<span class="ccob-xlabel">' + (i + 1) + '+</span>';
+      }
+      bars.innerHTML = barsHtml;
+      xlabels.innerHTML = labelsHtml;
     }
 
     function calc() {
@@ -166,56 +314,90 @@
 
       if (!isFinite(grp) || grp <= 0 || !isFinite(c1) || c1 <= 0 || c1 > 100) {
         note.textContent = 'Revisa els valors: GRP > 0 i 0 < Cobertura 1+ ≤ 100.';
-        table.innerHTML = '';
-        outFreq.textContent = outK.textContent = outSum.textContent = '—';
+        tbody.innerHTML = '';
+        outK.textContent = '—';
+        lastLevels = null;
+        bars.innerHTML = '';
+        xlabels.innerHTML = '';
         return;
       }
 
       if (c1 > grp) {
         note.innerHTML = 'La Cobertura 1+ no pot ser superior als GRPs (implicaria freqüència mitjana &lt; 1). Revisa les dades.';
-        table.innerHTML = '';
-        outFreq.textContent = outK.textContent = outSum.textContent = '—';
+        tbody.innerHTML = '';
+        outK.textContent = '—';
+        lastLevels = null;
+        bars.innerHTML = '';
+        xlabels.innerHTML = '';
         return;
       }
 
       var k = 1 - c1 / grp;
-      var freq = grp / c1;
-
-      outFreq.textContent = fmt(freq) + 'x';
       outK.textContent = fmt(k, 3);
 
       var levels = [];
-      var sumAll = 0; // suma teòrica n=1..infinit
-      var cPrev = c1;
       for (var n = 1; n <= 10; n++) {
-        var cn = c1 * Math.pow(k, n - 1);
-        levels.push(cn);
+        levels.push(c1 * Math.pow(k, n - 1));
       }
-      // suma infinita de la sèrie geomètrica completa (n=1..infinit) = c1 / (1-k) = grp
-      sumAll = (k < 1) ? c1 / (1 - k) : grp;
-      outSum.textContent = fmt(sumAll) + '%';
+      lastLevels = levels;
 
-      var maxC = levels[0];
       var rowsHtml = '';
       for (var i = 0; i < levels.length; i++) {
-        var pct = Math.max(0, Math.min(100, (levels[i] / maxC) * 100));
-        rowsHtml += '<div class="ccob-row">' +
-          '<span>' + (i + 1) + '+</span>' +
-          '<div class="ccob-bar-track"><div class="ccob-bar-fill" style="width:' + pct + '%"></div></div>' +
-          '<span class="ccob-bar-val">' + fmt(levels[i]) + '%</span>' +
-          '</div>';
+        rowsHtml += '<tr><td>' + (i + 1) + '+</td><td>' + fmt(levels[i]) + '</td></tr>';
       }
-      table.innerHTML = rowsHtml;
+      tbody.innerHTML = rowsHtml;
 
-      note.innerHTML = 'Amb GRP = ' + grp + ' i Cobertura 1+ = ' + c1 + '%, la freqüència mitjana és ' +
-        '<strong>' + fmt(freq) + '</strong> contactes per individu exposat, i la ràtio de decaïment estimada és ' +
-        '<strong>k = ' + fmt(k, 3) + '</strong>. La Cobertura 10+ estimada és <strong>' + fmt(levels[9]) + '%</strong>.';
+      note.innerHTML = 'Amb GRP = ' + grp + ' i Cobertura 1+ = ' + c1 +
+        '%, la Cobertura 10+ estimada és <strong>' + fmt(levels[9]) + '%</strong>.';
+
+      copyBtn.classList.remove('copied');
+      copyBtn.textContent = 'Copiar per a Excel';
+
+      drawBars(levels);
+    }
+
+    copyBtn.addEventListener('click', function () {
+      if (!lastLevels) return;
+      var lines = ['Cobertura\t%'];
+      for (var i = 0; i < lastLevels.length; i++) {
+        lines.push((i + 1) + '+\t' + lastLevels[i].toFixed(2).replace('.', ','));
+      }
+      var text = lines.join('\n');
+
+      function done() {
+        copyBtn.classList.add('copied');
+        copyBtn.textContent = 'Copiat ✓';
+        setTimeout(function () {
+          copyBtn.classList.remove('copied');
+          copyBtn.textContent = 'Copiar per a Excel';
+        }, 1800);
+      }
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(function () { fallbackCopy(text, done); });
+      } else {
+        fallbackCopy(text, done);
+      }
+    });
+
+    function fallbackCopy(text, cb) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+      if (cb) cb();
     }
 
     [elGrp, elC1].forEach(function (el) {
       el.addEventListener('input', calc);
       el.addEventListener('change', calc);
     });
+
+    buildAxis();
     calc();
   })();
   </script>
