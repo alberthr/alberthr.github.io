@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Més enllà del Solver d'Excel: Equació de Hill vs. Logística de Nelder Modificada en Mix de Mitjans"
+title: "Corves de Saturacio en el mon publicitari: Ventes vs Cobertura"
 tags:
   - mmm
   - publicitat
