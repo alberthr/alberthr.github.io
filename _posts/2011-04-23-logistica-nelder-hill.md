@@ -16,7 +16,7 @@ Sovint, les fórmules heretades de fulls de càlcul corporatius s'utilitzen de m
 
 Originalment formulada per descriure fenòmens bioquímics, l'Equació de Hill s'ha consolidat en l'anàlisi de màrqueting per la seva capacitat de capturar efectes de llindar complexos.
 
-$$\Large y = E_{max} \cdot \frac{x^n}{EC_{50}^n + x^n}$$
+$$y = E_{max} \cdot \frac{x^n}{EC_{50}^n + x^n}$$
 
 ### Propietats dels paràmetres:
 * **$E_{max}$ (Sostre Màxim):** Representa l'asímptota horitzontal de la funció, és a dir, el límit teòric de resposta davant d'una inversió infinita.
@@ -28,7 +28,7 @@ $$\Large y = E_{max} \cdot \frac{x^n}{EC_{50}^n + x^n}$$
 
 La variant coneguda habitualment en entorns corporatius com a "Logística Modificada" és una adaptació del **Model Logístic de Nelder** de tres paràmetres, alterada algebraicament perquè la intercepció es produeixi estrictament en l'origen $(0,0)$. En una corba logística estàndard, un pressupost de zero genera un resultat positiu ($y > 0$); aquesta modificació aplica una penalització exponencial al numerador per resoldre aquesta incoherència conceptual.
 
-$$\Large y = K \cdot \frac{1 - e^{-\alpha \cdot x}}{1 + \theta \cdot e^{-\alpha \cdot x}}$$
+$$y = K \cdot \frac{1 - e^{-\alpha \cdot x}}{1 + \theta \cdot e^{-\alpha \cdot x}}$$
 
 ### Propietats dels paràmetres:
 * **$K$ (Sostre de Capacitat):** L'asímptota de saturació del mercat o del canal (equivalent a l'$E_{max}$ de Hill).
