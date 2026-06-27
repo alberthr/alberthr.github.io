@@ -21,6 +21,10 @@
             --cc-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
+		html {
+			scrollbar-gutter: stable;
+		}
+
         body {
             font-family: var(--cc-font);
             margin: 2rem auto;
@@ -57,6 +61,51 @@
             color: var(--cc-text-light);
             font-size: 13px;
             font-weight: normal;
+        }
+
+        /* Selector de Model Matemàtic Modificat */
+        .model-selector-container {
+            background: #ffffff;
+            border: 1px solid var(--cc-border);
+            padding: 16px 20px;
+            border-radius: var(--cc-radius);
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+
+        .model-selector-field {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .model-selector-field label {
+            font-weight: 600;
+            color: var(--cc-dark);
+            font-size: 13.5px;
+        }
+
+        .model-select {
+            font-family: var(--cc-font);
+            padding: 6px 12px;
+            border-radius: var(--cc-radius);
+            border: 1px solid var(--cc-primary);
+            font-size: 13px;
+            color: var(--cc-dark);
+            background: white;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .model-explanation-box {
+            font-size: 12.5px;
+            color: var(--cc-text);
+            line-height: 1.45;
+            background: var(--cc-primary-light);
+            padding: 10px 14px;
+            border-radius: 4px;
+            border-left: 3px solid var(--cc-primary);
         }
 
         /* Sistema de Pestanyes (Tabs) */
@@ -365,13 +414,27 @@
             border: 1px dashed var(--cc-border);
             border-radius: var(--cc-radius);
         }
+
+        /* Peu de pàgina metodològic sol·licitat */
+        .methodology-footer {
+            margin-top: 35px;
+            border-top: 1px dashed var(--cc-border);
+            padding-top: 15px;
+            font-size: 11.5px;
+            color: var(--cc-text-light);
+            line-height: 1.5;
+        }
+
+        .methodology-footer p {
+            margin: 6px 0;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="ccob-title">Optimitzador de Mix de Mitjans (Maximitzador de Cobertura)</div>
-    <h3 class="ccob-subtitle">Model de corba Hill integrant eficiència per cost i volum</h3>
+    <h3 class="ccob-subtitle">Model dinàmic d'optimització de Budget publicitari i modelatge de corbes acumulades</h3>
     
     <div class="tabs-container">
         <button class="tab-btn active" onclick="switchTab('tab-dades')">1. Càrrega de Dades i Ajust</button>
@@ -379,6 +442,18 @@
     </div>
 
     <div id="tab-dades" class="tab-content active">
+        <div class="model-selector-container">
+            <div class="model-selector-field">
+                <label for="global-model-select">Model matemàtic de referència:</label>
+                <select id="global-model-select" class="model-select" onchange="handleModelChange()">
+                    <option value="logistic" selected>Logística Modificada</option>
+					<option value="hill">Equació de Hill</option>							
+                </select>
+            </div>
+            <div id="model-explanation" class="model-explanation-box">
+                </div>
+        </div>
+
         <div class="media-grid">
             <script>
                 const colors = [
@@ -427,14 +502,8 @@
             <div class="ccob-table-wrapper" id="tableDataContent" style="display:none;">
                 <table>
                     <thead>
-                        <tr>
-                            <th>Mitjà / Fitxer carregat</th>
-                            <th>Punts Excel</th>
-                            <th>Asímptota Màxima (A)</th>
-                            <th>Pendent Curvatura (B)</th>
-                            <th>Punt Mitja Sat. (C)</th>
-                            <th>Bondat Ajust (R²)</th>
-                        </tr>
+                        <tr id="tableHeaderRow">
+                            </tr>
                     </thead>
                     <tbody id="tableBody"></tbody>
                 </table>
@@ -448,7 +517,7 @@
                 <div class="input-group">
                     <label for="opt-mode">Què vols optimitzar?</label>
                     <select id="opt-mode" onchange="toggleOptLabel()">
-                        <option value="grps">Borsa total de GRPs</option>
+                        <option value="grps">Quantitat total de GRPs</option>
                         <option value="budget">Pressupost total disponible (€)</option>
                     </select>
                 </div>
@@ -469,12 +538,21 @@
             <canvas id="multiChartCanvas" width="800" height="420"></canvas>
         </div>
     </div>
+
+    <div class="methodology-footer">
+        <p>L'ajust dels paràmetres es realitza mitjançant una aproximació numèrica integrada al navegador. Un programari estadístic dedicat o un Solver avançat basat en gradients iteratius podria mostrar resultats lleugerament diferents degut a una precisió decimal superior.El càlcul consolidat de cobertura conjunta assumeix de manera probabilística que el consum dels diferents mitjans és independent entre si. En entorns reals on s'observi una forta co-duplicació de públics coincidents, la cobertura combinada final pot variar respecte a la teòrica.</p>
+    </div>
 </div>
 
 <script>
 let chartInstance = null;
 let mediaDataStore = {};
 let lastAllocationGRPs = null;
+
+// Execució inicial del text explicatiu
+document.addEventListener("DOMContentLoaded", function() {
+    updateExplanationText();
+});
 
 function switchTab(tabId) {
     document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -488,19 +566,14 @@ function switchTab(tabId) {
     }
 }
 
-// Inicialització drag and drop
-for (let i = 1; i <= 6; i++) {
-    const dz = document.getElementById(`drop-zone-${i}`);
-    ['dragenter', 'dragover'].forEach(eventName => {
-        dz.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); dz.classList.add('dragover'); }, false);
-    });
-    ['dragleave', 'drop'].forEach(eventName => {
-        dz.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); dz.classList.remove('dragover'); }, false);
-    });
-    dz.addEventListener('drop', (e) => {
-        const files = e.dataTransfer.files;
-        if (files.length > 0) triggerFileLoad(i, files[0]);
-    }, false);
+function updateExplanationText() {
+    const model = document.getElementById('global-model-select').value;
+    const box = document.getElementById('model-explanation');
+    if (model === 'hill') {
+        box.innerHTML = "Recomanada quan es necessita una massa crítica de GRPs perquè la campanya agafi tracció.";
+    } else {
+        box.innerHTML = "Recomanada per modelar un creixement immediat i eficient des del primer GRP.";
+    }
 }
 
 function toggleOptLabel() {
@@ -562,14 +635,14 @@ function processMediaData(index, fileName, data) {
     if (!points.some(p => p.x === 0)) points.push({ x: 0, y: 0 });
     points.sort((a, b) => a.x - b.x);
 
-    const fit = fitExcelLogistic(points);
-
     mediaDataStore[index] = {
         fileName: fileName,
         points: points,
-        fit: fit,
+        fit: null,
         color: colors[index-1]
     };
+
+    recalculateFitForMedia(index);
 
     document.getElementById(`card-${index}`).classList.add('active');
     document.getElementById(`drop-zone-${index}`).style.display = 'none';
@@ -580,6 +653,26 @@ function processMediaData(index, fileName, data) {
     document.getElementById('btn-optimize').disabled = false;
     
     lastAllocationGRPs = null; 
+    resetOptimizationResult();
+    updateGlobalDashboard();
+}
+
+function recalculateFitForMedia(index) {
+    const currentModel = document.getElementById('global-model-select').value;
+    const points = mediaDataStore[index].points;
+    if (currentModel === 'logistic') {
+        mediaDataStore[index].fit = fitExcelLogistic(points);
+    } else {
+        mediaDataStore[index].fit = fitHillEquation(points);
+    }
+}
+
+function handleModelChange() {
+    updateExplanationText();
+    Object.keys(mediaDataStore).forEach(idx => {
+        recalculateFitForMedia(idx);
+    });
+    lastAllocationGRPs = null;
     resetOptimizationResult();
     updateGlobalDashboard();
 }
@@ -606,32 +699,84 @@ function resetOptimizationResult() {
     lastAllocationGRPs = null;
 }
 
-function excelLogisticFunction(x, A, B, C) {
+// 1. FUNCIÓ LOGÍSTICA MODIFICADA
+function excelLogisticFunction(x, C3, C4, C5) {
     if (x === 0) return 0;
-    return (A * Math.pow(x, B)) / (Math.pow(C, B) + Math.pow(x, B));
+    let expVal = Math.exp(-x / C5);
+    return C3 * ((1 - expVal) / (1 + C4 * expVal));
 }
 
 function fitExcelLogistic(points) {
-    let bestA = 100, bestB = 1.0, bestC = 150, minError = Infinity;
+    let bestC3 = 100, bestC4 = 1.0, bestC5 = 150, minError = Infinity;
     const maxY = Math.max(...points.map(p => p.y));
-    const A_min = Math.max(70, maxY);
+    const C3_min = Math.max(70, maxY);
     const maxGRP = Math.max(...points.map(p => p.x));
 
-    for (let A = A_min; A <= 100; A += 2) {
-        for (let B = 0.5; B <= 2.5; B += 0.1) {
-            for (let C = 20; C <= maxGRP * 0.75; C += 10) {
+    for (let C3 = C3_min; C3 <= 100; C3 += 2) {
+        for (let C4 = -0.5; C4 <= 5.0; C4 += 0.2) {
+            for (let C5 = 10; C5 <= maxGRP * 0.75; C5 += 10) {
                 let error = 0;
                 for (let p of points) {
-                    let pred = excelLogisticFunction(p.x, A, B, C);
+                    let pred = excelLogisticFunction(p.x, C3, C4, C5);
                     error += Math.pow(p.y - pred, 2);
                 }
-                if (error < minError) { minError = error; bestA = A; bestB = B; bestC = C; }
+                if (error < minError) { 
+                    minError = error; 
+                    bestC3 = C3; 
+                    bestC4 = C4; 
+                    bestC5 = C5; 
+                }
             }
         }
     }
     const meanY = points.reduce((sum, p) => sum + p.y, 0) / points.length;
     const ssTot = points.reduce((sum, p) => sum + Math.pow(p.y - meanY, 2), 0);
-    return { A: bestA, B: bestB, C: bestC, rSquared: ssTot === 0 ? 1 : 1 - (minError / ssTot) };
+    return { p1: bestC3, p2: bestC4, p3: bestC5, rSquared: ssTot === 0 ? 1 : 1 - (minError / ssTot) };
+}
+
+// 2. EQUACIÓ DE HILL
+function hillEquationFunction(x, Emax, EC50, n) {
+    if (x === 0) return 0;
+    let powX = Math.pow(x, n);
+    let powEC50 = Math.pow(EC50, n);
+    return Emax * (powX / (powEC50 + powX));
+}
+
+function fitHillEquation(points) {
+    let bestEmax = 100, bestEC50 = 100, bestN = 1.2, minError = Infinity;
+    const maxY = Math.max(...points.map(p => p.y));
+    const Emax_min = Math.max(70, maxY);
+    const maxGRP = Math.max(...points.map(p => p.x));
+
+    for (let Emax = Emax_min; Emax <= 100; Emax += 2) {
+        for (let EC50 = 10; EC50 <= maxGRP * 0.6; EC50 += 15) {
+            for (let n = 0.5; n <= 3.0; n += 0.15) {
+                let error = 0;
+                for (let p of points) {
+                    let pred = hillEquationFunction(p.x, Emax, EC50, n);
+                    error += Math.pow(p.y - pred, 2);
+                }
+                if (error < minError) {
+                    minError = error;
+                    bestEmax = Emax;
+                    bestEC50 = EC50;
+                    bestN = n;
+                }
+            }
+        }
+    }
+    const meanY = points.reduce((sum, p) => sum + p.y, 0) / points.length;
+    const ssTot = points.reduce((sum, p) => sum + Math.pow(p.y - meanY, 2), 0);
+    return { p1: bestEmax, p2: bestEC50, p3: bestN, rSquared: ssTot === 0 ? 1 : 1 - (minError / ssTot) };
+}
+
+function evaluateActiveModel(x, fit) {
+    const model = document.getElementById('global-model-select').value;
+    if (model === 'logistic') {
+        return excelLogisticFunction(x, fit.p1, fit.p2, fit.p3);
+    } else {
+        return hillEquationFunction(x, fit.p1, fit.p2, fit.p3);
+    }
 }
 
 function optimizeMediaMix() {
@@ -659,14 +804,14 @@ function optimizeMediaMix() {
         activeIndexes.forEach(idx => {
             let currentNetUncoverage = 1;
             activeIndexes.forEach(i => {
-                let cob = excelLogisticFunction(allocationGRPs[i], mediaDataStore[i].fit.A, mediaDataStore[i].fit.B, mediaDataStore[i].fit.C) / 100;
+                let cob = evaluateActiveModel(allocationGRPs[i], mediaDataStore[i].fit) / 100;
                 currentNetUncoverage *= (1 - cob);
             });
 
             let hypotheticalNetUncoverage = 1;
             activeIndexes.forEach(i => {
                 let g = allocationGRPs[i] + (i === idx ? stepGRPs : 0);
-                let cob = excelLogisticFunction(g, mediaDataStore[i].fit.A, mediaDataStore[i].fit.B, mediaDataStore[i].fit.C) / 100;
+                let cob = evaluateActiveModel(g, mediaDataStore[i].fit) / 100;
                 hypotheticalNetUncoverage *= (1 - cob);
             });
 
@@ -701,7 +846,7 @@ function optimizeMediaMix() {
     let actualTotalGRPs = 0;
     
     activeIndexes.forEach(idx => {
-        let cob = excelLogisticFunction(allocationGRPs[idx], mediaDataStore[idx].fit.A, mediaDataStore[idx].fit.B, mediaDataStore[idx].fit.C) / 100;
+        let cob = evaluateActiveModel(allocationGRPs[idx], mediaDataStore[idx].fit) / 100;
         finalNetUncoverage *= (1 - cob);
         actualTotalCost += allocationGRPs[idx] * costs[idx];
         actualTotalGRPs += allocationGRPs[idx];
@@ -726,7 +871,7 @@ function optimizeMediaMix() {
         const grps = allocationGRPs[idx];
         const costMedia = grps * costs[idx];
         const pct = (mode === 'budget') ? ((costMedia / (actualTotalCost || 1)) * 100) : ((grps / (actualTotalGRPs || 1)) * 100);
-        const mCob = excelLogisticFunction(grps, mediaDataStore[idx].fit.A, mediaDataStore[idx].fit.B, mediaDataStore[idx].fit.C);
+        const mCob = evaluateActiveModel(grps, mediaDataStore[idx].fit);
         
         if (grps > 0) {
             let mediaGrpsString = (mode === 'grps') ? `<b>${grps} GRPs</b>` : `${grps} GRPs`;
@@ -766,6 +911,17 @@ function updateGlobalDashboard() {
     document.getElementById('chart-placeholder').style.display = 'none';
     document.getElementById('chartWrapperContent').style.display = 'block';
 
+    // Regeneració d'encapçalats executius breus i nets sense lletres ni parèntesis sol·licitats
+    const headerRow = document.getElementById('tableHeaderRow');
+    headerRow.innerHTML = `
+        <th>Mitjà / Fitxer carregat</th>
+        <th>Punts Mostra</th>
+        <th>Sostre Màxim</th>
+        <th>Factor Curvatura</th>
+        <th>Velocitat Transició</th>
+        <th>Bondat Ajust</th>
+    `;
+
     const tableBody = document.getElementById('tableBody');
     tableBody.innerHTML = "";
 
@@ -794,14 +950,13 @@ function updateGlobalDashboard() {
                     <span style="font-size:11px; font-weight:normal; text-transform:none; color:var(--cc-text-light);">[Mitjà ${idx}]</span>
                 </td>
                 <td>${media.points.length}</td>
-                <td>${media.fit.A.toFixed(1)}%</td>
-                <td>${media.fit.B.toFixed(2)}</td>
-                <td>${media.fit.C.toFixed(1)} GRPs</td>
+                <td>${media.fit.p1.toFixed(1)}%</td>
+                <td>${media.fit.p2.toFixed(2)}</td>
+                <td>${media.fit.p3.toFixed(1)} GRPs</td>
                 <td style="font-weight:500;">${media.fit.rSquared.toFixed(4)}</td>
             </tr>
         `;
 
-        // Punts en forma de 'x' discretes restaurats
         datasets.push({
             label: `${clearName}`,
             data: media.points,
@@ -816,7 +971,7 @@ function updateGlobalDashboard() {
         let linePoints = [];
         const step = globalMaxX / 150;
         for (let x = 0; x <= globalMaxX; x += step) {
-            linePoints.push({ x: x, y: excelLogisticFunction(x, media.fit.A, media.fit.B, media.fit.C) });
+            linePoints.push({ x: x, y: evaluateActiveModel(x, media.fit) });
         }
         datasets.push({
             label: `${clearName} (Corba)`,
@@ -829,10 +984,9 @@ function updateGlobalDashboard() {
             tension: 0.1
         });
 
-        // Solució òptima com a punt gros ben visible amb fons del color del mitjà
         if (lastAllocationGRPs && lastAllocationGRPs[idx] !== undefined) {
             const optX = lastAllocationGRPs[idx];
-            const optY = excelLogisticFunction(optX, media.fit.A, media.fit.B, media.fit.C);
+            const optY = evaluateActiveModel(optX, media.fit);
             datasets.push({
                 label: `${clearName} (Solució Òptima)`,
                 data: [{ x: optX, y: optY }],
