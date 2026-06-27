@@ -142,26 +142,26 @@ Malgrat la seva potència, el test K-S presenta certs punts febles que cal consi
 
 ---
 
-## Exemples pràctics: Python i R
+## Exemples pràctiques: Python i R
 
-A continuació, es mostra com aplicar el test de dues mostres mitjançant codi. En aquest supòsit, es compara si le temps de càrrega d'una pàgina web amb un servidor nou (Grup B) difereix del registrat amb el servidor antic (Grup A).
+Anem a veure com aplicar el test de dues mostres utilitzant codi. Imaginem que volem comparar si el temps de càrrega de la nostra web amb un servidor nou (Grup B) és diferent del servidor antic (Grup A).
 
 ### 🐍 Implementació en Python
 
-S'utilitza la llibreria `scipy.stats`. Es generen dades aleatòries on el Grup B reflecteix un temps de resposta lleugerament més ràpid.
+Farem servir la llibreria `scipy.stats`. Generarem dades aleatòries on el Grup B és lleugerament més ràpid.
 
 ```python
 import numpy as np
 from scipy import stats
 
-# Fixació de la llavor per a la reproductibilitat
+# Fixem la llavor per a la reproductibilitat
 np.random.seed(42)
 
-# Generació de dades simulades (temps en segons)
+# Generem dades simulades (temps en segons)
 grup_A = np.random.normal(loc=3.0, scale=0.5, size=100) # Servidor antic
 grup_B = np.random.normal(loc=2.8, scale=0.5, size=100) # Servidor nou (més ràpid)
 
-# Aplicació del test de Kolmogorov-Smirnov de dues mostres
+# Apliquem el test de Kolmogorov-Smirnov de dues mostres
 estadistic_d, p_valor = stats.ks_2samp(grup_A, grup_B)
 
 print(f"Estadístic D: {estadistic_d:.4f}")
@@ -170,6 +170,38 @@ print(f"p-valor: {p_valor:.4f}")
 # Interpretació
 alpha = 0.05
 if p_valor < alpha:
-    print("Es rebutja l'hipòtesi nul·la: Les dues distribucions són significativament diferents.")
+    print("Rebutgem l'hipòtesi nul·la: Les dues distribucions són significativament diferents.")
 else:
-    print("No es pot rebutjar l'hipòtesi nul·la: No hi ha evidència que les distribucions siguin diferents.")
+    print("No podem rebutjar l'hipòtesi nul·la: No hi ha evidència que les distribucions siguin diferents.")
+```
+
+
+### 📊 Implementacio en R
+
+```r
+# Fixem la llavor
+set.seed(27)
+
+# Generem les mateixes dades simulades
+grup_A <- rnorm(100, mean = 3.0, sd = 0.5)
+grup_B <- rnorm(100, mean = 2.8, sd = 0.5)
+
+# Grafiquem les mostres
+plot(ecdf(grup_A), col = "blue", main = "Comparativa de CDFs i Mètode K-S", 
+     xlab = "Valor", ylab = "Probabilitat Acumulada", verticals = TRUE, do.points = FALSE)
+plot(ecdf(grup_B), col = "red", add = TRUE, verticals = TRUE, do.points = FALSE)
+
+# Apliquem el test K-S
+resultat <- ks.test(grup_A, grup_B)
+
+# Mostrem els resultats per pantalla
+print(resultat)
+
+# Comprovar el p-valor de manera programàtica
+if (resultat$p.value < 0.05) {
+  cat("Resultat: Les distribucions són significativament diferents.\n")
+} else {
+  cat("Resultat: No hi ha diferències significatives.\n")
+}
+
+```
