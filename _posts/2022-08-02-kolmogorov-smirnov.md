@@ -6,177 +6,149 @@ tags:
 excerpt: "Com determinar si dues mostres provenen de la mateixa distribució o si els residus segueixen una normal? El test de Kolmogorov-Smirnov compara funcions de distribució acumulades i ofereix un p-valor objectiu."
 ---
 
-En l'àmbit de la ciència de dades o de l'estadística, sovint sorgeixen qüestions com ara si una variable segueix una distribució normal o si el comportament d'un grup d'usuaris A és equivalent al d'un grup B. Per respondre a aquestes preguntes, se sol recórrer a gràfics com histogrames o diagrames Q-Q[cite: 1]. No obstant això, quan es requereix una mètrica objectiva i un p-valor, el **Test de Kolmogorov-Smirnov (K-S)** esdevé una de les eines més versàtils i utilitzades[cite: 1].
+En l'àmbit de la ciència de dades o de l'estadística, sovint sorgeixen qüestions com ara si una variable segueix una distribució normal o si el comportament d'un grup d'usuaris A és equivalent al d'un grup B. Per respondre a aquestes preguntes, se sol recórrer a gràfics com histogrames o diagrames Q-Q. No obstant això, quan es requereix una mètrica objectiva i un p-valor, el **Test de Kolmogorov-Smirnov (K-S)** esdevé una de les eines més versàtils i utilitzades.
 
 
 ## Què és i per a què serveix?
 
-El test de Kolmogorov-Smirnov és una prova estadística no paramètrica (és a dir, no assumeix que les dades segueixen una forma de distribució predeterminada) que s'utilitza per **comparar distribucions de variables contínues**[cite: 1].
+El test de Kolmogorov-Smirnov és una prova estadística no paramètrica (és a dir, no assumeix que les dades segueixen una forma de distribució predeterminada) que s'utilitza per **comparar distribucions de variables contínues**.
 
-Es basa en la **Funció de Distribució Acumulada** (CDF, per les seves sigles en anglès)[cite: 1]. L'estadístic del test, anomenat $D$, representa la **distància màxima vertical** entre les dues funcions acumulades que es comparen[cite: 1].
+Es basa en la **Funció de Distribució Acumulada** (CDF, per les seves sigles en anglès). L'estadístic del test, anomenat $D$, representa la **distància màxima vertical** entre les dues funcions acumulades que es comparen.
 
-A la següent gràfica interactiva es mostra de manera visual com l'estadístic $D$ localitza el punt on les dues corbes presenten la separació més gran[cite: 1]:
+A la següent gràfica es mostra de manera visual com l'estadístic $D$ localitza el punt on les dues corbes presenten la separació més gran:
 
-<!-- GRÀFIC EN JAVASCRIPT / CANVAS -->
-<div style="text-align: center; margin: 20px 0; font-family: sans-serif;">
-  <canvas id="ksCanvas" width="550" height="400" style="border:1px solid #d3d3d3; background:#fff; max-width:100%;"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div style="width: 100%; max-width: 750px; margin: 30px auto; padding: 15px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+  <canvas id="graficKS" width="800" height="450"></canvas>
 </div>
 
 <script>
-(function() {
-  const canvas = document.getElementById('ksCanvas');
-  const ctx = canvas.getContext('2d');
+document.addEventListener("DOMContentLoaded", function() {
+    function normalCDF(x) {
+        const a1 =  0.254829592, a2 = -0.284496736, a3 =  1.421413741;
+        const a4 = -1.453152027, a5 =  1.061405429, p  =  0.3275911;
+        const sign = (x < 0) ? -1 : 1;
+        const absX = Math.abs(x);
+        const t = 1.0 / (1.0 + p * absX);
+        const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-absX * absX);
+        return 0.5 * (1 + sign * y);
+    }
 
-  const margin = {top: 40, right: 40, bottom: 50, left: 60};
-  const width = canvas.width - margin.left - margin.right;
-  const height = canvas.height - margin.top - margin.bottom;
+    const xValors = [];
+    const yTeorica = [];
+    for (let x = -4.0; x <= 4.0; x += 0.1) {
+        xValors.push(Number(x.toFixed(2)));
+        yTeorica.push(normalCDF(x));
+    }
 
-  function mapX(val) { return margin.left + ((val - (-4)) / 8) * width; }
-  function mapY(val) { return margin.top + (1 - val) * height; }
-
-  ctx.strokeStyle = '#e0e0e0';
-  ctx.lineWidth = 1;
-  ctx.setLineDash([4, 4]);
-  
-  for (let i = 0; i <= 5; i++) {
-    let p = i * 0.2;
-    let y = mapY(p);
-    ctx.beginPath(); ctx.moveTo(margin.left, y); ctx.lineTo(canvas.width - margin.right, y); ctx.stroke();
+    const puntsMostra = [-1.9, -1.3, -1.0, -0.7, -0.5, -0.4, -0.2, 0.0, 0.1, 0.2, 0.4, 0.7, 0.9, 1.2, 1.3, 1.5, 2.0, 2.1, 3.0];
+    const yEmpirica = [];
     
-    ctx.setLineDash([]);
-    ctx.fillStyle = '#333';
-    ctx.font = '12px sans-serif';
-    ctx.fillText(p.toFixed(1), margin.left - 25, y + 4);
-    ctx.setLineDash([4, 4]);
-  }
+    xValors.forEach(x => {
+        const puntsMenorsOIguals = puntsMostra.filter(p => p <= x).length;
+        yEmpirica.push(puntsMenorsOIguals / puntsMostra.length);
+    });
 
-  for (let xVal = -4; xVal <= 4; xVal += 2) {
-    let x = mapX(xVal);
-    ctx.beginPath(); ctx.moveTo(x, margin.top); ctx.lineTo(x, canvas.height - margin.bottom); ctx.stroke();
-    
-    ctx.setLineDash([]);
-    ctx.fillStyle = '#333';
-    ctx.fillText(xVal, x - 5, canvas.height - margin.bottom + 20);
-    ctx.setLineDash([4, 4]);
-  }
-  ctx.setLineDash([]);
+    const xDistancia = 1.3;
+    const yTeoricaEnD = normalCDF(xDistancia);
+    const yEmpiricaEnD = puntsMostra.filter(p => p <= xDistancia).length / puntsMostra.length;
 
-  ctx.font = 'bold 14px sans-serif';
-  ctx.save();
-  ctx.translate(18, canvas.height / 2);
-  ctx.rotate(-Math.PI / 2);
-  ctx.textAlign = 'center';
-  ctx.fillText('Probabilitat Acumulada (CDF)', 0, 0);
-  ctx.restore();
-  
-  ctx.textAlign = 'center';
-  ctx.fillText('Variable (X)', canvas.width / 2, canvas.height - 10);
+    const liniaDMax = [
+        { x: xDistancia, y: yTeoricaEnD },
+        { x: xDistancia, y: yEmpiricaEnD }
+    ];
 
-  function normalCDF(x) {
-    return 0.5 * (1 + Math.erf(x / Math.sqrt(2)));
-  }
-  Math.erf = function(x) {
-    let a1 =  0.254829592, a2 = -0.284496736, a3 =  1.421413741;
-    let a4 = -1.453152027, a5 =  1.061405429, p  =  0.3275911;
-    let sign = (x < 0) ? -1 : 1;
-    x = Math.abs(x);
-    let t = 1.0 / (1.0 + p * x);
-    let y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
-    return sign * y;
-  };
-
-  ctx.strokeStyle = 'red';
-  ctx.lineWidth = 2.5;
-  ctx.beginPath();
-  for (let px = -4; px <= 4; px += 0.1) {
-    let canvasX = mapX(px);
-    let canvasY = mapY(normalCDF(px));
-    if (px === -4) ctx.moveTo(canvasX, canvasY);
-    else ctx.lineTo(canvasX, canvasY);
-  }
-  ctx.stroke();
-
-  const punts = [-1.9, -1.3, -1.0, -0.7, -0.5, -0.4, -0.2, 0.0, 0.1, 0.2, 0.4, 0.7, 0.9, 1.2, 1.3, 1.5, 2.0, 2.1, 3.0];
-  ctx.strokeStyle = 'blue';
-  ctx.lineWidth = 2.5;
-  ctx.beginPath();
-  
-  let currentX = mapX(-4);
-  let currentY = mapY(0);
-  ctx.moveTo(currentX, currentY);
-
-  punts.forEach((p, index) => {
-    let nextX = mapX(p);
-    ctx.lineTo(nextX, currentY);
-    currentY = mapY((index + 1) / punts.length);
-    ctx.lineTo(nextX, currentY);
-    currentX = nextX;
-  });
-  ctx.lineTo(mapX(4), currentY);
-  ctx.stroke();
-
-  const xD = 1.35; 
-  const yNormal = normalCDF(xD);
-  const yEmpirica = 13 / punts.length;
-
-  const cxD = mapX(xD);
-  const cyNormal = mapY(yNormal);
-  const cyEmpirica = mapY(yEmpirica);
-
-  ctx.strokeStyle = 'black';
-  ctx.lineWidth = 2;
-  
-  ctx.beginPath();
-  ctx.moveTo(cxD, cyNormal);
-  ctx.lineTo(cxD, cyEmpirica);
-  ctx.stroke();
-
-  function drawArrowHead(x, y, up) {
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    ctx.lineTo(x - 5, up ? y + 8 : y - 8);
-    ctx.lineTo(x + 5, up ? y + 8 : y - 8);
-    ctx.closePath();
-    ctx.fillStyle = 'black';
-    ctx.fill();
-  }
-  drawArrowHead(cxD, cyNormal, true);
-  drawArrowHead(cxD, cyEmpirica, false);
-
-  ctx.fillStyle = 'black';
-  ctx.font = 'italic bold 16px serif';
-  ctx.fillText('D max', cxD + 25, (cyNormal + cyEmpirica) / 2 + 5);
-
-})();
+    const ctx = document.getElementById('graficKS').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: xValors,
+            datasets: [
+                {
+                    label: 'CDF Teòrica (Distribució Normal)',
+                    data: yTeorica,
+                    borderColor: '#ef4444',
+                    borderWidth: 2.5,
+                    pointRadius: 0,
+                    fill: false,
+                    tension: 0.1
+                },
+                {
+                    label: 'CDF Empírica (Dades Reals)',
+                    data: yEmpirica,
+                    borderColor: '#3b82f6',
+                    borderWidth: 2.5,
+                    pointRadius: 0,
+                    fill: false,
+                    stepped: true
+                },
+                {
+                    label: 'Distància Màxima (D max)',
+                    data: liniaDMax,
+                    type: 'scatter',
+                    showLine: true,
+                    borderColor: '#1e293b',
+                    borderWidth: 2,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#1e293b',
+                    fill: false
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { 
+                    position: 'bottom',
+                    labels: { boxWidth: 12, font: { size: 12 } }
+                }
+            },
+            scales: {
+                x: { 
+                    type: 'linear', 
+                    title: { display: true, text: 'Variable (X)', font: { weight: 'bold' } }, 
+                    min: -4, 
+                    max: 4 
+                },
+                y: { 
+                    title: { display: true, text: 'Probabilitat Acumulada (CDF)', font: { weight: 'bold' } }, 
+                    min: 0, 
+                    max: 1 
+                }
+            }
+        }
+    });
+});
 </script>
 
-Hi ha dues variants principals d'aquest test[cite: 1]:
+Hi ha dues variants principals d'aquest test:
 
-1. **Test K-S d'una mostra:** Compara la distribució de les dades de la mostra amb una distribució teòrica coneguda (normal, exponencial, uniforme, etc.)[cite: 1].
-2. **Test K-S de dues mostres:** Compara si dues mostres independents procedeixen de la mateixa distribució subjacent[cite: 1].
+1. **Test K-S d'una mostra:** Compara la distribució de les dades de la mostra amb una distribució teòrica coneguda (normal, exponencial, uniforme, etc.).
+2. **Test K-S de dues mostres:** Compara si dues mostres independents procedeixen de la mateixa distribució subjacent.
 
 
 ## Aplicacions pràctiques
 
-* **Validació de models:** Comprovació de si els residus d'un model de regressió segueixen una distribució normal[cite: 1].
-* **Proves A/B (A/B Testing):** Determinació de si el temps de permanència a la web o la despesa econòmica varien significativament entre el grup de control i el de tractament[cite: 1].
-* **Detecció de *Data Drift*:** En entorns de producció d'aprenentatge automàtic (Machine Learning), s'utilitza per analitzar si les dades d'entrada actuals mantenen la mateixa distribució que les dades d'entrenament originals[cite: 1].
+* **Validació de models:** Comprovació de si els residus d'un model de regressió segueixen una distribució normal.
+* **Proves A/B (A/B Testing):** Determinació de si le temps de permanència a la web o la despesa econòmica varien significativament entre el grup de control i el de tractament.
+* **Detecció de *Data Drift*:** En entorns de producció d'aprenentatge automàtic (Machine Learning), s'utilitza per analitzar si les dades d'entrada actuals mantenen la mateixa distribució que les dades d'entrenament originals.
 
 ## Limitacions a tenir en compte
-Malgrat la seva potència, el test K-S presenta certs punts febles que cal considerar[cite: 1]:
-* ⚠️ Atenció amb els paràmetres estimats: Si s'aplica el test d'una mostra (per exemple, contra una normal) i es calculen la mitjana i la desviació estàndard directament a partir de les mateixes dades, el test K-S esdevé excessivament conservador[cite: 1]. En aquests casos, és preferible fer servir el Test de Lilliefors[cite: 1].
-* 🪰 Sensibilitat a l'escala: Mostra una gran sensibilitat davant de qualsevol diferència en la forma, la mitjana o la dispersió de les distribucions; no obstant això, en el cas de mostres molt grans, pot resultar massa sensible i detectar diferències estadísticament significatives que en la pràctica manquen de rellevància real[cite: 1].
+Malgrat la seva potència, el test K-S presenta certs punts febles que cal considerar:
+* ⚠️ Atenció amb els paràmetres estimats: Si s'aplica el test d'una mostra (per exemple, contra una normal) i es calculen la mitjana i la desviació estàndard directament a partir de les mateixes dades, el test K-S esdevé excessivament conservador. En aquests casos, es prefereix fer servir el Test de Lilliefors.
+* 🪰 Sensibilitat a l'escala: Mostra una gran sensibilitat davant de qualsevol diferència en la forma, la mitjana o la dispersió de les distribucions; no obstant això, en el cas de mostres molt grans, pot resultar massa sensible i detectar diferències estadísticament significatives que en la pràctica manquen de rellevància real.
 
 
 ---
 
 ## Exemples pràctics: Python i R
 
-A continuació, es mostra com aplicar el test de dues mostres mitjançant codi[cite: 1]. En aquest supòsit, es compara si el temps de càrrega d'una pàgina web amb un servidor nou (Grup B) difereix del registrat amb el servidor antic (Grup A)[cite: 1].
+A continuació, es mostra com aplicar el test de dues mostres mitjançant codi. En aquest supòsit, es compara si le temps de càrrega d'una pàgina web amb un servidor nou (Grup B) difereix del registrat amb el servidor antic (Grup A).
 
 ### 🐍 Implementació en Python
 
-S'utilitza la llibreria `scipy.stats`[cite: 1]. Es generen dades aleatòries on el Grup B reflecteix un temps de resposta lleugerament més ràpid[cite: 1].
+S'utilitza la llibreria `scipy.stats`. Es generen dades aleatòries on el Grup B reflecteix un temps de resposta lleugerament més ràpid.
 
 ```python
 import numpy as np
