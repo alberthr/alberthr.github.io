@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Optimitzador Avançat de Mix de Mitjans</title>
+    <title>Optimitzador de Mix de Mitjans (Maximitzador de Cobertura)</title>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -57,6 +57,44 @@
             color: var(--cc-text-light);
             font-size: 13px;
             font-weight: normal;
+        }
+
+        /* Sistema de Pestanyes (Tabs) */
+        .tabs-container {
+            display: flex;
+            border-bottom: 2px solid var(--cc-border);
+            margin-bottom: 24px;
+            gap: 4px;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--cc-text-light);
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: -2px;
+        }
+
+        .tab-btn:hover {
+            color: var(--cc-primary);
+        }
+
+        .tab-btn.active {
+            color: var(--cc-primary);
+            border-bottom-color: var(--cc-primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
         }
 
         /* Caixa de Control de l'Optimitzador */
@@ -136,7 +174,7 @@
             display: none;
         }
 
-        /* Grid de mitjans optimitzat en columnes compactes */
+        /* Grid de mitjans */
         .media-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -252,10 +290,7 @@
 
         /* Taula de Resultats */
         .results-section {
-            display: none;
-            margin-top: 32px;
-            border-top: 1px solid var(--cc-border);
-            padding-top: 24px;
+            margin-top: 12px;
         }
 
         .results-section h2 {
@@ -304,10 +339,12 @@
             letter-spacing: 0.3px;
         }
 
-        canvas {
-            margin-top: 24px;
-            border-top: 1px solid var(--cc-border);
-            padding-top: 24px;
+        .canvas-container {
+            margin-top: 15px;
+            background: #ffffff;
+            border: 1px solid var(--cc-border);
+            padding: 15px;
+            border-radius: var(--cc-radius);
         }
 
         .opt-share-bar {
@@ -319,95 +356,117 @@
             background: var(--cc-primary-light);
             border: 1px solid var(--cc-border);
         }
+
+        .notice-empty {
+            text-align: center;
+            padding: 40px;
+            color: var(--cc-text-light);
+            background: #f8fafc;
+            border: 1px dashed var(--cc-border);
+            border-radius: var(--cc-radius);
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="ccob-title">Optimitzador Avançat de Mix de Mitjans</div>
-    <h3 class="ccob-subtitle">Model de corba Hill (Excel) integrant eficiència per cost i volum</h3>
+    <div class="ccob-title">Optimitzador de Mix de Mitjans (Maximitzador de Cobertura)</div>
+    <h3 class="ccob-subtitle">Model de corba Hill integrant eficiència per cost i volum</h3>
     
-    <div class="optimizer-box">
-        <div class="optimizer-controls">
-            <div class="input-group">
-                <label for="opt-mode">Què vols optimitzar?</label>
-                <select id="opt-mode" onchange="toggleOptLabel()">
-                    <option value="grps">Borsa total de GRPs</option>
-                    <option value="budget">Pressupost total disponible (€)</option>
-                </select>
+    <div class="tabs-container">
+        <button class="tab-btn active" onclick="switchTab('tab-dades')">1. Càrrega de Dades i Ajust</button>
+        <button class="tab-btn" onclick="switchTab('tab-optimitzacio')">2. Simulació i Mix Òptim</button>
+    </div>
+
+    <div id="tab-dades" class="tab-content active">
+        <div class="media-grid">
+            <script>
+                const colors = [
+                    { name: 'Blau', main: '#3b82f6' },
+                    { name: 'Vermell', main: '#ef4444' },
+                    { name: 'Verd', main: '#10b981' },
+                    { name: 'Taronja', main: '#f97316' },
+                    { name: 'Lila', main: '#a855f7' },
+                    { name: 'Groc', main: '#eab308' }
+                ];
+
+                for (let i = 1; i <= 6; i++) {
+                    document.write(`
+                        <div class="media-card" id="card-${i}">
+                            <div>
+                                <div class="media-title">
+                                    <span>Mitjà ${i}</span>
+                                    <span class="color-indicator" style="background-color: ${colors[i-1].main}"></span>
+                                </div>
+                                <div class="upload-section" id="drop-zone-${i}" onclick="document.getElementById('file-${i}').click()">
+                                    <p style="margin:0; font-size:12px; font-weight:500;">Arrossega o fes clic</p>
+                                    <input type="file" id="file-${i}" accept=".xlsx, .xls" style="display:none" onchange="triggerFileLoad(${i}, this.files[0])" />
+                                </div>
+                                <div class="media-info" id="info-${i}">Fitxer carregat</div>
+                            </div>
+                            
+                            <div>
+                                <div class="cost-input-container">
+                                    <label for="cost-grp-${i}">Cost per GRP (€):</label>
+                                    <input type="number" id="cost-grp-${i}" value="100" min="1" onchange="resetOptimizationResult()" />
+                                </div>
+
+                                <div style="text-align:right; margin-top:10px;">
+                                    <button class="btn-clear" id="btn-clear-${i}" onclick="clearMedia(${i})">Eliminar</button>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                }
+            </script>
+        </div>
+
+        <div class="results-section">
+            <h2>Resultats i Mètriques d'Ajust Estadístic</h2>
+            <div id="table-wrapper-placeholder" class="notice-empty">Carrega com a mínim un fitxer Excel per veure les mètriques d'ajust.</div>
+            <div class="ccob-table-wrapper" id="tableDataContent" style="display:none;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Mitjà / Fitxer carregat</th>
+                            <th>Punts Excel</th>
+                            <th>Asímptota Màxima (A)</th>
+                            <th>Pendent Curvatura (B)</th>
+                            <th>Punt Mitja Sat. (C)</th>
+                            <th>Bondat Ajust (R²)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-optimitzacio" class="tab-content">
+        <div class="optimizer-box">
+            <div class="optimizer-controls">
+                <div class="input-group">
+                    <label for="opt-mode">Què vols optimitzar?</label>
+                    <select id="opt-mode" onchange="toggleOptLabel()">
+                        <option value="grps">Borsa total de GRPs</option>
+                        <option value="budget">Pressupost total disponible (€)</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label id="lbl-total-quantity" for="total-budget-input">Total de GRPs de campanya:</label>
+                    <input type="number" id="total-budget-input" value="500" min="1" max="1000000" />
+                </div>
+
+                <button id="btn-optimize" class="btn-optimize" onclick="optimizeMediaMix()" disabled>Calcular Mix Òptim</button>
             </div>
             
-            <div class="input-group">
-                <label id="lbl-total-quantity" for="total-budget-input">Total de GRPs de campanya:</label>
-                <input type="number" id="total-budget-input" value="500" min="1" max="1000000" />
-            </div>
-
-            <button id="btn-optimize" class="btn-optimize" onclick="optimizeMediaMix()" disabled>Calcular Mix Òptim</button>
+            <div id="optimization-result"></div>
         </div>
-        
-        <div id="optimization-result"></div>
-    </div>
 
-    <div class="media-grid">
-        <script>
-            const colors = [
-                { name: 'Blau', main: '#3b82f6' },
-                { name: 'Vermell', main: '#ef4444' },
-                { name: 'Verd', main: '#10b981' },
-                { name: 'Taronja', main: '#f97316' },
-                { name: 'Lila', main: '#a855f7' },
-                { name: 'Groc', main: '#eab308' }
-            ];
-
-            for (let i = 1; i <= 6; i++) {
-                document.write(`
-                    <div class="media-card" id="card-${i}">
-                        <div>
-                            <div class="media-title">
-                                <span>Mitjà ${i}</span>
-                                <span class="color-indicator" style="background-color: ${colors[i-1].main}"></span>
-                            </div>
-                            <div class="upload-section" id="drop-zone-${i}" onclick="document.getElementById('file-${i}').click()">
-                                <p style="margin:0; font-size:12px; font-weight:500;">Arrossega o fes clic</p>
-                                <input type="file" id="file-${i}" accept=".xlsx, .xls" style="display:none" onchange="triggerFileLoad(${i}, this.files[0])" />
-                            </div>
-                            <div class="media-info" id="info-${i}">Fitxer carregat</div>
-                        </div>
-                        
-                        <div>
-                            <div class="cost-input-container">
-                                <label for="cost-grp-${i}">Cost per GRP (€):</label>
-                                <input type="number" id="cost-grp-${i}" value="100" min="1" />
-                            </div>
-
-                            <div style="text-align:right; margin-top:10px;">
-                                <button class="btn-clear" id="btn-clear-${i}" onclick="clearMedia(${i})">Eliminar</button>
-                            </div>
-                        </div>
-                    </div>
-                `);
-            }
-        </script>
-    </div>
-
-    <canvas id="multiChartCanvas" width="800" height="420"></canvas>
-
-    <div class="results-section" id="resultsSection">
-        <h2>Resultats i Mètriques d'Ajust Estadístic</h2>
-        <div class="ccob-table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Mitjà</th>
-                        <th>Punts Excel</th>
-                        <th>Asímptota Màxima (A)</th>
-                        <th>Pendent Curvatura (B)</th>
-                        <th>Punt Mitja Sat. (C)</th>
-                        <th>Bondat Ajust (R²)</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody"></tbody>
-            </table>
+        <div id="chart-placeholder" class="notice-empty">Carrega dades a la primera pestanya per poder visualitzar el gràfic de corbes de cobertura.</div>
+        <div class="canvas-container" id="chartWrapperContent" style="display:none;">
+            <canvas id="multiChartCanvas" width="800" height="420"></canvas>
         </div>
     </div>
 </div>
@@ -417,7 +476,19 @@ let chartInstance = null;
 let mediaDataStore = {};
 let lastAllocationGRPs = null;
 
-// Configuració d'arrossegat (Drag & Drop)
+function switchTab(tabId) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    
+    document.getElementById(tabId).classList.add('active');
+    event.currentTarget.classList.add('active');
+    
+    if (tabId === 'tab-optimitzacio') {
+        updateGlobalDashboard();
+    }
+}
+
+// Inicialització drag and drop
 for (let i = 1; i <= 6; i++) {
     const dz = document.getElementById(`drop-zone-${i}`);
     ['dragenter', 'dragover'].forEach(eventName => {
@@ -443,6 +514,11 @@ function toggleOptLabel() {
         lbl.innerText = "Pressupost total del Mix (€):";
         input.value = "50000";
     }
+}
+
+function cleanFileName(name) {
+    if (!name) return "";
+    return name.replace(/\.xlsx$/i, '').replace(/\.xls$/i, '');
 }
 
 function triggerFileLoad(index, file) {
@@ -504,6 +580,7 @@ function processMediaData(index, fileName, data) {
     document.getElementById('btn-optimize').disabled = false;
     
     lastAllocationGRPs = null; 
+    resetOptimizationResult();
     updateGlobalDashboard();
 }
 
@@ -517,10 +594,16 @@ function clearMedia(index) {
 
     if(Object.keys(mediaDataStore).length === 0) {
         document.getElementById('btn-optimize').disabled = true;
-        document.getElementById('optimization-result').style.display = 'none';
     }
     lastAllocationGRPs = null;
+    resetOptimizationResult();
     updateGlobalDashboard();
+}
+
+function resetOptimizationResult() {
+    document.getElementById('optimization-result').style.display = 'none';
+    document.getElementById('optimization-result').innerHTML = '';
+    lastAllocationGRPs = null;
 }
 
 function excelLogisticFunction(x, A, B, C) {
@@ -628,11 +711,14 @@ function optimizeMediaMix() {
     const resDiv = document.getElementById('optimization-result');
     resDiv.style.display = 'block';
     
+    let totalGrpsString = (mode === 'grps') ? `<b>${actualTotalGRPs} GRPs</b>` : `${actualTotalGRPs} GRPs`;
+    let totalCostString = (mode === 'budget') ? `<b>${actualTotalCost.toLocaleString('de-DE')} €</b>` : `${actualTotalCost.toLocaleString('de-DE')} €`;
+
     let htmlResult = `<div style="font-size:14px; font-weight:600; margin-bottom:10px; color:#16a34a;">
         ✓ CAMPANYA ÒPTIMA: COBERTURA CONJUNTA DEL ${finalNetCoverage.toFixed(2)}%
     </div>
     <div style="font-size:12.5px; margin-bottom:12px; color: var(--cc-text);">
-        Totals consolidats: <b>${actualTotalGRPs} GRPs</b> invertits | Cost Total: <b>${actualTotalCost.toLocaleString('de-DE')} €</b>
+        Totals consolidats: ${totalGrpsString} invertits | Cost Total: ${totalCostString}
     </div>`;
     
     let barHtml = `<div class="opt-share-bar">`;
@@ -643,12 +729,16 @@ function optimizeMediaMix() {
         const mCob = excelLogisticFunction(grps, mediaDataStore[idx].fit.A, mediaDataStore[idx].fit.B, mediaDataStore[idx].fit.C);
         
         if (grps > 0) {
+            let mediaGrpsString = (mode === 'grps') ? `<b>${grps} GRPs</b>` : `${grps} GRPs`;
+            let mediaCostString = (mode === 'budget') ? `<b>${costMedia.toLocaleString('de-DE')} €</b>` : `${costMedia.toLocaleString('de-DE')} €`;
+            let clearName = cleanFileName(mediaDataStore[idx].fileName);
+
             htmlResult += `<div style="font-size:12.5px; margin: 4px 0; color: var(--cc-dark);">
-                • <span style="color:${mediaDataStore[idx].color.main}; font-weight:600;">Mitjà ${idx}:</span> 
-                <b>${grps} GRPs</b> (Inversió: ${costMedia.toLocaleString('de-DE')} €) 
+                • <span style="color:${mediaDataStore[idx].color.main}; font-weight:600;">${clearName} (Mitjà ${idx}):</span> 
+                ${mediaGrpsString} (Inversió: ${mediaCostString}) 
                 [Share: ${pct.toFixed(1)}%] → Cobertura individual: ${mCob.toFixed(1)}%
             </div>`;
-            barHtml += `<div style="width: ${pct}%; background-color: ${mediaDataStore[idx].color.main};" title="Mitjà ${idx}"></div>`;
+            barHtml += `<div style="width: ${pct}%; background-color: ${mediaDataStore[idx].color.main};" title="${clearName}"></div>`;
         }
     });
     barHtml += `</div>`;
@@ -660,14 +750,22 @@ function optimizeMediaMix() {
 
 function updateGlobalDashboard() {
     const activeIndexes = Object.keys(mediaDataStore);
+    
     if (activeIndexes.length === 0) {
+        document.getElementById('table-wrapper-placeholder').style.display = 'block';
+        document.getElementById('tableDataContent').style.display = 'none';
+        document.getElementById('chart-placeholder').style.display = 'block';
+        document.getElementById('chartWrapperContent').style.display = 'none';
         if (chartInstance) chartInstance.destroy();
-        document.getElementById('resultsSection').style.display = 'none';
-        document.getElementById('optimization-result').style.display = 'none';
         return;
+    } else {
+        document.getElementById('table-wrapper-placeholder').style.display = 'none';
+        document.getElementById('tableDataContent').style.display = 'block';
     }
 
-    document.getElementById('resultsSection').style.display = 'block';
+    document.getElementById('chart-placeholder').style.display = 'none';
+    document.getElementById('chartWrapperContent').style.display = 'block';
+
     const tableBody = document.getElementById('tableBody');
     tableBody.innerHTML = "";
 
@@ -687,9 +785,14 @@ function updateGlobalDashboard() {
 
     activeIndexes.forEach(idx => {
         const media = mediaDataStore[idx];
+        let clearName = cleanFileName(media.fileName);
+
         tableBody.innerHTML += `
             <tr>
-                <td class="row-header" style="color:${media.color.main} !important;">Mitjà ${idx} <span style="font-size:11px; text-transform:none; color:var(--cc-text-light);">(${media.fileName})</span></td>
+                <td class="row-header" style="color:${media.color.main} !important; font-weight:600;">
+                    ${clearName} 
+                    <span style="font-size:11px; font-weight:normal; text-transform:none; color:var(--cc-text-light);">[Mitjà ${idx}]</span>
+                </td>
                 <td>${media.points.length}</td>
                 <td>${media.fit.A.toFixed(1)}%</td>
                 <td>${media.fit.B.toFixed(2)}</td>
@@ -698,12 +801,15 @@ function updateGlobalDashboard() {
             </tr>
         `;
 
+        // Punts en forma de 'x' discretes restaurats
         datasets.push({
-            label: `Mitjà ${idx}`,
+            label: `${clearName}`,
             data: media.points,
             backgroundColor: media.color.main,
             borderColor: media.color.main,
-            pointRadius: 4,
+            pointStyle: 'cross',
+            pointRadius: 5,
+            borderWidth: 1.5,
             type: 'scatter'
         });
 
@@ -713,7 +819,7 @@ function updateGlobalDashboard() {
             linePoints.push({ x: x, y: excelLogisticFunction(x, media.fit.A, media.fit.B, media.fit.C) });
         }
         datasets.push({
-            label: `Mitjà ${idx} (Corba)`,
+            label: `${clearName} (Corba)`,
             data: linePoints,
             type: 'line',
             fill: false,
@@ -723,74 +829,77 @@ function updateGlobalDashboard() {
             tension: 0.1
         });
 
+        // Solució òptima com a punt gros ben visible amb fons del color del mitjà
         if (lastAllocationGRPs && lastAllocationGRPs[idx] !== undefined) {
             const optX = lastAllocationGRPs[idx];
             const optY = excelLogisticFunction(optX, media.fit.A, media.fit.B, media.fit.C);
             datasets.push({
-                label: `Mitjà ${idx} (Solució Òptima)`,
+                label: `${clearName} (Solució Òptima)`,
                 data: [{ x: optX, y: optY }],
                 type: 'scatter',
-                backgroundColor: '#fff',
-                borderColor: media.color.main,
-                borderWidth: 3,
-                pointRadius: 8,
-                pointHoverRadius: 10,
-                pointStyle: 'rectRot',
+                backgroundColor: media.color.main, 
+                borderColor: '#ffffff',            
+                borderWidth: 2,
+                pointStyle: 'circle',             
+                pointRadius: 9,                    
+                pointHoverRadius: 11,
                 showLine: false
             });
         }
     });
 
-    const ctx = document.getElementById('multiChartCanvas').getContext('2d');
-    if (chartInstance) chartInstance.destroy();
-    chartInstance = new Chart(ctx, {
-        type: 'scatter',
-        data: { datasets: datasets },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    labels: {
-                        font: { family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', size: 12 },
-                        filter: function(item, chartData) {
-                            return !item.text.includes('(Corba)') && !item.text.includes('(Solució Òptima)');
+    const canvasElement = document.getElementById('multiChartCanvas');
+    if (canvasElement && document.getElementById('tab-optimitzacio').classList.contains('active')) {
+        const ctx = canvasElement.getContext('2d');
+        if (chartInstance) chartInstance.destroy();
+        chartInstance = new Chart(ctx, {
+            type: 'scatter',
+            data: { datasets: datasets },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: {
+                            font: { family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', size: 12 },
+                            filter: function(item, chartData) {
+                                return !item.text.includes('(Corba)') && !item.text.includes('(Solució Òptima)');
+                            }
                         }
-                    }
-                },
-                tooltip: {
-                    backgroundColor: 'rgba(255, 255, 255, 0.98)',
-                    titleColor: '#1e293b',
-                    bodyColor: '#475569',
-                    borderColor: '#e2e8f0',
-                    borderWidth: 1,
-                    padding: 12,
-                    displayColors: false,
-                    callbacks: {
-                        label: function(context) {
-                            let label = context.dataset.label || '';
-                            if (label.includes('(Solució Òptima)')) {
-                                label = label.replace(' (Solució Òptima)', '');
-                                return `🎯 Solució Òptima ${label}: (${context.parsed.x.toFixed(1)} GRPs, ${context.parsed.y.toFixed(1)}%)`;
-                            } else {
-                                label = label.replace(' (Punts)', '');
-                                return `📈 Punt ${label}: (${context.parsed.x.toFixed(1)} GRPs, ${context.parsed.y.toFixed(1)}%)`;
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(255, 255, 255, 0.98)',
+                        titleColor: '#1e293b',
+                        bodyColor: '#475569',
+                        borderColor: '#e2e8f0',
+                        borderWidth: 1,
+                        padding: 12,
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label.includes('(Solució Òptima)')) {
+                                    label = label.replace(' (Solució Òptima)', '');
+                                    return `🎯 Solució Òptima ${label}: (${context.parsed.x.toFixed(1)} GRPs, ${context.parsed.y.toFixed(1)}%)`;
+                                } else {
+                                    return `📈 Punt ${label}: (${context.parsed.x.toFixed(1)} GRPs, ${context.parsed.y.toFixed(1)}%)`;
+                                }
                             }
                         }
                     }
-                }
-            },
-            scales: {
-                x: { title: { display: true, text: 'GRPs Totals', font: { weight: '500', family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' } }, grid: { color: '#f1f5f9' }, min: 0 },
-                y: { 
-                    title: { display: true, text: 'Cobertura (%)', font: { weight: '500', family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' } }, 
-                    grid: { color: '#f1f5f9' },
-                    min: 0, 
-                    max: 100, 
-                    ticks: { stepSize: 20 }
+                },
+                scales: {
+                    x: { title: { display: true, text: 'GRPs Totals', font: { weight: '500', family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' } }, grid: { color: '#f1f5f9' }, min: 0 },
+                    y: { 
+                        title: { display: true, text: 'Cobertura (%)', font: { weight: '500', family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' } }, 
+                        grid: { color: '#f1f5f9' },
+                        min: 0, 
+                        max: 100, 
+                        ticks: { stepSize: 20 }
+                    }
                 }
             }
-        }
-    });
+        });
+    }
 }
 </script>
 
