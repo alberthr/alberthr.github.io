@@ -7,31 +7,67 @@
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        :root {
+            --cc-primary: #3b82f6;
+            --cc-primary-hover: #2563eb;
+            --cc-primary-light: #f1f5f9;
+            --cc-dark: #1e293b;
+            --cc-text: #475569;
+            --cc-text-light: #64748b;
+            --cc-card-bg: #ffffff;
+            --cc-border: #e2e8f0;
+            --cc-disabled-bg: #f3f4f6;
+            --cc-radius: 6px;
+            --cc-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 30px;
-            background-color: #f4f7f6;
-            color: #333;
+            font-family: var(--cc-font);
+            margin: 2rem auto;
+            background-color: #f8fafc;
+            color: var(--cc-text);
+            font-size: 13.5px;
+            line-height: 1.5;
+            padding: 0 20px;
         }
+
         .container {
-            max-width: 1100px;
+            max-width: 1000px;
             margin: 0 auto;
-            background: white;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            background: var(--cc-card-bg);
+            border: 1px solid var(--cc-border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            padding: 32px 36px;
+            border-radius: var(--cc-radius);
         }
-        h1 { text-align: center; color: #2c3e50; margin-bottom: 5px;}
-        h3 { text-align: center; color: #7f8c8d; margin-top: 0; font-weight: 400; font-size: 14px; margin-bottom: 25px; }
-        
+
+        .ccob-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--cc-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--cc-border);
+            padding-bottom: 6px;
+            margin-bottom: 5px;
+        }
+
+        .ccob-subtitle {
+            margin: 0 0 24px 0;
+            color: var(--cc-text-light);
+            font-size: 13px;
+            font-weight: normal;
+        }
+
         /* Caixa de Control de l'Optimitzador */
         .optimizer-box {
-            background: #2c3e50;
-            color: white;
+            background: var(--cc-primary-light);
+            border: 1px solid var(--cc-border);
             padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 25px;
+            border-radius: var(--cc-radius);
+            margin-bottom: 24px;
         }
+
         .optimizer-controls {
             display: flex;
             flex-wrap: wrap;
@@ -39,128 +75,257 @@
             gap: 20px;
             justify-content: space-between;
         }
+
         .input-group {
             display: flex;
             align-items: center;
             gap: 10px;
         }
+
         .input-group label {
-            font-weight: bold;
-            font-size: 15px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--cc-dark);
         }
+
         .optimizer-box select, .optimizer-box input {
+            font-family: var(--cc-font);
             padding: 8px 12px;
-            border-radius: 4px;
-            border: none;
-            font-size: 15px;
-            font-weight: bold;
+            border-radius: var(--cc-radius);
+            border: 1px solid var(--cc-border);
+            font-size: 13px;
+            color: var(--cc-dark);
+            background: white;
         }
-        .optimizer-box select { cursor: pointer; background: white; color: #333; }
-        .optimizer-box input { width: 110px; text-align: center; }
-        
+
+        .optimizer-box input {
+            width: 110px;
+            text-align: center;
+        }
+
         .btn-optimize {
-            background: #2ecc71;
+            font-family: var(--cc-font);
+            background: var(--cc-primary);
             color: white;
-            border: none;
-            padding: 10px 22px;
-            font-size: 15px;
-            font-weight: bold;
-            border-radius: 4px;
+            border: 1px solid var(--cc-primary);
+            padding: 9px 18px;
+            font-size: 13px;
+            border-radius: var(--cc-radius);
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.2s ease;
         }
-        .btn-optimize:hover { background: #27ae60; }
-        .btn-optimize:disabled { background: #7f8c8d; cursor: not-allowed; }
-        
+
+        .btn-optimize:hover {
+            background: var(--cc-primary-hover);
+            border-color: var(--cc-primary-hover);
+        }
+
+        .btn-optimize:disabled {
+            background: var(--cc-disabled-bg);
+            border-color: var(--cc-border);
+            color: var(--cc-text-light);
+            cursor: not-allowed;
+        }
+
         #optimization-result {
             margin-top: 15px;
-            background: rgba(255,255,255,0.1);
+            background: white;
+            border: 1px solid var(--cc-border);
             padding: 15px;
-            border-radius: 6px;
+            border-radius: var(--cc-radius);
             display: none;
         }
 
-        /* Grid de mitjans (6 slots) */
+        /* Grid de mitjans optimitzat en columnes compactes */
         .media-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 15px;
-            margin-bottom: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
         }
+
         .media-card {
-            border: 1px solid #dcdde1;
-            border-radius: 6px;
-            padding: 15px;
-            background: #f8f9fa;
+            border: 1px solid var(--cc-border);
+            border-radius: var(--cc-radius);
+            padding: 16px;
+            background: white;
             position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 12px;
         }
+
         .media-card.active {
-            border-color: #3498db;
-            background: #fff;
+            border-color: var(--cc-primary);
+            box-shadow: 0 0 0 1px var(--cc-primary);
         }
+
         .media-title {
-            font-weight: bold;
-            font-size: 15px;
-            margin-bottom: 10px;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--cc-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
+
         .color-indicator {
-            width: 15px;
-            height: 15px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
             display: inline-block;
         }
-        
-        /* Zona de dades i inputs de cost intern de la card */
+
+        .upload-section {
+            padding: 15px 10px;
+            border: 1px dashed var(--cc-primary);
+            border-radius: var(--cc-radius);
+            text-align: center;
+            background: var(--cc-primary-light);
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--cc-primary);
+        }
+
+        .upload-section.dragover {
+            background: #e2e8f0;
+            border-color: var(--cc-primary-hover);
+        }
+
+        .media-info {
+            font-size: 12px;
+            color: #16a34a;
+            display: none;
+            font-weight: 500;
+            text-align: center;
+            background: #f0fdf4;
+            padding: 8px;
+            border-radius: var(--cc-radius);
+            border: 1px solid #bbf7d0;
+        }
+
         .cost-input-container {
-            margin-top: 10px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: #f1f2f6;
+            background: var(--cc-primary-light);
             padding: 8px 12px;
-            border-radius: 4px;
-            font-size: 13px;
+            border-radius: var(--cc-radius);
+            font-size: 12.5px;
+            border: 1px solid var(--cc-border);
         }
+
+        .cost-input-container label {
+            color: var(--cc-text);
+        }
+
         .cost-input-container input {
-            width: 70px;
+            font-family: var(--cc-font);
+            width: 75px;
             padding: 4px 6px;
-            border: 1px solid #ccc;
+            border: 1px solid var(--cc-border);
             border-radius: 4px;
             text-align: right;
-            font-weight: bold;
+            color: var(--cc-dark);
         }
 
-        .upload-section {
-            padding: 15px;
-            border: 2px dashed #3498db;
-            border-radius: 6px;
-            text-align: center;
-            background: #edf2f7;
+        .btn-clear {
+            font-family: var(--cc-font);
+            background: #fff;
+            color: #dc2626;
+            border: 1px solid #fca5a5;
+            padding: 4px 10px;
+            border-radius: var(--cc-radius);
             cursor: pointer;
+            font-size: 11.5px;
+            display: none;
             transition: all 0.2s;
         }
-        .upload-section.dragover { background: #d5dbdb; border-color: #2980b9; }
-        .media-info { margin-top: 5px; font-size: 12px; color: #27ae60; display: none; font-weight: 500; }
-        .btn-clear { background: #e74c3c; color: white; border: none; padding: 3px 8px; border-radius: 4px; cursor: pointer; font-size: 11px; display: none; }
+
+        .btn-clear:hover {
+            background: #fef2f2;
+            border-color: #dc2626;
+        }
 
         /* Taula de Resultats */
-        .results-section { display: none; margin-top: 30px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 25px; }
-        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #dcdde1; }
-        th { background-color: #f1f2f6; color: #2c3e50; }
+        .results-section {
+            display: none;
+            margin-top: 32px;
+            border-top: 1px solid var(--cc-border);
+            padding-top: 24px;
+        }
 
-        canvas { margin-top: 20px; }
-        .opt-share-bar { display: flex; height: 20px; border-radius: 4px; overflow: hidden; margin-top: 12px; background: #ddd; }
+        .results-section h2 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--cc-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 14px;
+        }
+
+        .ccob-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid var(--cc-border);
+            padding: 8px 10px;
+            text-align: right;
+            font-size: 12px;
+            color: var(--cc-dark);
+        }
+
+        th {
+            background: var(--cc-primary-light);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            font-weight: normal;
+        }
+
+        th:first-child, td:first-child {
+            text-align: left;
+        }
+
+        td.row-header {
+            background: var(--cc-primary-light);
+            font-weight: normal;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        canvas {
+            margin-top: 24px;
+            border-top: 1px solid var(--cc-border);
+            padding-top: 24px;
+        }
+
+        .opt-share-bar {
+            display: flex;
+            height: 16px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 12px;
+            background: var(--cc-primary-light);
+            border: 1px solid var(--cc-border);
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Optimitzador Avançat de Mix de Mitjans</h1>
-    <h3>Model de corba Hill (Excel) integrant eficiència per cost i volum</h3>
+    <div class="ccob-title">Optimitzador Avançat de Mix de Mitjans</div>
+    <h3 class="ccob-subtitle">Model de corba Hill (Excel) integrant eficiència per cost i volum</h3>
     
     <div class="optimizer-box">
         <div class="optimizer-controls">
@@ -186,34 +351,38 @@
     <div class="media-grid">
         <script>
             const colors = [
-                { name: 'Blau', main: 'rgba(52, 152, 219, 1)' },
-                { name: 'Vermell', main: 'rgba(231, 76, 60, 1)' },
-                { name: 'Verd', main: 'rgba(46, 204, 113, 1)' },
-                { name: 'Taronja', main: 'rgba(230, 126, 34, 1)' },
-                { name: 'Lila', main: 'rgba(155, 89, 182, 1)' },
-                { name: 'Groc', main: 'rgba(241, 196, 15, 1)' }
+                { name: 'Blau', main: '#3b82f6' },
+                { name: 'Vermell', main: '#ef4444' },
+                { name: 'Verd', main: '#10b981' },
+                { name: 'Taronja', main: '#f97316' },
+                { name: 'Lila', main: '#a855f7' },
+                { name: 'Groc', main: '#eab308' }
             ];
 
             for (let i = 1; i <= 6; i++) {
                 document.write(`
                     <div class="media-card" id="card-${i}">
-                        <div class="media-title">
-                            <span>Mitjà ${i}</span>
-                            <span class="color-indicator" style="background-color: ${colors[i-1].main}"></span>
+                        <div>
+                            <div class="media-title">
+                                <span>Mitjà ${i}</span>
+                                <span class="color-indicator" style="background-color: ${colors[i-1].main}"></span>
+                            </div>
+                            <div class="upload-section" id="drop-zone-${i}" onclick="document.getElementById('file-${i}').click()">
+                                <p style="margin:0; font-size:12px; font-weight:500;">Arrossega o fes clic</p>
+                                <input type="file" id="file-${i}" accept=".xlsx, .xls" style="display:none" onchange="triggerFileLoad(${i}, this.files[0])" />
+                            </div>
+                            <div class="media-info" id="info-${i}">Fitxer carregat</div>
                         </div>
-                        <div class="upload-section" id="drop-zone-${i}" onclick="document.getElementById('file-${i}').click()">
-                            <p style="margin:0; font-size:12px; font-weight:500;">Arrossega o fes clic</p>
-                            <input type="file" id="file-${i}" accept=".xlsx, .xls" style="display:none" onchange="triggerFileLoad(${i}, this.files[0])" />
-                        </div>
-                        <div class="media-info" id="info-${i}">Fitxer carregat correctament</div>
                         
-                        <div class="cost-input-container">
-                            <label for="cost-grp-${i}">Cost per GRP (€):</label>
-                            <input type="number" id="cost-grp-${i}" value="100" min="1" />
-                        </div>
+                        <div>
+                            <div class="cost-input-container">
+                                <label for="cost-grp-${i}">Cost per GRP (€):</label>
+                                <input type="number" id="cost-grp-${i}" value="100" min="1" />
+                            </div>
 
-                        <div style="text-align:right; margin-top:8px;">
-                            <button class="btn-clear" id="btn-clear-${i}" onclick="clearMedia(${i})">Eliminar</button>
+                            <div style="text-align:right; margin-top:10px;">
+                                <button class="btn-clear" id="btn-clear-${i}" onclick="clearMedia(${i})">Eliminar</button>
+                            </div>
                         </div>
                     </div>
                 `);
@@ -225,25 +394,28 @@
 
     <div class="results-section" id="resultsSection">
         <h2>Resultats i Mètriques d'Ajust Estadístic</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Mitjà</th>
-                    <th>Punts Excel</th>
-                    <th>Asímptota Màxima (A)</th>
-                    <th>Pendent Curvatura (B)</th>
-                    <th>Punt Mitja Sat. (C)</th>
-                    <th>Bondat Ajust (R²)</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody"></tbody>
-        </table>
+        <div class="ccob-table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Mitjà</th>
+                        <th>Punts Excel</th>
+                        <th>Asímptota Màxima (A)</th>
+                        <th>Pendent Curvatura (B)</th>
+                        <th>Punt Mitja Sat. (C)</th>
+                        <th>Bondat Ajust (R²)</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
     </div>
 </div>
 
 <script>
 let chartInstance = null;
 let mediaDataStore = {};
+let lastAllocationGRPs = null;
 
 // Configuració d'arrossegat (Drag & Drop)
 for (let i = 1; i <= 6; i++) {
@@ -330,6 +502,8 @@ function processMediaData(index, fileName, data) {
     document.getElementById(`btn-clear-${index}`).style.display = 'inline-block';
 
     document.getElementById('btn-optimize').disabled = false;
+    
+    lastAllocationGRPs = null; 
     updateGlobalDashboard();
 }
 
@@ -345,6 +519,7 @@ function clearMedia(index) {
         document.getElementById('btn-optimize').disabled = true;
         document.getElementById('optimization-result').style.display = 'none';
     }
+    lastAllocationGRPs = null;
     updateGlobalDashboard();
 }
 
@@ -453,10 +628,10 @@ function optimizeMediaMix() {
     const resDiv = document.getElementById('optimization-result');
     resDiv.style.display = 'block';
     
-    let htmlResult = `<div style="font-size:16px; font-weight:bold; margin-bottom:10px; color:#2ecc71;">
-        ✓ Campanya Òptima: Cobertura Conjunta del ${finalNetCoverage.toFixed(2)}%
+    let htmlResult = `<div style="font-size:14px; font-weight:600; margin-bottom:10px; color:#16a34a;">
+        ✓ CAMPANYA ÒPTIMA: COBERTURA CONJUNTA DEL ${finalNetCoverage.toFixed(2)}%
     </div>
-    <div style="font-size:13px; margin-bottom:8px; opacity:0.9;">
+    <div style="font-size:12.5px; margin-bottom:12px; color: var(--cc-text);">
         Totals consolidats: <b>${actualTotalGRPs} GRPs</b> invertits | Cost Total: <b>${actualTotalCost.toLocaleString('de-DE')} €</b>
     </div>`;
     
@@ -468,8 +643,8 @@ function optimizeMediaMix() {
         const mCob = excelLogisticFunction(grps, mediaDataStore[idx].fit.A, mediaDataStore[idx].fit.B, mediaDataStore[idx].fit.C);
         
         if (grps > 0) {
-            htmlResult += `<div style="font-size:13px; margin: 4px 0;">
-                • <span style="color:${mediaDataStore[idx].color.main}; font-weight:bold;">Mitjà ${idx}:</span> 
+            htmlResult += `<div style="font-size:12.5px; margin: 4px 0; color: var(--cc-dark);">
+                • <span style="color:${mediaDataStore[idx].color.main}; font-weight:600;">Mitjà ${idx}:</span> 
                 <b>${grps} GRPs</b> (Inversió: ${costMedia.toLocaleString('de-DE')} €) 
                 [Share: ${pct.toFixed(1)}%] → Cobertura individual: ${mCob.toFixed(1)}%
             </div>`;
@@ -478,6 +653,9 @@ function optimizeMediaMix() {
     });
     barHtml += `</div>`;
     resDiv.innerHTML = htmlResult + barHtml;
+
+    lastAllocationGRPs = allocationGRPs;
+    updateGlobalDashboard();
 }
 
 function updateGlobalDashboard() {
@@ -501,25 +679,31 @@ function updateGlobalDashboard() {
         if (mX > globalMaxX) globalMaxX = mX;
     });
 
+    if (lastAllocationGRPs) {
+        activeIndexes.forEach(idx => {
+            if (lastAllocationGRPs[idx] > globalMaxX) globalMaxX = lastAllocationGRPs[idx];
+        });
+    }
+
     activeIndexes.forEach(idx => {
         const media = mediaDataStore[idx];
         tableBody.innerHTML += `
             <tr>
-                <td style="font-weight:bold; color:${media.color.main}">Mitjà ${idx} <span style="font-size:11px; font-weight:normal; color:#777;">(${media.fileName})</span></td>
+                <td class="row-header" style="color:${media.color.main} !important;">Mitjà ${idx} <span style="font-size:11px; text-transform:none; color:var(--cc-text-light);">(${media.fileName})</span></td>
                 <td>${media.points.length}</td>
                 <td>${media.fit.A.toFixed(1)}%</td>
                 <td>${media.fit.B.toFixed(2)}</td>
                 <td>${media.fit.C.toFixed(1)} GRPs</td>
-                <td style="font-weight:bold;">${media.fit.rSquared.toFixed(4)}</td>
+                <td style="font-weight:500;">${media.fit.rSquared.toFixed(4)}</td>
             </tr>
         `;
 
         datasets.push({
-            label: `Mitjà ${idx} (Punts)`,
+            label: `Mitjà ${idx}`,
             data: media.points,
-            backgroundColor: media.color.main.replace('1)', '0.7)'),
+            backgroundColor: media.color.main,
             borderColor: media.color.main,
-            pointRadius: 5,
+            pointRadius: 4,
             type: 'scatter'
         });
 
@@ -534,10 +718,27 @@ function updateGlobalDashboard() {
             type: 'line',
             fill: false,
             borderColor: media.color.main,
-            borderWidth: 2.5,
+            borderWidth: 2,
             pointRadius: 0,
             tension: 0.1
         });
+
+        if (lastAllocationGRPs && lastAllocationGRPs[idx] !== undefined) {
+            const optX = lastAllocationGRPs[idx];
+            const optY = excelLogisticFunction(optX, media.fit.A, media.fit.B, media.fit.C);
+            datasets.push({
+                label: `Mitjà ${idx} (Solució Òptima)`,
+                data: [{ x: optX, y: optY }],
+                type: 'scatter',
+                backgroundColor: '#fff',
+                borderColor: media.color.main,
+                borderWidth: 3,
+                pointRadius: 8,
+                pointHoverRadius: 10,
+                pointStyle: 'rectRot',
+                showLine: false
+            });
+        }
     });
 
     const ctx = document.getElementById('multiChartCanvas').getContext('2d');
@@ -547,9 +748,46 @@ function updateGlobalDashboard() {
         data: { datasets: datasets },
         options: {
             responsive: true,
+            plugins: {
+                legend: {
+                    labels: {
+                        font: { family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', size: 12 },
+                        filter: function(item, chartData) {
+                            return !item.text.includes('(Corba)') && !item.text.includes('(Solució Òptima)');
+                        }
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(255, 255, 255, 0.98)',
+                    titleColor: '#1e293b',
+                    bodyColor: '#475569',
+                    borderColor: '#e2e8f0',
+                    borderWidth: 1,
+                    padding: 12,
+                    displayColors: false,
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label.includes('(Solució Òptima)')) {
+                                label = label.replace(' (Solució Òptima)', '');
+                                return `🎯 Solució Òptima ${label}: (${context.parsed.x.toFixed(1)} GRPs, ${context.parsed.y.toFixed(1)}%)`;
+                            } else {
+                                label = label.replace(' (Punts)', '');
+                                return `📈 Punt ${label}: (${context.parsed.x.toFixed(1)} GRPs, ${context.parsed.y.toFixed(1)}%)`;
+                            }
+                        }
+                    }
+                }
+            },
             scales: {
-                x: { title: { display: true, text: 'GRPs Totals', font: { weight: 'bold' } }, min: 0 },
-                y: { title: { display: true, text: 'Cobertura (%)', font: { weight: 'bold' } }, min: 0, max: 105 }
+                x: { title: { display: true, text: 'GRPs Totals', font: { weight: '500', family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' } }, grid: { color: '#f1f5f9' }, min: 0 },
+                y: { 
+                    title: { display: true, text: 'Cobertura (%)', font: { weight: '500', family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' } }, 
+                    grid: { color: '#f1f5f9' },
+                    min: 0, 
+                    max: 100, 
+                    ticks: { stepSize: 20 }
+                }
             }
         }
     });
