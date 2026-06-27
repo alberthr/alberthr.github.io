@@ -3,61 +3,60 @@ layout: post
 title: "Més enllà del Solver d'Excel: Equació de Hill vs. Logística de Nelder Modificada en Mix de Mitjans"
 date: 2026-06-27 12:00:00 +0200
 categories: marketing-analytics mmm data-science
+excerpt: "Reflexió tècnica sobre la naturalesa matemàtica de l'Equació de Hill i la Logística de Nelder Modificada. Anàlisi del comportament de les corbes de saturació i la seva idoneïtat segons si es modelitzen vendes o cobertura."
 ---
 
-Quan treballem en **Media Mix Modeling (MMM)** o dissenyem algorismes automatitzats per optimitzar pressupostos publicitaris, ens trobem amb un repte matemàtic clàssic: **com modelar la saturació dels mitjans**.
+En el desplegament de models de **Media Mix Modeling (MMM)** o en el disseny d'algorismes d'optimització de pressupostos publicitaris, l'elecció de la funció de saturació constitueix un dels reptes matemàtics més crítics. 
 
-Molt sovint, les fórmules heretades dels vells fulls de càlcul s'anomenen de forma confusa. Parlem de *"Logística Modificada"*, *"Fórmules Excel"* o *"Models de Hill"*, de vegades utilitzant-los com a sinònims. En aquest article desvetllarem la realitat matemàtica rere dues de les funcions més potents de la indústria (l'**Equació de Hill** i la **Logística de Nelder Modificada** coneguda com *Zero-Intercept*) i obrirem un debat clau: quina és millor per predir **vendes** i quina per calcular **cobertura**?
+Sovint, les fórmules heretades de fulls de càlcul corporatius s'utilitzen de manera intercanviable sota termes imprecisos com *"Logística Modificada"* o *"Fórmula Excel"*. Tanmateix, l'**Equació de Hill** i la **Logística de Nelder Modificada (Zero-Intercept)** presenten propietats algebraiques diferents que afecten directament el comportament de l'optimitzador segons si l'objectiu són les **vendes** o la **cobertura neta**.
 
 ---
 
-## 1. L'Equació de Hill (La visió de la Massa Crítica)
+## 1. L'Equació de Hill i l'efecte de massa crítica
 
-Originalment dissenyada l'any 1910 per descriure la unió de l'oxigen a l'hemoglobina, l'Equació de Hill s'ha convertit en un estàndard en l'analítica de màrqueting digital (per exemple, és el motor de saturació bàsic del programari *LightweightMMM* de Google).
+Originalment formulada per descriure fenòmens bioquímics, l'Equació de Hill s'ha consolidat en l'anàlisi de màrqueting per la seva capacitat de capturar efectes de llindar complexos.
 
 ### La Fórmula
 $$y = E_{max} \cdot \frac{x^n}{EC_{50}^n + x^n}$$
 
-### Els Paràmetres:
-* **$E_{max}$ (Sostre Màxim):** El límit màxim teòric (asímptota) de resposta que el mitjà pot aconseguir si s'hi injectessin infinits GRPs.
-* **$EC_{50}$ (Punt Mitjà):** GRPs requerits per assolir exactament la meitat del sostre màxim ($E_{max}/2$). Ens indica la "resistència" o duresa inicial del canal.
-* **$n$ (Exponent o Factor de Curvatura):** Controla la forma inicial. Si $n > 1$, la corba adquireix una forma de \"S\" (sigmoide) molt rígida, el que significa que la publicitat necessita acumular bastants impactes abans de començar a fer efecte.
+### Propietats dels paràmetres:
+* **$E_{max}$ (Sostre Màxim):** Representa l'asímptota horitzontal de la funció, és a dir, el límit teòric de resposta davant d'una inversió infinita.
+* **$EC_{50}$ (Punt Mitjà de Transició):** Indica la quantitat de GRPs o inversió necessària per assolir exactament el $50\%$ del sostre màxim ($E_{max}/2$). Defineix la inèrcia inicial del canal.
+* **$n$ (Exponent de Hill):** Regula la curvatura. Quan $n > 1$, la funció descriu una forma sigmoide (en "S") molt estricta, ideal per a fenòmens on es requereix acumulació d'impactes abans d'observar una reacció significativa.
 
 ---
 
-## 2. La Funció Logística de Nelder Modificada (El disseny corporatiu)
+## 2. La Funció Logística de Nelder Modificada
 
-El que molts manuals corporatius de planificació de mitjans i agències anomenen simplement \"Logística Modificada\" o \"Fórmula Solver\" és una variació del **Model Logístic de Nelder** (3 paràmetres), forçada algebraicament perquè el seu origen passi de forma estricta pel punt $(0,0)$. 
-
-En una corba logística estàndard, quan la inversió és $0$, la fórmula dona un resultat positiu ($y > 0$). La modificació de Nelder corregeix aquesta anomalia utilitzant una penalització exponencial al numerador.
+La variant coneguda habitualment en entorns corporatius com a "Logística Modificada" és una adaptació del **Model Logístic de Nelder** de tres paràmetres, alterada algebraicament perquè la intercepció es produeixi estrictament en l'origen $(0,0)$. En una corba logística estàndard, un pressupost de zero genera un resultat positiu ($y > 0$); aquesta modificació aplica una penalització exponencial al numerador per resoldre aquesta incoherència conceptual.
 
 ### La Fórmula
 $$y = K \cdot \frac{1 - e^{-\alpha \cdot x}}{1 + \theta \cdot e^{-\alpha \cdot x}}$$
 
-### Els Paràmetres:
-* **$K$ (Sostre de Capacitat):** L'asímptota on el canal es satura per complet (equivalent a l'$E_{max}$).
-* **$\alpha$ (Velocitat d'Amortiment):** Regula la rapidesa amb la qual la corba s'enlaira cap al seu sostre des del primer moment.
-* **$\theta$ (Factor de Flexió Asimètrica de Nelder):** Penalitza la corba al principi. Si $\theta > 0$, es genera una forma en \"S\" suau. Si es fixa en $0$, la fórmula col·lapsa directament en un model clàssic de rendiments decreixents exponencials ($y = K(1-e^{-\alpha x})$).
+### Propietats dels paràmetres:
+* **$K$ (Sostre de Capacitat):** L'asímptota de saturació del mercat o del canal (equivalent a l'$E_{max}$ de Hill).
+* **$\alpha$ (Taxa d'Amortiment):** Regula la velocitat amb la qual la funció busca el seu límit horitzontal.
+* **$\theta$ (Factor d'Asimetria de Nelder):** Controla la transició inicial. Si $\theta > 0$, es genera una forma en "S" progressiva. Si $\theta = 0$, la funció col·lapsa exactament en un model clàssic de rendiments decreixents exponencials ($y = K(1-e^{-\alpha x})$).
 
 ---
 
-## El Gran Debat: Quina triar segons el teu KPI (Vendes vs. Cobertura)
+## Criteris de selecció segons el KPI: Vendes vs. Cobertura
 
-La tria de la fórmula no s'ha de fer per gust programàtic, sinó entenent la natura del comportament que volem predir. Aquí és on la física dels mitjans es creua amb la matemàtica:
+L'elecció entre ambdós models s'ha de basar en la natura física del fenomen que es pretén descriure:
 
-### Per què Nelder Modificada és ideal per a la Cobertura (Reach)
-La **cobertura neta** (el percentatge de persones úniques impactades) té un funcionament molt lògic: **el primer GRP de campanya és el més valuós**, ja que tothom a qui impacta és públic nou. A partir d'aquí, cada nou GRP té més probabilitats de caure sobre algú que ja ha vist l'anunci (impactes duplicats o freqüència), per la qual cosa la capacitat d'aconseguir nova audiència es frena immediatament.
-* **La solució amb Nelder:** Fixant una $\theta$ nul·la o molt baixa, la Logística de Nelder descriu perfectament aquesta arrencada vertical i el posterior aplanament ràpid. És la reina indiscutible per modelar la cobertura en l'entorn digital (Meta, YouTube) o canals de resposta immediata (Paid Search).
+### Idoneïtat de Nelder Modificada per a la Cobertura (Reach)
+La **cobertura neta** es caracteritza per una eficiència màxima en el tram inicial: el primer GRP capturarà exclusivament audiència nova. A mesura que augmenta la pressió publicitària, la probabilitat de duplicar impactes s'eleva, de manera que el creixement marginal decreix de forma immediata.
+* **Comportament:** Ajustant el paràmetre $\theta$ a valors nuls o molt baixos, la fórmula de Nelder replica amb exactitud aquesta arrencada vertical i el seu posterior aplanament, essent altament eficient per a mitjans digitals o canals de resposta directa.
 
-### Per què Hill és la reina de les Vendes i conversions
-El comportament de les **Vendes** o la conversió de marca funciona a l'inrevés: llançar un sol anunci a la televisió o veure un sol bàner gairebé mai genera una compra. Es necessita un efecte de **llindar o massa crítica**; el consumidor ha de rebre diversos impactes (freqüència) perquè el missatge s'instal·li en el seu record i s'activi la intenció de compra.
-* **La solució amb Hill:** L'exponent $n$ reté la corba arran de terra durant els primers GRPs (simulant que gastar poc és equivalent a no gastar res) i l'accelera verticalment en forma de \"S\" un cop s'ha superat el llindar de reactivitat de l'audiència.
+### Idoneïtat de Hill per a les Vendes
+A diferència de la cobertura, el comportament de les **vendes** o la conversió de marca sol requerir freqüència d'impacte. Un volum baix d'inversió amb prou feines altera el comportament del consumidor; es necessita aconseguir una **massa crítica** o llindar de record perquè la intenció de compra s'activi.
+* **Comportament:** L'exponent $n$ de Hill manté la corba plana prop de l'origen durant els primers trams de despesa, accelerant-se de forma sigmoide un cop superat el llindar de reactivitat del mercat.
 
 ---
 
-## Exemple Pràctic: Ajust sobre un mateix núvol de dades
+## Exemple d'ajust sobre dades experimentals
 
-A continuació pots veure com s'ajusten realment l'Equació de Hill i la Logística de Nelder Modificada sobre un mateix conjunt de dades experimentals extraigudes d'una campanya. Passa el ratolí o el dit pel gràfic interactiu per explorar les diferències en cada tram:
+A continuació es mostra el comportament visual de l'ajust d'ambdós models sobre un mateix conjunt de dades experimentals simulades. El gràfic reflecteix la diferència en la taxa de creixement inicial de cada funció:
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -67,7 +66,6 @@ A continuació pots veure com s'ajusten realment l'Equació de Hill i la Logíst
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    // Definició de les funcions matemàtiques optimitzades
     function formulaHill(x) { 
         return 91.5 * Math.pow(x, 1.75) / (Math.pow(125, 1.75) + Math.pow(x, 1.75)); 
     }
@@ -75,7 +73,6 @@ document.addEventListener("DOMContentLoaded", function() {
         return 89.0 * ((1 - Math.exp(-0.0095 * x)) / (1 + 2.1 * Math.exp(-0.0095 * x))); 
     }
 
-    // Generar la seqüència de punts continus per a les línies
     const xValors = [];
     const yHill = [];
     const yNelder = [];
@@ -85,7 +82,6 @@ document.addEventListener("DOMContentLoaded", function() {
         yNelder.push(formulaNelder(x));
     }
 
-    // Dataset de punts experimentals reals (mostra de campanya)
     const puntsReals = [
         {x: 10, y: 2.1}, {x: 30, y: 7.3}, {x: 50, y: 15.4}, {x: 100, y: 34.2}, 
         {x: 150, y: 52.0}, {x: 200, y: 64.5}, {x: 300, y: 78.1}, {x: 400, y: 84.0}, 
@@ -153,14 +149,12 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 
-### Anàlisi de l'Ajust Visual:
-1. **El Tram Inicial (0 - 150 GRPs):** Fixa't en la línia vermella de **Hill**. Com que simula l'efecte llindar necessari per a l'impacte en vendes, triga més a enlairar-se. En canvi, la línia blava de **Nelder** surt amb un pendent més pronunciat des del punt $(0,0)$, el comportament exacte d'un canal aconseguint cobertura ràpida en els primers dies de campanya.
-2. **La Resolució de Saturació:** A partir dels $500$ GRPs, ambdós models coincideixen en el diagnòstic: el canal ha arribat al seu límit d'eficiència i seguir injectant pressupost només produirà rendiments decreixents fatals (esgotament de l'audiència o saturació del mercat).
+### Observacions sobre la simulació:
+1. **Divergència a l'origen (0 - 150 GRPs):** S'observa com l'ajust de **Hill** (línia vermella) reté la resposta prop del zero en els trams inicials, simulant la necessitat d'una freqüència mínima. Per contra, el model de **Nelder** (línia blava) mostra un pendent inicial més accentuat, descrivint una penetració de cobertura immediata.
+2. **Convergència en la saturació:** Superats els $500$ GRPs, ambdós models descriuen el mateix fenomen físic d'esgotament de l'audiència o saturació de mercat, on els increments de pressupost generen rendiments decreixents marginals pròxims a zero.
 
 ---
 
-## Conclusió i paradoxa financera
+## Conclusions i paradoxa en l'entorn corporatiu
 
-Malgrat que la ciència de dades ens diu que **Hill s'adapta millor a les Vendes** i **Nelder Modificada a la Cobertura**, en el món corporatiu sovint trobem una paradoxa clàssica: molts equips financers rebutgen el model de Hill per a les vendes. Per què? Perquè tenir un model amb "efecte llindar" implica admetre que els primers 40.000 € invertits no generaran cap retorn fins a activar la corba. Els directors financers prefereixen la lògica de Nelder per als pressupostos: un model on cada euro invertit comenci a moure l'agulla des del primer minut.
-
-Com a data scientists o analistes, la nostra feina és triar el model basant-nos en la veritat de les dades històriques i la natura física del canal, dominant les matemàtiques que s'amaguen darrere dels botons del nostre optimitzador.
+L'anàlisi purament matemàtica suggereix l'ús de Hill per a vendes i de Nelder per a cobertura. Malgrat això, s'observa sovint una paradoxa en la pràctica corporativa: molts departaments financers tendeixen a rebutjar l'efecte llindar de Hill en els models de vendes, donat que assumir la corba en "S" implica conceptualitzar que els primers trams d'inversió no ofereixen cap retorn tangible. S'acaba optant, per criteris de prudència pressupostària, per la funció de Nelder, assumint que cada unitat monetària invertida ha de mobilitzar el KPI des del primer instant.
