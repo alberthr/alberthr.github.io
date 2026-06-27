@@ -1,8 +1,9 @@
 ---
 layout: post
 title: "Més enllà del Solver d'Excel: Equació de Hill vs. Logística de Nelder Modificada en Mix de Mitjans"
-date: 2026-06-27 12:00:00 +0200
-categories: marketing-analytics mmm data-science
+tags:
+  - mmm
+  - publicitat
 excerpt: "Reflexió tècnica sobre la naturalesa matemàtica de l'Equació de Hill i la Logística de Nelder Modificada. Anàlisi del comportament de les corbes de saturació i la seva idoneïtat segons si es modelitzen vendes o cobertura."
 ---
 
@@ -10,9 +11,8 @@ En el desplegament de models de **Media Mix Modeling (MMM)** o en el disseny d'a
 
 Sovint, les fórmules heretades de fulls de càlcul corporatius s'utilitzen de manera intercanviable sota termes imprecisos com *"Logística Modificada"* o *"Fórmula Excel"*. Tanmateix, l'**Equació de Hill** i la **Logística de Nelder Modificada (Zero-Intercept)** presenten propietats algebraiques diferents que afecten directament el comportament de l'optimitzador segons si l'objectiu són les **vendes** o la **cobertura neta**.
 
----
 
-## 1. L'Equació de Hill i l'efecte de massa crítica
+## L'Equació de Hill i l'efecte de massa crítica
 
 Originalment formulada per descriure fenòmens bioquímics, l'Equació de Hill s'ha consolidat en l'anàlisi de màrqueting per la seva capacitat de capturar efectes de llindar complexos.
 
@@ -24,9 +24,8 @@ $$y = E_{max} \cdot \frac{x^n}{EC_{50}^n + x^n}$$
 * **$EC_{50}$ (Punt Mitjà de Transició):** Indica la quantitat de GRPs o inversió necessària per assolir exactament el $50\%$ del sostre màxim ($E_{max}/2$). Defineix la inèrcia inicial del canal.
 * **$n$ (Exponent de Hill):** Regula la curvatura. Quan $n > 1$, la funció descriu una forma sigmoide (en "S") molt estricta, ideal per a fenòmens on es requereix acumulació d'impactes abans d'observar una reacció significativa.
 
----
 
-## 2. La Funció Logística de Nelder Modificada
+## La Funció Logística de Nelder Modificada
 
 La variant coneguda habitualment en entorns corporatius com a "Logística Modificada" és una adaptació del **Model Logístic de Nelder** de tres paràmetres, alterada algebraicament perquè la intercepció es produeixi estrictament en l'origen $(0,0)$. En una corba logística estàndard, un pressupost de zero genera un resultat positiu ($y > 0$); aquesta modificació aplica una penalització exponencial al numerador per resoldre aquesta incoherència conceptual.
 
@@ -38,7 +37,6 @@ $$y = K \cdot \frac{1 - e^{-\alpha \cdot x}}{1 + \theta \cdot e^{-\alpha \cdot x
 * **$\alpha$ (Taxa d'Amortiment):** Regula la velocitat amb la qual la funció busca el seu límit horitzontal.
 * **$\theta$ (Factor d'Asimetria de Nelder):** Controla la transició inicial. Si $\theta > 0$, es genera una forma en "S" progressiva. Si $\theta = 0$, la funció col·lapsa exactament en un model clàssic de rendiments decreixents exponencials ($y = K(1-e^{-\alpha x})$).
 
----
 
 ## Criteris de selecció segons el KPI: Vendes vs. Cobertura
 
@@ -153,7 +151,6 @@ document.addEventListener("DOMContentLoaded", function() {
 1. **Divergència a l'origen (0 - 150 GRPs):** S'observa com l'ajust de **Hill** (línia vermella) reté la resposta prop del zero en els trams inicials, simulant la necessitat d'una freqüència mínima. Per contra, el model de **Nelder** (línia blava) mostra un pendent inicial més accentuat, descrivint una penetració de cobertura immediata.
 2. **Convergència en la saturació:** Superats els $500$ GRPs, ambdós models descriuen el mateix fenomen físic d'esgotament de l'audiència o saturació de mercat, on els increments de pressupost generen rendiments decreixents marginals pròxims a zero.
 
----
 
 ## Conclusions i paradoxa en l'entorn corporatiu
 
