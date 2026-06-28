@@ -63,7 +63,6 @@
             font-weight: normal;
         }
 
-        /* Selector de Model Matemàtic Modificat */
         .model-selector-container {
             background: #ffffff;
             border: 1px solid var(--cc-border);
@@ -108,7 +107,6 @@
             border-left: 3px solid var(--cc-primary);
         }
 
-        /* Sistema de Pestanyes (Tabs) */
         .tabs-container {
             display: flex;
             border-bottom: 2px solid var(--cc-border);
@@ -146,7 +144,6 @@
             display: block;
         }
 
-        /* Caixa de Control de l'Optimitzador */
         .optimizer-box {
             background: var(--cc-primary-light);
             border: 1px solid var(--cc-border);
@@ -175,7 +172,7 @@
             color: var(--cc-dark);
         }
 
-        .optimizer-box select, .optimizer-box input {
+        .optimizer-box select, .optimizer-box input, .tolerance-box input {
             font-family: var(--cc-font);
             padding: 8px 12px;
             border-radius: var(--cc-radius);
@@ -187,6 +184,27 @@
 
         .optimizer-box input {
             width: 110px;
+            text-align: center;
+        }
+
+        .tolerance-box {
+            background: #ffffff;
+            border: 1px solid var(--cc-border);
+            padding: 12px 16px;
+            border-radius: var(--cc-radius);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .tolerance-box label {
+            /*font-weight: 600;*/
+            color: var(--cc-dark);
+        }
+
+        .tolerance-box input {
+            width: 80px;
             text-align: center;
         }
 
@@ -223,7 +241,6 @@
             display: none;
         }
 
-        /* Grid de mitjans */
         .media-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -337,7 +354,6 @@
             border-color: #dc2626;
         }
 
-        /* Taula de Resultats */
         .results-section {
             margin-top: 12px;
         }
@@ -415,7 +431,6 @@
             border-radius: var(--cc-radius);
         }
 
-        /* Peu de pàgina metodològic sol·licitat */
         .methodology-footer {
             margin-top: 35px;
             border-top: 1px dashed var(--cc-border);
@@ -450,8 +465,7 @@
 					<option value="hill">Equació de Hill</option>							
                 </select>
             </div>
-            <div id="model-explanation" class="model-explanation-box">
-                </div>
+            <div id="model-explanation" class="model-explanation-box"></div>
         </div>
 
         <div class="media-grid">
@@ -498,12 +512,18 @@
 
         <div class="results-section">
             <h2>Resultats i Mètriques d'Ajust Estadístic</h2>
+            
+            <div id="tolerance-container" class="tolerance-box" style="display: none;">
+                <label for="pot-tolerance">Marge sobre cobertura màxima:</label>
+                <input type="number" id="pot-tolerance" placeholder="Lliure" min="0" max="500" step="5" oninput="handleToleranceChange()" />
+                <span style="font-size: 12.5px; color: var(--cc-text-light);">% (Deixar <b>buit</b> per model lliure. Introduir <b>0</b> per capar al màxim absolut de dades)</span>
+            </div>
+
             <div id="table-wrapper-placeholder" class="notice-empty">Carrega com a mínim un fitxer Excel per veure les mètriques d'ajust.</div>
             <div class="ccob-table-wrapper" id="tableDataContent" style="display:none;">
                 <table>
                     <thead>
-                        <tr id="tableHeaderRow">
-                            </tr>
+                        <tr id="tableHeaderRow"></tr>
                     </thead>
                     <tbody id="tableBody"></tbody>
                 </table>
@@ -540,7 +560,7 @@
     </div>
 
     <div class="methodology-footer">
-        <p>L'ajust dels paràmetres es realitza mitjançant una aproximació numèrica integrada al navegador. Un programari estadístic dedicat o un Solver avançat basat en gradients iteratius podria mostrar resultats lleugerament diferents degut a una precisió decimal superior.El càlcul consolidat de cobertura conjunta assumeix de manera probabilística que el consum dels diferents mitjans és independent entre si. En entorns reals on s'observi una forta co-duplicació de públics coincidents, la cobertura combinada final pot variar respecte a la teòrica.</p>
+        <p>L'ajust dels paràmetres es realitza mitjançant una aproximació numèrica integrada al navegador. Un programari estadístic dedicat o un Solver avançat basat en gradients iteratius podria mostrar resultats lleugerament diferents degut a una precisió decimal superior. El càlcul consolidat de cobertura conjunta assumeix de manera probabilística que el consum dels diferents mitjans és independent entre si. En entorns reals on s'observi una forta co-duplicació de públics coincidents, la cobertura combinada final pot variar respecte a la teòrica.</p>
     </div>
 </div>
 
@@ -549,7 +569,6 @@ let chartInstance = null;
 let mediaDataStore = {};
 let lastAllocationGRPs = null;
 
-// Execució inicial del text explicatiu
 document.addEventListener("DOMContentLoaded", function() {
     updateExplanationText();
 });
@@ -660,15 +679,32 @@ function processMediaData(index, fileName, data) {
 function recalculateFitForMedia(index) {
     const currentModel = document.getElementById('global-model-select').value;
     const points = mediaDataStore[index].points;
+    const toleranceInput = document.getElementById('pot-tolerance').value;
+    
+    let maxCeilingLimit = null; 
+    if (toleranceInput !== "" && !isNaN(toleranceInput)) {
+        const tolerancePct = parseFloat(toleranceInput) / 100;
+        const maxYInPoints = Math.max(...points.map(p => p.y));
+        maxCeilingLimit = Math.min(100, maxYInPoints * (1 + tolerancePct));
+    }
+
     if (currentModel === 'logistic') {
-        mediaDataStore[index].fit = fitExcelLogistic(points);
+        mediaDataStore[index].fit = fitExcelLogistic(points, maxCeilingLimit);
     } else {
-        mediaDataStore[index].fit = fitHillEquation(points);
+        mediaDataStore[index].fit = fitHillEquation(points, maxCeilingLimit);
     }
 }
 
 function handleModelChange() {
     updateExplanationText();
+    recalculateAllAndRefresh();
+}
+
+function handleToleranceChange() {
+    recalculateAllAndRefresh();
+}
+
+function recalculateAllAndRefresh() {
     Object.keys(mediaDataStore).forEach(idx => {
         recalculateFitForMedia(idx);
     });
@@ -699,20 +735,35 @@ function resetOptimizationResult() {
     lastAllocationGRPs = null;
 }
 
-// 1. FUNCIÓ LOGÍSTICA MODIFICADA
+// 1. ENGINE LOGÍSTIC ADAPTATIU A VALORS ATÍPICS
 function excelLogisticFunction(x, C3, C4, C5) {
     if (x === 0) return 0;
     let expVal = Math.exp(-x / C5);
     return C3 * ((1 - expVal) / (1 + C4 * expVal));
 }
 
-function fitExcelLogistic(points) {
+function fitExcelLogistic(points, maxCeilingLimit) {
     let bestC3 = 100, bestC4 = 1.0, bestC5 = 150, minError = Infinity;
     const maxY = Math.max(...points.map(p => p.y));
-    const C3_min = Math.max(70, maxY);
     const maxGRP = Math.max(...points.map(p => p.x));
 
-    for (let C3 = C3_min; C3 <= 100; C3 += 2) {
+    let ceilingLower, ceilingUpper;
+
+    if (maxCeilingLimit !== null) {
+        // Mode controlat: Permet baixar bastant per sota del màxim de dades per capturar atípics,
+        // i fita rígidament per dalt segons la tolerància del mix d'usuari.
+        ceilingLower = Math.max(5, maxY * 0.6); 
+        ceilingUpper = maxCeilingLimit;
+    } else {
+        // Mode totalment lliure de referència
+        ceilingLower = Math.max(5, maxY * 0.6);
+        ceilingUpper = 100;
+    }
+
+    // Pas de cerca dinàmic de gran definició (50 talls analítics fixos) per evitar desfasaments de xarxa
+    const stepC3 = Math.max(0.1, (ceilingUpper - ceilingLower) / 50);
+
+    for (let C3 = ceilingLower; C3 <= ceilingUpper; C3 += stepC3) {
         for (let C4 = -0.5; C4 <= 5.0; C4 += 0.2) {
             for (let C5 = 10; C5 <= maxGRP * 0.75; C5 += 10) {
                 let error = 0;
@@ -734,7 +785,7 @@ function fitExcelLogistic(points) {
     return { p1: bestC3, p2: bestC4, p3: bestC5, rSquared: ssTot === 0 ? 1 : 1 - (minError / ssTot) };
 }
 
-// 2. EQUACIÓ DE HILL
+// 2. ENGINE HILL ADAPTATIU A VALORS ATÍPICS
 function hillEquationFunction(x, Emax, EC50, n) {
     if (x === 0) return 0;
     let powX = Math.pow(x, n);
@@ -742,13 +793,24 @@ function hillEquationFunction(x, Emax, EC50, n) {
     return Emax * (powX / (powEC50 + powX));
 }
 
-function fitHillEquation(points) {
+function fitHillEquation(points, maxCeilingLimit) {
     let bestEmax = 100, bestEC50 = 100, bestN = 1.2, minError = Infinity;
     const maxY = Math.max(...points.map(p => p.y));
-    const Emax_min = Math.max(70, maxY);
     const maxGRP = Math.max(...points.map(p => p.x));
 
-    for (let Emax = Emax_min; Emax <= 100; Emax += 2) {
+    let ceilingLower, ceilingUpper;
+
+    if (maxCeilingLimit !== null) {
+        ceilingLower = Math.max(5, maxY * 0.6);
+        ceilingUpper = maxCeilingLimit;
+    } else {
+        ceilingLower = Math.max(5, maxY * 0.6);
+        ceilingUpper = 100;
+    }
+
+    const stepEmax = Math.max(0.1, (ceilingUpper - ceilingLower) / 50);
+
+    for (let Emax = ceilingLower; Emax <= ceilingUpper; Emax += stepEmax) {
         for (let EC50 = 10; EC50 <= maxGRP * 0.6; EC50 += 15) {
             for (let n = 0.5; n <= 3.0; n += 0.15) {
                 let error = 0;
@@ -897,6 +959,7 @@ function updateGlobalDashboard() {
     const activeIndexes = Object.keys(mediaDataStore);
     
     if (activeIndexes.length === 0) {
+        document.getElementById('tolerance-container').style.display = 'none';
         document.getElementById('table-wrapper-placeholder').style.display = 'block';
         document.getElementById('tableDataContent').style.display = 'none';
         document.getElementById('chart-placeholder').style.display = 'block';
@@ -904,6 +967,7 @@ function updateGlobalDashboard() {
         if (chartInstance) chartInstance.destroy();
         return;
     } else {
+        document.getElementById('tolerance-container').style.display = 'flex';
         document.getElementById('table-wrapper-placeholder').style.display = 'none';
         document.getElementById('tableDataContent').style.display = 'block';
     }
@@ -911,15 +975,14 @@ function updateGlobalDashboard() {
     document.getElementById('chart-placeholder').style.display = 'none';
     document.getElementById('chartWrapperContent').style.display = 'block';
 
-    // Regeneració d'encapçalats executius breus i nets sense lletres ni parèntesis sol·licitats
     const headerRow = document.getElementById('tableHeaderRow');
     headerRow.innerHTML = `
         <th>Mitjà / Fitxer carregat</th>
         <th>Punts Mostra</th>
-        <th>Sostre Màxim</th>
+        <th>Sostre Màxim Calculat</th>
         <th>Factor Curvatura</th>
         <th>Velocitat Transició</th>
-        <th>Bondat Ajust</th>
+        <th>Bondat Ajust (R²)</th>
     `;
 
     const tableBody = document.getElementById('tableBody');
