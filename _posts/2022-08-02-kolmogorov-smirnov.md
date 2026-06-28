@@ -3,7 +3,7 @@ layout: post
 title: "Comparacio de distribucions amb Kolmogorov-Smirnov"
 tags:
   - estadistica
-excerpt: "Com determinar si dues mostres provenen de la mateixa distribució o si els residus segueixen una normal? El test de Kolmogorov-Smirnov compara funcions de distribució acumulades i ofereix un p-valor objectiu."
+excerpt: "Determinar si dues mostres provenen de la mateixa distribució o si els residus segueixen una Normal. El test de Kolmogorov-Smirnov compara funcions de distribució acumulades i ofereix un p-valor objectiu."
 ---
 
 En l'àmbit de la ciència de dades o de l'estadística, sovint sorgeixen qüestions com ara si una variable segueix una distribució normal o si el comportament d'un grup d'usuaris A és equivalent al d'un grup B. Per respondre a aquestes preguntes, se sol recórrer a gràfics com histogrames o diagrames Q-Q. No obstant això, quan es requereix una mètrica objectiva i un p-valor, el **Test de Kolmogorov-Smirnov (K-S)** esdevé una de les eines més versàtils i utilitzades.
@@ -11,7 +11,7 @@ En l'àmbit de la ciència de dades o de l'estadística, sovint sorgeixen qüest
 
 ## Què és i per a què serveix?
 
-El test de Kolmogorov-Smirnov és una prova estadística no paramètrica (és a dir, no assumeix que les dades segueixen una forma de distribució predeterminada) que s'utilitza per **comparar distribucions de variables contínues**.
+El test de Kolmogorov-Smirnov és una prova estadística no paramètrica que s'utilitza per **comparar distribucions de variables contínues**.
 
 Es basa en la **Funció de Distribució Acumulada** (CDF, per les seves sigles en anglès). L'estadístic del test, anomenat $D$, representa la **distància màxima vertical** entre les dues funcions acumulades que es comparen.
 
@@ -139,7 +139,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 Hi ha dues variants principals d'aquest test:
 
-1. **Test K-S d'una mostra:** Compara la distribució de les dades de la mostra amb una distribució teòrica coneguda (normal, exponencial, uniforme, etc.).
+1. **Test K-S d'una mostra:** Compara la distribució de les dades de la mostra amb una distribució teòrica coneguda (sol ser una distribució normal, pero pot ser exponencial, uniforme, etc.).
 2. **Test K-S de dues mostres:** Compara si dues mostres independents procedeixen de la mateixa distribució subjacent.
 
 
