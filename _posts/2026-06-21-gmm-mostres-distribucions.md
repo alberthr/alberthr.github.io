@@ -3,6 +3,7 @@ layout: post
 title: "Mostres bimodals: Troba la frontera amb GMM"
 tags: 
   - estadistica
+  - matematiques
   - clustering
   - r
   - python

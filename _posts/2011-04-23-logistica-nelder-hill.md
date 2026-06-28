@@ -2,8 +2,9 @@
 layout: post
 title: "Corves de Saturacio en el mon publicitari: Ventes vs Cobertura"
 tags:
-  - mmm
+  - modelitzacio
   - publicitat
+  - matematiques
 excerpt: "Reflexió tècnica sobre la naturalesa matemàtica de l'Equació de Hill i la Logística de Nelder Modificada. Anàlisi del comportament de les corbes de saturació i la seva idoneïtat segons si es modelitzen vendes o cobertura."
 ---
 

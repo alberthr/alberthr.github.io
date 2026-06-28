@@ -2,7 +2,7 @@
 layout: post
 title: "Marketing Mix Modelling (MMM): Decisions a prendre abans de començar"
 tags:
-  - mmm
+  - modelitzacio
   - publicitat
 excerpt: "Abans de començar un Marketing Mix Model cal resoldre alguns dilemes clau: baseline aditiva o multiplicativa, com modelar l'Ad-Stock (Decay vs. funció Gamma) o com capturar l'estacionalitat. Una anàlisi de les decisions estructurals que condicionaran tot el model."
 ---

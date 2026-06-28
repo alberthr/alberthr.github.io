@@ -2,7 +2,7 @@
 layout: post
 title: "L'Algorisme Hongarès: Optimització i assignació de parelles o recursos"
 tags: 
-  - estadistica
+  - matematiques
   - python
   - r
 excerpt: "Com trobar, entre 20 botigues de control, les 5 més similars a un grup de botigues amb tractament per a un test A/B sense biaixos? L'Algorisme Hongarès resol aquest problema d'assignació òptima minimitzant la diferència total."
