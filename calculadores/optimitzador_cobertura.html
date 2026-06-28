@@ -16,9 +16,18 @@
             --cc-text-light: #64748b;
             --cc-card-bg: #ffffff;
             --cc-border: #e2e8f0;
+            --cc-border-strong: #cbd5e1;
             --cc-disabled-bg: #f3f4f6;
             --cc-radius: 6px;
             --cc-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --cc-space-1: 4px;
+            --cc-space-2: 8px;
+            --cc-space-3: 12px;
+            --cc-space-4: 16px;
+            --cc-space-5: 24px;
+            --cc-space-6: 32px;
+            --cc-space-7: 40px;
+			--cc-bg-soft: #f8fafc;
         }
 
 		html {
@@ -41,7 +50,7 @@
             background: var(--cc-card-bg);
             border: 1px solid var(--cc-border);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-            padding: 32px 36px;
+            padding: var(--cc-space-6);
             border-radius: var(--cc-radius);
         }
 
@@ -67,17 +76,17 @@
 			display: none;
             background: #ffffff;
             border: 1px solid var(--cc-border);
-            padding: 16px 20px;
+            padding: var(--cc-space-4) var(--cc-space-5);
             border-radius: var(--cc-radius);
-            margin-bottom: 20px;
+            margin-bottom: var(--cc-space-5);
             box-shadow: 0 1px 3px rgba(0,0,0,0.02);
         }
 
         .model-selector-field {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 10px;
+            gap: var(--cc-space-3);
+            margin-bottom: var(--cc-space-3);
         }
 
         .model-selector-field label {
@@ -103,7 +112,7 @@
             color: var(--cc-text);
             line-height: 1.45;
             background: var(--cc-primary-light);
-            padding: 10px 14px;
+            padding: var(--cc-space-3) var(--cc-space-4);
             border-radius: 4px;
             border-left: 3px solid var(--cc-primary);
         }
@@ -111,14 +120,14 @@
         .tabs-container {
             display: flex;
             border-bottom: 2px solid var(--cc-border);
-            margin-bottom: 24px;
-            gap: 4px;
+            margin-bottom: var(--cc-space-5);
+            gap: var(--cc-space-1);
         }
 
         .tab-btn {
-            padding: 10px 20px;
+            padding: var(--cc-space-3) var(--cc-space-5);
             font-size: 13px;
-            font-weight: 400;
+            font-weight: 600;
             color: var(--cc-text-light);
             background: none;
             border: none;
@@ -134,7 +143,7 @@
         }
 
         .tab-btn.active {
-			background-color: aliceblue;
+			background-color: var(--cc-primary-light);
             color: var(--cc-primary);
             border-bottom-color: var(--cc-primary);
         }
@@ -148,25 +157,25 @@
         }
 
         .optimizer-box {
-            background: var(--cc-primary-light);
+            background: var(--cc-bg-soft);
             border: 1px solid var(--cc-border);
-            padding: 20px;
+            padding: var(--cc-space-5);
             border-radius: var(--cc-radius);
-            margin-bottom: 24px;
+            margin-bottom: var(--cc-space-5);
         }
 
         .optimizer-controls {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            gap: 20px;
+            gap: var(--cc-space-5);
             justify-content: space-between;
         }
 
         .input-group {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: var(--cc-space-3);
         }
 
         .input-group label {
@@ -191,14 +200,12 @@
         }
 
         .tolerance-box {
-            background: #ffffff;
-            border: 1px solid var(--cc-border);
-            padding: 12px 16px;
-            border-radius: var(--cc-radius);
-            margin-bottom: 14px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: var(--cc-space-3);
+            padding-bottom: var(--cc-space-3);
+            margin-bottom: var(--cc-space-3);
+            border-bottom: 1px dashed var(--cc-border-strong);
         }
 
         .tolerance-box label {
@@ -216,7 +223,7 @@
             background: var(--cc-primary);
             color: white;
             border: 1px solid var(--cc-primary);
-            padding: 9px 18px;
+            padding: var(--cc-space-2) var(--cc-space-4);
             font-size: 13px;
             border-radius: var(--cc-radius);
             cursor: pointer;
@@ -236,10 +243,10 @@
         }
 
         #optimization-result {
-            margin-top: 15px;
+            margin-top: var(--cc-space-4);
             background: white;
             border: 1px solid var(--cc-border);
-            padding: 15px;
+            padding: var(--cc-space-4);
             border-radius: var(--cc-radius);
             display: none;
         }
@@ -247,20 +254,20 @@
         .media-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
+            gap: var(--cc-space-4);
+            margin-bottom: var(--cc-space-5);
         }
 
         .media-card {
             border: 1px solid var(--cc-border);
             border-radius: var(--cc-radius);
-            padding: 16px;
+            padding: var(--cc-space-4);
             background: white;
             position: relative;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            gap: 12px;
+            gap: var(--cc-space-3);
         }
 
         .media-card.active {
@@ -287,7 +294,7 @@
         }
 
         .upload-section {
-            padding: 15px 10px;
+            padding: var(--cc-space-4) var(--cc-space-3);
             border: 1px dashed var(--cc-primary);
             border-radius: var(--cc-radius);
             text-align: center;
@@ -309,7 +316,7 @@
             font-weight: 500;
             text-align: center;
             background: #f0fdf4;
-            padding: 8px;
+            padding: var(--cc-space-2);
             border-radius: var(--cc-radius);
             border: 1px solid #bbf7d0;
         }
@@ -319,7 +326,7 @@
             align-items: center;
             justify-content: space-between;
             background: var(--cc-primary-light);
-            padding: 8px 12px;
+            padding: var(--cc-space-2) var(--cc-space-3);
             border-radius: var(--cc-radius);
             font-size: 12.5px;
             border: 1px solid var(--cc-border);
@@ -357,23 +364,16 @@
             border-color: #dc2626;
         }
 
-        .results-section {
-            margin-top: 12px;
-        }
-
-        .results-section h2 {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--cc-dark);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 14px;
+        .results-card {
+            background: var(--cc-bg-soft);
+            border: 1px solid var(--cc-border);
+            padding: var(--cc-space-4);
+            border-radius: var(--cc-radius);
         }
 
         .ccob-table-wrapper {
             width: 100%;
             overflow-x: auto;
-            margin-bottom: 20px;
         }
 
         table {
@@ -382,18 +382,20 @@
         }
 
         th, td {
-            border: 1px solid var(--cc-border);
-            padding: 8px 10px;
+            border: 1px solid var(--cc-border-strong);
+            padding: var(--cc-space-2) var(--cc-space-3);
             text-align: right;
             font-size: 12px;
             color: var(--cc-dark);
+            background: var(--cc-card-bg);
         }
 
         th {
-            background: var(--cc-primary-light);
+            /*background: var(--cc-border);*/
+			background: var(--cc-card-bg);
             text-transform: uppercase;
             letter-spacing: 0.3px;
-            font-weight: normal;
+            font-weight: 600;
         }
 
         th:first-child, td:first-child {
@@ -401,17 +403,23 @@
         }
 
         td.row-header {
-            background: var(--cc-primary-light);
-            font-weight: normal;
+            font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.3px;
         }
 
+        .row-header-index {
+            font-size: 11px;
+            font-weight: normal;
+            text-transform: none;
+            color: var(--cc-text-light);
+        }
+
         .canvas-container {
-            margin-top: 15px;
+            margin-top: var(--cc-space-4);
             background: #ffffff;
             border: 1px solid var(--cc-border);
-            padding: 15px;
+            padding: var(--cc-space-4);
             border-radius: var(--cc-radius);
         }
 
@@ -420,31 +428,85 @@
             height: 16px;
             border-radius: 4px;
             overflow: hidden;
-            margin-top: 12px;
+            margin-top: var(--cc-space-3);
             background: var(--cc-primary-light);
             border: 1px solid var(--cc-border);
         }
 
+        .opt-share-bar span {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 600;
+            color: #ffffff;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
         .notice-empty {
             text-align: center;
-            padding: 40px;
+            padding: var(--cc-space-7);
             color: var(--cc-text-light);
-            background: #f8fafc;
+            background: var(--cc-bg-soft);
             border: 1px dashed var(--cc-border);
             border-radius: var(--cc-radius);
         }
+		
+		.results-card .notice-empty {
+			border: 0px;
+		}
 
         .methodology-footer {
-            margin-top: 35px;
+            margin-top: var(--cc-space-6);
             border-top: 1px dashed var(--cc-border);
-            padding-top: 15px;
+            padding-top: var(--cc-space-4);
             font-size: 11.5px;
             color: var(--cc-text-light);
             line-height: 1.5;
         }
 
         .methodology-footer p {
-            margin: 6px 0;
+            margin: var(--cc-space-2) 0;
+        }
+
+        .result-status {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: var(--cc-space-3);
+            color: #16a34a;
+            display: flex;
+            align-items: center;
+            gap: var(--cc-space-2);
+        }
+
+        .result-status .status-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #16a34a;
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            flex-shrink: 0;
+        }
+
+        .result-summary {
+            font-size: 12.5px;
+            margin-bottom: var(--cc-space-3);
+            color: var(--cc-text);
+        }
+
+        .result-line {
+            font-size: 12.5px;
+            margin: var(--cc-space-1) 0;
+            color: var(--cc-dark);
+        }
+
+        .result-line .media-name {
+            font-weight: 600;
         }
     </style>
 </head>
@@ -513,9 +575,7 @@
             </script>
         </div>
 
-        <div class="results-section">
-            <h2>Resultats i Mètriques d'Ajust Estadístic</h2>
-            
+        <div class="results-card">
             <div id="tolerance-container" class="tolerance-box" style="display: none;">
                 <label for="pot-tolerance">Marge sobre màxima cobertura:</label>
                 <input type="number" id="pot-tolerance" placeholder="Lliure" min="0" max="500" step="5" oninput="handleToleranceChange()" />
@@ -921,10 +981,10 @@ function optimizeMediaMix() {
     let totalGrpsString = (mode === 'grps') ? `<b>${actualTotalGRPs} GRPs</b>` : `${actualTotalGRPs} GRPs`;
     let totalCostString = (mode === 'budget') ? `<b>${actualTotalCost.toLocaleString('de-DE')} €</b>` : `${actualTotalCost.toLocaleString('de-DE')} €`;
 
-    let htmlResult = `<div style="font-size:14px; font-weight:600; margin-bottom:10px; color:#16a34a;">
-        ✓ CAMPANYA ÒPTIMA: COBERTURA CONJUNTA DEL ${finalNetCoverage.toFixed(2)}%
+    let htmlResult = `<div class="result-status">
+        <span class="status-icon">✓</span> CAMPANYA ÒPTIMA: COBERTURA CONJUNTA DEL ${finalNetCoverage.toFixed(2)}%
     </div>
-    <div style="font-size:12.5px; margin-bottom:12px; color: var(--cc-text);">
+    <div class="result-summary">
         Totals consolidats: ${totalGrpsString} invertits | Cost Total: ${totalCostString}
     </div>`;
     
@@ -940,12 +1000,12 @@ function optimizeMediaMix() {
             let mediaCostString = (mode === 'budget') ? `<b>${costMedia.toLocaleString('de-DE')} €</b>` : `${costMedia.toLocaleString('de-DE')} €`;
             let clearName = cleanFileName(mediaDataStore[idx].fileName);
 
-            htmlResult += `<div style="font-size:12.5px; margin: 4px 0; color: var(--cc-dark);">
-                • <span style="color:${mediaDataStore[idx].color.main}; font-weight:600;">${clearName} (Mitjà ${idx}):</span> 
+            htmlResult += `<div class="result-line">
+                • <span class="media-name" style="color:${mediaDataStore[idx].color.main};">${clearName} (Mitjà ${idx}):</span>
                 ${mediaGrpsString} (Inversió: ${mediaCostString}) 
                 [Share: ${pct.toFixed(1)}%] → Cobertura individual: ${mCob.toFixed(1)}%
             </div>`;
-            barHtml += `<div style="width: ${pct}%; background-color: ${mediaDataStore[idx].color.main};" title="${clearName}"></div>`;
+            barHtml += `<div style="width: ${pct}%; background-color: ${mediaDataStore[idx].color.main};" title="${clearName}: ${pct.toFixed(1)}%"><span>${pct >= 8 ? pct.toFixed(0) + '%' : ''}</span></div>`;
         }
     });
     barHtml += `</div>`;
@@ -1008,9 +1068,9 @@ function updateGlobalDashboard() {
 
         tableBody.innerHTML += `
             <tr>
-                <td class="row-header" style="color:${media.color.main} !important; font-weight:600;">
+                <td class="row-header" style="color:${media.color.main};">
                     ${clearName} 
-                    <span style="font-size:11px; font-weight:normal; text-transform:none; color:var(--cc-text-light);">[Mitjà ${idx}]</span>
+                    <span class="row-header-index">[Mitjà ${idx}]</span>
                 </td>
                 <td>${media.points.length}</td>
                 <td>${media.fit.p1.toFixed(1)}%</td>
@@ -1096,9 +1156,9 @@ function updateGlobalDashboard() {
                                 let label = context.dataset.label || '';
                                 if (label.includes('(Solució Òptima)')) {
                                     label = label.replace(' (Solució Òptima)', '');
-                                    return `🎯 Solució Òptima ${label}: (${context.parsed.x.toFixed(1)} GRPs, ${context.parsed.y.toFixed(1)}%)`;
+                                    return `Solució òptima · ${label}: (${context.parsed.x.toFixed(1)} GRPs, ${context.parsed.y.toFixed(1)}%)`;
                                 } else {
-                                    return `📈 Punt ${label}: (${context.parsed.x.toFixed(1)} GRPs, ${context.parsed.y.toFixed(1)}%)`;
+                                    return `${label}: (${context.parsed.x.toFixed(1)} GRPs, ${context.parsed.y.toFixed(1)}%)`;
                                 }
                             }
                         }
