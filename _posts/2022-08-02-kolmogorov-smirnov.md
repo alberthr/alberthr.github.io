@@ -19,7 +19,7 @@ A la següent gràfica es mostra de manera visual com l'estadístic $D$ localitz
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<div style="width: 100%; max-width: 550px; margin: 30px auto; padding: 15px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+<div style="width: 100%; height: 80%; max-width: 550px; margin: 30px auto; padding: 15px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
   <canvas id="graficKS"></canvas>
 </div>
 
