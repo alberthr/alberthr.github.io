@@ -2,10 +2,10 @@
 layout: post
 title: "Extreure tendències en sèries temporals. Suavitzat Polinómic"
 tags: 
-  - series-temporals
-  - tendencia
-  - modelitzacio
+  - mmm
   - estadistica
+  - python
+  - r
 excerpt: "Quan una regressió lineal és massa rígida i unir punts genera soroll caòtic, LOESS ofereix un suavitzat local i flexible per detectar tendències reals en sèries temporals."
 ---
 

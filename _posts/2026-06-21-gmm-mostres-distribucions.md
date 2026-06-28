@@ -2,8 +2,10 @@
 layout: post
 title: "Mostres bimodals: Troba la frontera amb GMM"
 tags: 
-  - machine learning
+  - estadistica
   - clustering
+  - r
+  - python
 excerpt: "Quan una variable sembla tenir més d'una 'campana' (bimodal, trimodal...), un Gaussian Mixture Model permet estimar quants grups hi ha, a quin pertany cada observació i on és exactament el punt de tall entre grups."
 ---
 

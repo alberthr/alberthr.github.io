@@ -3,8 +3,8 @@ layout: post
 title: "Regressió lineal a Power BI amb DAX: LINEST i LINESTX"
 tags:
   - powerbi
-  - modelitzacio
   - dax
+  - estadistica
 excerpt: "DAX incorpora les funcions LINEST i LINESTX per fer regressió lineal directament dins del model de Power BI. Repassem la sintaxi, com extreure pendent, intercepct i R² amb SELECTCOLUMNS, un cas pràctic de vendes vs. inversió en promoció, i els principals indicadors estadístics que cal vigilar per interpretar el model."
 ---
 

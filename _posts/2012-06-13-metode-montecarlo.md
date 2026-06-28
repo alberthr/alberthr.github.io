@@ -3,6 +3,8 @@ layout: post
 title: "El Mètode de Montecarlo. El Poder de l'Atzar"
 tags: 
   - estadistica
+  - python
+  - r
 excerpt: "Quan un problema és massa complex per resoldre's analíticament, simular-lo milers de vegades pot ser la solució. Una introducció al Mètode de Montecarlo i les seves aplicacions, amb l'exemple clàssic d'estimar el valor de π llançant punts aleatoris, en Python i R."
 ---
 

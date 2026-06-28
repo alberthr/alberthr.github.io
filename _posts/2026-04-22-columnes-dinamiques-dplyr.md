@@ -1,7 +1,8 @@
 ---
 layout: post
 title: "Columnes dinàmiques a dplyr: Com parametritzar-les"
-tags: r
+tags: 
+  - r
 excerpt: "Quan fem servir dplyr dins de funcions pròpies, el nom de columna sovint no és fix sinó un paràmetre. Repasso {{ }}, .data[[ ]], across() i := per parametritzar group_by, mutate i summarise, amb un exemple final que combina les tres operacions de forma totalment dinàmica."
 
 ---

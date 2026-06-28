@@ -3,6 +3,8 @@ layout: post
 title: "Calcular intervals de confiança fent servir Bootstrapping"
 tags:
   - estadistica
+  - python
+  - r
 excerpt: "Quan no coneixes la distribució de les teves dades o necessites l'interval de confiança d'un estadístic sense fórmula teòrica (com la mediana), el Bootstrapping et permet generar-lo a partir de la teva pròpia mostra."
 ---
 
