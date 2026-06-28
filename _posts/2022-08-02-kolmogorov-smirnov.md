@@ -188,3 +188,33 @@ if p_valor < alpha:
     print("Rebutgem l'hipòtesi nul·la: Les dues distribucions són significativament diferents.")
 else:
     print("No podem rebutjar l'hipòtesi nul·la: No hi ha evidència que les distribucions siguin diferents.")
+```
+
+### 📊 Implementacio en R
+
+```r
+# Fixem la llavor
+set.seed(27)
+
+# Generem les mateixes dades simulades
+grup_A <- rnorm(100, mean = 3.0, sd = 0.5)
+grup_B <- rnorm(100, mean = 2.8, sd = 0.5)
+
+# Grafiquem les mostres
+plot(ecdf(grup_A), col = "blue", main = "Comparativa de CDFs i Mètode K-S", 
+     xlab = "Valor", ylab = "Probabilitat Acumulada", verticals = TRUE, do.points = FALSE)
+plot(ecdf(grup_B), col = "red", add = TRUE, verticals = TRUE, do.points = FALSE)
+
+# Apliquem el test K-S
+resultat <- ks.test(grup_A, grup_B)
+
+# Mostrem els resultats per pantalla
+print(resultat)
+
+# Comprovar el p-valor de manera programàtica
+if (resultat$p.value < 0.05) {
+  cat("Resultat: Les distribucions són significativament diferents.\n")
+} else {
+  cat("Resultat: No hi ha diferències significatives.\n")
+}
+```
