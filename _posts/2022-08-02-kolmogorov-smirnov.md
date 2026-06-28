@@ -19,8 +19,8 @@ A la següent gràfica es mostra de manera visual com l'estadístic $D$ localitz
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<div style="width: 100%; max-width: 750px; margin: 30px auto; padding: 15px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
-  <canvas id="graficKS" width="800" height="450"></canvas>
+<div style="width: 100%; max-width: 550px; margin: 30px auto; padding: 15px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+  <canvas id="graficKS"></canvas>
 </div>
 
 <script>
@@ -35,9 +35,10 @@ document.addEventListener("DOMContentLoaded", function() {
         return 0.5 * (1 + sign * y);
     }
 
+    // Generació d'eix X de -3 a +3
     const xValors = [];
     const yTeorica = [];
-    for (let x = -4.0; x <= 4.0; x += 0.1) {
+    for (let x = -3.0; x <= 3.0; x += 0.05) {
         xValors.push(Number(x.toFixed(2)));
         yTeorica.push(normalCDF(x));
     }
@@ -50,13 +51,26 @@ document.addEventListener("DOMContentLoaded", function() {
         yEmpirica.push(puntsMenorsOIguals / puntsMostra.length);
     });
 
-    const xDistancia = 1.3;
-    const yTeoricaEnD = normalCDF(xDistancia);
-    const yEmpiricaEnD = puntsMostra.filter(p => p <= xDistancia).length / puntsMostra.length;
+    // Cerca real del punt on la distància vertical és màxima
+    let maxDistancia = 0;
+    let xOptima = xValors[0];
+    let yTeoricaOptima = yTeorica[0];
+    let yEmpiricaOptima = yEmpirica[0];
 
+    for (let i = 0; i < xValors.length; i++) {
+        let dist = Math.abs(yTeorica[i] - yEmpirica[i]);
+        if (dist > maxDistancia) {
+            maxDistancia = dist;
+            xOptima = xValors[i];
+            yTeoricaOptima = yTeorica[i];
+            yEmpiricaOptima = yEmpirica[i];
+        }
+    }
+
+    // Creem la línia vertical sense les rodones a l'unió (feta amb estil discontínu)
     const liniaDMax = [
-        { x: xDistancia, y: yTeoricaEnD },
-        { x: xDistancia, y: yEmpiricaEnD }
+        { x: xOptima, y: yTeoricaOptima },
+        { x: xOptima, y: yEmpiricaOptima }
     ];
 
     const ctx = document.getElementById('graficKS').getContext('2d');
@@ -84,32 +98,33 @@ document.addEventListener("DOMContentLoaded", function() {
                     stepped: true
                 },
                 {
-                    label: 'Distància Màxima (D max)',
+                    label: `Distància Màxima Real (D = ${maxDistancia.toFixed(3)})`,
                     data: liniaDMax,
                     type: 'scatter',
                     showLine: true,
                     borderColor: '#1e293b',
-                    borderWidth: 2,
-                    pointRadius: 4,
-                    pointBackgroundColor: '#1e293b',
+                    borderWidth: 2.5,
+                    borderDash: [5, 5], // Línia discontínua per evitar les rodones grans
+                    pointRadius: 0,     // Eliminem els cercles dels extrems
                     fill: false
                 }
             ]
         },
         options: {
             responsive: true,
+            aspectRatio: 1.1, // Força un format molt més quadrat i compacte
             plugins: {
                 legend: { 
                     position: 'bottom',
-                    labels: { boxWidth: 12, font: { size: 12 } }
+                    labels: { boxWidth: 12, font: { size: 11 } }
                 }
             },
             scales: {
                 x: { 
                     type: 'linear', 
                     title: { display: true, text: 'Variable (X)', font: { weight: 'bold' } }, 
-                    min: -4, 
-                    max: 4 
+                    min: -3, 
+                    max: 3 
                 },
                 y: { 
                     title: { display: true, text: 'Probabilitat Acumulada (CDF)', font: { weight: 'bold' } }, 
@@ -173,35 +188,3 @@ if p_valor < alpha:
     print("Rebutgem l'hipòtesi nul·la: Les dues distribucions són significativament diferents.")
 else:
     print("No podem rebutjar l'hipòtesi nul·la: No hi ha evidència que les distribucions siguin diferents.")
-```
-
-
-### 📊 Implementacio en R
-
-```r
-# Fixem la llavor
-set.seed(27)
-
-# Generem les mateixes dades simulades
-grup_A <- rnorm(100, mean = 3.0, sd = 0.5)
-grup_B <- rnorm(100, mean = 2.8, sd = 0.5)
-
-# Grafiquem les mostres
-plot(ecdf(grup_A), col = "blue", main = "Comparativa de CDFs i Mètode K-S", 
-     xlab = "Valor", ylab = "Probabilitat Acumulada", verticals = TRUE, do.points = FALSE)
-plot(ecdf(grup_B), col = "red", add = TRUE, verticals = TRUE, do.points = FALSE)
-
-# Apliquem el test K-S
-resultat <- ks.test(grup_A, grup_B)
-
-# Mostrem els resultats per pantalla
-print(resultat)
-
-# Comprovar el p-valor de manera programàtica
-if (resultat$p.value < 0.05) {
-  cat("Resultat: Les distribucions són significativament diferents.\n")
-} else {
-  cat("Resultat: No hi ha diferències significatives.\n")
-}
-
-```
