@@ -2,7 +2,7 @@
 layout: post
 title: "Extreure tendències en sèries temporals. Suavitzat Polinómic"
 tags: 
-  - modlitzacio
+  - modelitzacio
   - matematiques
   - python
   - r
