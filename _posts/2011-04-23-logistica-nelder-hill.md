@@ -32,7 +32,7 @@ $$y = K \cdot \frac{1 - e^{-\frac{x}{\beta}}}{1 + \theta \cdot e^{-\frac{x}{\bet
 
 ### Propietats dels paràmetres:
 * **$K$ (Sostre de Capacitat):** L'asímptota de saturació del mercat o del canal (equivalent a l'$E_{max}$ de Hill). Representa el percentatge màxim de cobertura neta assolible per aquell mitjà.
-* **$\beta$ (Constant de Velocitat en GRPs):** Actua com el denominador dins l'exponent. Defineix le volum nominal de GRPs requerit pel canal per desplegar la seva acceleració cap al sostre de saturació. A major valor de $\beta$, més lenta és la corba.
+* **$\beta$ (Constant de Velocitat en GRPs):** Actua com el denominador dins l'exponent. Defineix el volum nominal de GRPs requerit pel canal per desplegar la seva acceleració cap al sostre de saturació. A major valor de $\beta$, més lenta és la corba.
 * **$\theta$ (Factor d'Asimetria de Nelder):** Controla la natura del tram inicial. Si $\theta > 0$, es genera una lleugera forma en "S" progressiva. Si $\theta = 0$, la funció col·lapsa exactament en un model clàssic de rendiments decreixents exponencials pur ($y = K(1-e^{-x/\beta})$), eliminant qualsevol inèrcia inicial.
 
 
@@ -51,7 +51,7 @@ A diferència de la cobertura, el comportament de les **vendes** o la conversió
 
 ## Exemple d'ajust sobre dades experimentals
 
-A continuació es mostra el comportament visual de l'ajust d'ambdós models sobre un mateix conjunt de dades experimentals simulades. El gràfic reflecteix la diferència real en la taxa de creixement inicial de cada funció segons el KPI objectiu (on Nelder s'ha configurat amb $\theta = 0$ i una divisió real per la constant $\beta$ per actuar com a maximitzador de cobertura pur):
+A continuació es mostra el comportament visual de l'ajust d'ambdós models sobre un mateix conjunt de dades experimentals simulades. El gràfic reflecteix la diferència real en la taxa de creixement inicial de cada funció segons el KPI objectiu:
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -62,21 +62,11 @@ A continuació es mostra el comportament visual de l'ajust d'ambdós models sobr
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     function formulaHill(x) { 
-        // PARÀMETRES RECALCULATS: Emax augmenta lleugerament per compensar la trapezia central,
-        // EC50 es mou a 115 i l'exponent n es suavitza a 1.45 per buscar el punt mitjà real.
-        return 93.2 * Math.pow(x, 1.45) / (Math.pow(115, 1.45) + Math.pow(x, 1.45)); 
+        return 91.5 * Math.pow(x, 1.75) / (Math.pow(125, 1.75) + Math.pow(x, 1.75)); 
     }
     
     function formulaNelder(x) { 
-        // PARÀMETRES RECALCULATS: K es manté a l'asímptota de 89.0, 
-        // però beta s'ajusta a 122.5 per alentir el tram inicial i "caçar" els punts intermedis.
-        const K = 89.0;
-        const beta = 122.5;
-        const theta = 0.0;
-        
-        if (x === 0) return 0;
-        const expVal = Math.exp(-x / beta);
-        return K * ((1 - expVal) / (1 + theta * expVal)); 
+        return 89.0 * ((1 - Math.exp(-0.0095 * x)) / (1 + 2.1 * Math.exp(-0.0095 * x))); 
     }
 
     const xValors = [];
@@ -88,18 +78,11 @@ document.addEventListener("DOMContentLoaded", function() {
         yNelder.push(formulaNelder(x));
     }
 
-    // Punts de mostra equilibrats (no esbiaixats)
+    // Punts de mostra originals
     const puntsReals = [
-        {x: 10, y: 4.0},   
-        {x: 40, y: 15.0},  
-        {x: 80, y: 32.0},  
-        {x: 120, y: 48.0}, 
-        {x: 180, y: 64.0}, 
-        {x: 250, y: 76.5}, 
-        {x: 350, y: 83.5}, 
-        {x: 500, y: 87.0}, 
-        {x: 650, y: 88.5}, 
-        {x: 800, y: 89.0}  
+        {x: 10, y: 2.1}, {x: 30, y: 7.3}, {x: 50, y: 15.4}, {x: 100, y: 34.2}, 
+        {x: 150, y: 52.0}, {x: 200, y: 64.5}, {x: 300, y: 78.1}, {x: 400, y: 84.0}, 
+        {x: 600, y: 88.5}, {x: 800, y: 89.2}
     ];
 
     const ctx = document.getElementById('graficComparatiu').getContext('2d');
@@ -164,7 +147,7 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 
 ### Observacions sobre la simulació:
-1. **Divergència a l'origen (0 - 150 GRPs):** S'observa clarament com l'ajust de **Hill** (línia vermella) reté la resposta de vendes a prop de l'origen en els trams inicials, simulant la necessitat d'una freqüència mínima eficaç. Per contra, la funció de **Nelder parametritzada per a Cobertura** (línia blava) neix amb el seu pendent màxim des del punto $(0,0)$, descrivint com els primers GRPs impacten exclusivament sobre públic verge de campanya de forma altament eficient.
+1. **Divergència a l'origen (0 - 150 GRPs):** S'observa clarament com l'ajust de **Hill** (línia vermella) reté la resposta de vendes a prop de l'origen en els trams inicials, simulant la necessitat d'una freqüència mínima eficaç. Per contra, la funció de **Nelder** (línia blava) neix amb un pendent diferent adaptant-se a la naturalesa de les dades experimentals des del punt $(0,0)$.
 2. **Convergència en la saturació:** Superats els $500$ GRPs, ambdós models descriuen el même fenomen físic d'esgotament d'audiència o saturació del mercat potencial, on la inversió addicional es destina gairebé en la seva totalitat a duplicar impactes (freqüència inútil), aplanant el creixement marginal cap a zero.
 
 
