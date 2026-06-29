@@ -32,7 +32,7 @@ $$y = K \cdot \frac{1 - e^{-\frac{x}{\beta}}}{1 + \theta \cdot e^{-\frac{x}{\bet
 
 ### Propietats dels paràmetres:
 * **$K$ (Sostre de Capacitat):** L'asímptota de saturació del mercat o del canal (equivalent a l'$E_{max}$ de Hill). Representa el percentatge màxim de cobertura neta assolible per aquell mitjà.
-* **$\beta$ (Constant de Velocitat en GRPs):** Actua com el denominador dins l'exponent. Defineix el volum nominal de GRPs requerit pel canal per desplegar la seva acceleració cap al sostre de saturació. A major valor de $\beta$, més lenta és la corba.
+* **$\beta$ (Constant de Velocitat en GRPs):** Actua com el denominador dins l'exponent. Defineix le volum nominal de GRPs requerit pel canal per desplegar la seva acceleració cap al sostre de saturació. A major valor de $\beta$, més lenta és la corba.
 * **$\theta$ (Factor d'Asimetria de Nelder):** Controla la natura del tram inicial. Si $\theta > 0$, es genera una lleugera forma en "S" progressiva. Si $\theta = 0$, la funció col·lapsa exactament en un model clàssic de rendiments decreixents exponencials pur ($y = K(1-e^{-x/\beta})$), eliminant qualsevol inèrcia inicial.
 
 
@@ -62,14 +62,12 @@ A continuació es mostra el comportament visual de l'ajust d'ambdós models sobr
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     function formulaHill(x) { 
-<<<<<<< HEAD
-<<<<<<< HEAD
         // PARÀMETRES RECALCULATS: Emax augmenta lleugerament per compensar la trapezia central,
         // EC50 es mou a 115 i l'exponent n es suavitza a 1.45 per buscar el punt mitjà real.
         return 93.2 * Math.pow(x, 1.45) / (Math.pow(115, 1.45) + Math.pow(x, 1.45)); 
     }
     
-    function formulaNelderReach(x) { 
+    function formulaNelder(x) { 
         // PARÀMETRES RECALCULATS: K es manté a l'asímptota de 89.0, 
         // però beta s'ajusta a 122.5 per alentir el tram inicial i "caçar" els punts intermedis.
         const K = 89.0;
@@ -79,18 +77,6 @@ document.addEventListener("DOMContentLoaded", function() {
         if (x === 0) return 0;
         const expVal = Math.exp(-x / beta);
         return K * ((1 - expVal) / (1 + theta * expVal)); 
-=======
-        return 91.5 * Math.pow(x, 1.75) / (Math.pow(125, 1.75) + Math.pow(x, 1.75)); 
-    }
-    function formulaNelder(x) { 
-        return 89.0 * ((1 - Math.exp(-0.0095 * x)) / (1 + 2.1 * Math.exp(-0.0095 * x))); 
->>>>>>> parent of 60f7486 (Update 2011-04-23-logistica-nelder-hill.md)
-=======
-        return 91.5 * Math.pow(x, 1.75) / (Math.pow(125, 1.75) + Math.pow(x, 1.75)); 
-    }
-    function formulaNelder(x) { 
-        return 89.0 * ((1 - Math.exp(-0.0095 * x)) / (1 + 2.1 * Math.exp(-0.0095 * x))); 
->>>>>>> parent of 60f7486 (Update 2011-04-23-logistica-nelder-hill.md)
     }
 
     const xValors = [];
@@ -104,8 +90,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Punts de mostra equilibrats (no esbiaixats)
     const puntsReals = [
-<<<<<<< HEAD
-<<<<<<< HEAD
         {x: 10, y: 4.0},   
         {x: 40, y: 15.0},  
         {x: 80, y: 32.0},  
@@ -116,16 +100,6 @@ document.addEventListener("DOMContentLoaded", function() {
         {x: 500, y: 87.0}, 
         {x: 650, y: 88.5}, 
         {x: 800, y: 89.0}  
-=======
-        {x: 10, y: 2.1}, {x: 30, y: 7.3}, {x: 50, y: 15.4}, {x: 100, y: 34.2}, 
-        {x: 150, y: 52.0}, {x: 200, y: 64.5}, {x: 300, y: 78.1}, {x: 400, y: 84.0}, 
-        {x: 600, y: 88.5}, {x: 800, y: 89.2}
->>>>>>> parent of 60f7486 (Update 2011-04-23-logistica-nelder-hill.md)
-=======
-        {x: 10, y: 2.1}, {x: 30, y: 7.3}, {x: 50, y: 15.4}, {x: 100, y: 34.2}, 
-        {x: 150, y: 52.0}, {x: 200, y: 64.5}, {x: 300, y: 78.1}, {x: 400, y: 84.0}, 
-        {x: 600, y: 88.5}, {x: 800, y: 89.2}
->>>>>>> parent of 60f7486 (Update 2011-04-23-logistica-nelder-hill.md)
     ];
 
     const ctx = document.getElementById('graficComparatiu').getContext('2d');
@@ -190,7 +164,7 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 
 ### Observacions sobre la simulació:
-1. **Divergència a l'origen (0 - 150 GRPs):** S'observa clarament com l'ajust de **Hill** (línia vermella) reté la resposta de vendes a prop de l'origen en els trams inicials, simulant la necessitat d'una freqüència mínima eficaç. Per contra, la funció de **Nelder parametritzada per a Cobertura** (línia blava) neix amb el seu pendent màxim des del punt $(0,0)$, descrivint com els primers GRPs impacten exclusivament sobre públic verge de campanya de forma altament eficient.
+1. **Divergència a l'origen (0 - 150 GRPs):** S'observa clarament com l'ajust de **Hill** (línia vermella) reté la resposta de vendes a prop de l'origen en els trams inicials, simulant la necessitat d'una freqüència mínima eficaç. Per contra, la funció de **Nelder parametritzada per a Cobertura** (línia blava) neix amb el seu pendent màxim des del punto $(0,0)$, descrivint com els primers GRPs impacten exclusivament sobre públic verge de campanya de forma altament eficient.
 2. **Convergència en la saturació:** Superats els $500$ GRPs, ambdós models descriuen el même fenomen físic d'esgotament d'audiència o saturació del mercat potencial, on la inversió addicional es destina gairebé en la seva totalitat a duplicar impactes (freqüència inútil), aplanant el creixement marginal cap a zero.
 
 
