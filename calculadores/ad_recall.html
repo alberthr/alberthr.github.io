@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Avançada d'Ad Recall</title>
+    <!-- Carreguem Chart.js des d'un CDN segur -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --cc-primary: #3b82f6;
+            --cc-primary-hover: #2563eb;
+            --cc-primary-light: #f1f5f9;
+            --cc-dark: #1e293b;
+            --cc-text: #475569;
+            --cc-text-light: #64748b;
+            --cc-card-bg: #ffffff;
+            --cc-border: #e2e8f0;
+            --cc-border-strong: #cbd5e1;
+            --cc-disabled-bg: #f3f4f6;
+            --cc-radius: 6px;
+            --cc-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --cc-space-1: 4px;
+            --cc-space-2: 8px;
+            --cc-space-3: 12px;
+            --cc-space-4: 16px;
+            --cc-space-5: 24px;
+            --cc-space-6: 32px;
+            --cc-bg-soft: #f8fafc;
+        }
+
+        html {
+            scrollbar-gutter: stable;
+        }
+
+        body {
+            font-family: var(--cc-font);
+            margin: 2rem auto;
+            background-color: #f8fafc;
+            color: var(--cc-text);
+            font-size: 13.5px;
+            line-height: 1.5;
+            padding: 0 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--cc-card-bg);
+            border: 1px solid var(--cc-border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            padding: var(--cc-space-6);
+            border-radius: var(--cc-radius);
+        }
+
+        .ccob-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--cc-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--cc-border);
+            padding-bottom: 6px;
+            margin-bottom: 5px;
+        }
+
+        .ccob-subtitle {
+            margin: 0 0 24px 0;
+            color: var(--cc-text-light);
+            font-size: 13px;
+            font-weight: normal;
+        }
+
+        .tabs-container {
+            display: flex;
+            border-bottom: 2px solid var(--cc-border);
+            margin-bottom: var(--cc-space-5);
+            gap: var(--cc-space-1);
+        }
+
+        .tab-btn {
+            padding: var(--cc-space-3) var(--cc-space-5);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--cc-text-light);
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: -2px;
+            text-transform: uppercase;
+        }
+
+        .tab-btn:hover {
+            color: var(--cc-primary);
+        }
+
+        .tab-btn.active {
+            background-color: var(--cc-primary-light);
+            color: var(--cc-primary);
+            border-bottom-color: var(--cc-primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .optimizer-box {
+            background: var(--cc-bg-soft);
+            border: 1px solid var(--cc-border);
+            padding: var(--cc-space-5);
+            border-radius: var(--cc-radius);
+            margin-bottom: var(--cc-space-5);
+        }
+
+        .optimizer-controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: var(--cc-space-4);
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--cc-space-1);
+        }
+
+        .input-group label {
+            font-size: 12px;
+            color: var(--cc-dark);
+            font-weight: 600;
+        }
+
+        .optimizer-box input {
+            font-family: var(--cc-font);
+            padding: 8px 12px;
+            border-radius: var(--cc-radius);
+            border: 1px solid var(--cc-border);
+            font-size: 13px;
+            color: var(--cc-dark);
+            background: white;
+            width: 130px;
+        }
+
+        .slider-group {
+            display: flex;
+            align-items: center;
+            gap: var(--cc-space-2);
+            width: 100%;
+            margin-top: var(--cc-space-2);
+        }
+
+        .slider-group input[type="range"] {
+            flex: 1;
+            accent-color: var(--cc-primary);
+        }
+
+        .slider-val {
+            font-weight: bold;
+            color: var(--cc-primary);
+            min-width: 45px;
+            text-align: right;
+        }
+
+        .btn-optimize {
+            font-family: var(--cc-font);
+            background: var(--cc-primary);
+            color: white;
+            border: 1px solid var(--cc-primary);
+            padding: 8px 16px;
+            font-size: 13px;
+            border-radius: var(--cc-radius);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 600;
+            margin-top: auto;
+        }
+
+        .btn-optimize:hover {
+            background: var(--cc-primary-hover);
+            border-color: var(--cc-primary-hover);
+        }
+
+        .optimization-result {
+            margin-top: var(--cc-space-4);
+            background: white;
+            border: 1px solid var(--cc-border);
+            padding: var(--cc-space-4);
+            border-radius: var(--cc-radius);
+        }
+
+        .result-status {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: var(--cc-space-2);
+            color: #16a34a;
+            display: flex;
+            align-items: center;
+            gap: var(--cc-space-2);
+        }
+
+        .result-status.inverse {
+            color: #2563eb;
+        }
+
+        .result-status .status-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #16a34a;
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            flex-shrink: 0;
+        }
+
+        .result-status.inverse .status-icon {
+            background: #2563eb;
+        }
+
+        .result-summary {
+            font-size: 13px;
+            color: var(--cc-text);
+            line-height: 1.6;
+        }
+
+        .result-summary b {
+            color: var(--cc-dark);
+        }
+
+        .canvas-container {
+            margin-top: var(--cc-space-4);
+            background: #ffffff;
+            border: 1px solid var(--cc-border);
+            padding: var(--cc-space-4);
+            border-radius: var(--cc-radius);
+            position: relative;
+            height: 490px;
+        }
+
+        .methodology-footer {
+            margin-top: var(--cc-space-6);
+            border-top: 1px dashed var(--cc-border);
+            padding-top: var(--cc-space-4);
+            font-size: 11.5px;
+            color: var(--cc-text-light);
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="ccob-title">Calculadora Avançada d'Ad Recall</div>
+    <h3 class="ccob-subtitle">Eines analítiques bidireccionals amb integració continuada de cobertura i corbes de saturació interactives</h3>
+    
+    <div class="tabs-container">
+        <button class="tab-btn active" id="btn-invers" onclick="switchTab('tab-invers')">Estimacio de P</button>
+        <button class="tab-btn" id="btn-directe" onclick="switchTab('tab-directe')">Estimacio de Ad-Recall</button>
+    </div>
+
+    <!-- PESTANYA 1: ESTIMACIÓ DE P (PER DEFECTE) -->
+    <div id="tab-invers" class="tab-content active">
+        <div class="optimizer-box">
+            <div class="optimizer-controls">
+                <div class="input-group" style="flex: 1; min-width: 200px;">
+                    <label for="inv-grps">Pressió de la Campanya (GRPs):</label>
+                    <div class="slider-group">
+                        <input type="range" id="inv-grps-slide" min="10" max="1500" value="400" step="10" oninput="sincronitzar('inv-grps', this.value)" />
+                        <input type="number" id="inv-grps" value="400" min="10" max="2000" onchange="sincronitzar('inv-grps-slide', this.value)" style="width:70px; padding:4px;" />
+                    </div>
+                </div>
+                
+                <div class="input-group" style="flex: 1; min-width: 200px;">
+                    <label for="inv-reach">Cobertura Real (%):</label>
+                    <div class="slider-group">
+                        <input type="range" id="inv-reach-slide" min="10" max="99" value="80" step="1" oninput="sincronitzar('inv-reach', this.value)" />
+                        <input type="number" id="inv-reach" value="80" min="5" max="100" onchange="sincronitzar('inv-reach-slide', this.value)" style="width:60px; padding:4px;" />
+                    </div>
+                </div>
+
+                <div class="input-group" style="flex: 1; min-width: 200px;">
+                    <label for="inv-recall">Ad Recall de la Medició (%):</label>
+                    <div class="slider-group">
+                        <input type="range" id="inv-recall-slide" min="5" max="95" value="54" step="1" oninput="sincronitzar('inv-recall', this.value)" />
+                        <input type="number" id="inv-recall" value="54" min="1" max="100" onchange="sincronitzar('inv-recall-slide', this.value)" style="width:60px; padding:4px;" />
+                    </div>
+                </div>
+            </div>
+            
+            <div id="resultat-invers" class="optimization-result" style="margin-top:20px; background:white;"></div>
+        </div>
+    </div>
+
+    <!-- PESTANYA 2: ESTIMACIÓ DE AD-RECALL -->
+    <div id="tab-directe" class="tab-content">
+        <div class="optimizer-box">
+            <div class="optimizer-controls">
+                <div class="input-group" style="flex: 1; min-width: 200px;">
+                    <label for="dir-grps">Pressió de la Campanya (GRPs):</label>
+                    <div class="slider-group">
+                        <input type="range" id="dir-grps-slide" min="10" max="1500" value="400" step="10" oninput="sincronitzar('dir-grps', this.value)" />
+                        <input type="number" id="dir-grps" value="400" min="10" max="2000" onchange="sincronitzar('dir-grps-slide', this.value)" style="width:70px; padding:4px;" />
+                    </div>
+                </div>
+                
+                <div class="input-group" style="flex: 1; min-width: 200px;">
+                    <label for="dir-reach">Cobertura Esperada (Reach %):</label>
+                    <div class="slider-group">
+                        <input type="range" id="dir-reach-slide" min="10" max="99" value="80" step="1" oninput="sincronitzar('dir-reach', this.value)" />
+                        <input type="number" id="dir-reach" value="80" min="5" max="100" onchange="sincronitzar('dir-reach-slide', this.value)" style="width:60px; padding:4px;" />
+                    </div>
+                </div>
+
+                <div class="input-group" style="flex: 1; min-width: 200px;">
+                    <label for="dir-p">Probabilitat Creativa (p neta %):</label>
+                    <div class="slider-group">
+                        <input type="range" id="dir-p-slide" min="5" max="95" value="30" step="1" oninput="sincronitzar('dir-p', this.value)" />
+                        <input type="number" id="dir-p" value="30" min="1" max="99" step="1" style="width:65px; padding:4px;" />
+                    </div>
+                </div>
+            </div>
+            
+            <div id="resultat-directe" class="optimization-result" style="margin-top:20px; background:white;"></div>
+        </div>
+    </div>
+
+    <!-- CONTENIDOR DEL GRÀFIC -->
+    <div class="canvas-container">
+        <canvas id="chartAdRecall"></canvas>
+    </div>
+
+    <div class="methodology-footer">
+        <p><b>Nota Metodològica:</b> Aquesta eina utilitza la <b>Logística de Nelder Modificada</b> per projectar la corba de cobertura contínua sota els paràmetres fixats de curvatura (theta = -0.7) i sostre asimptòtic (K = 100%). El paràmetre de descens beta se calibra de manera automàtica en background mitjançant optimització numèrica perquè passi amb exactitud mil·limètrica pel punt de control introduït (GRPs i Cobertura). Els càlculs d'Ad Recall es deriven mitjançant el <b>Model de Saturació Racional</b> segons la distribució d'exposició mitjana corregida, evitant l'excés estètic de decimals per agilitzar la presa de decisions de màrqueting.</p>
+    </div>
+</div>
+
+<script>
+let modeActual = 'tab-invers';
+let chartInstance = null;
+
+// Paràmetres estàtics de Nelder demanats
+const Nelder_K = 100;
+const Nelder_Theta = -0.7;
+const Font_App = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif";
+
+document.addEventListener("DOMContentLoaded", function() {
+    executarCalculs();
+});
+
+function sincronitzar(idDesti, valor) {
+    document.getElementById(idDesti).value = valor;
+    executarCalculs();
+}
+
+function switchTab(tabId) {
+    modeActual = tabId;
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    
+    document.getElementById(tabId).classList.add('active');
+    if (tabId === 'tab-invers') {
+        document.getElementById('btn-invers').classList.add('active');
+    } else {
+        document.getElementById('btn-directe').classList.add('active');
+    }
+    executarCalculs();
+}
+
+function trobarBetaNelder(xPunt, yTarget) {
+    let millorBeta = 10;
+    let minDiff = 999;
+    for (let b = 1; b < 2000; b += 0.2) {
+        let e = Math.exp(-xPunt / b);
+        let yCalc = Nelder_K * (1 - e) / (1 + Nelder_Theta * e);
+        let diff = Math.abs(yCalc - yTarget);
+        if (diff < minDiff) {
+            minDiff = diff;
+            millorBeta = b;
+        }
+    }
+    return millorBeta;
+}
+
+function obtenirReachNelder(x, beta) {
+    if (x <= 0) return 0;
+    let e = Math.exp(-x / beta);
+    return Nelder_K * (1 - e) / (1 + Nelder_Theta * e);
+}
+
+function calcularAdRecall(reach, grps, pBase1) {
+    if (grps <= 0 || reach <= 0 || pBase1 <= 0) return 0;
+    if (pBase1 >= 1) return reach;
+    let mu = grps / reach;
+    let odds = pBase1 / (1 - pBase1);
+    let factorImpacte = mu * odds;
+    let indexRecordNet = 1 - (1 / (factorImpacte + 1));
+    return reach * indexRecordNet;
+}
+
+function executarCalculs() {
+    if (modeActual === 'tab-invers') {
+        calcularEnfocamentInvers();
+    } else {
+        calcularEnfocamentDirecte();
+    }
+}
+
+function calcularEnfocamentInvers() {
+    let grps = parseFloat(document.getElementById('inv-grps').value) || 400;
+    let reachTarget = parseFloat(document.getElementById('inv-reach').value) || 80;
+    let recallMesurat = parseFloat(document.getElementById('inv-recall').value) || 54;
+
+    if (recallMesurat >= reachTarget) {
+        recallMesurat = reachTarget - 1;
+        document.getElementById('inv-recall').value = recallMesurat;
+        document.getElementById('inv-recall-slide').value = recallMesurat;
+    }
+
+    let beta = trobarBetaNelder(grps, reachTarget);
+    let reachReal = obtenirReachNelder(grps, beta);
+
+    let mu = grps / reachReal;
+    let alpha = recallMesurat / reachReal;
+    let pBase1 = alpha / (mu * (1 - alpha) + alpha);
+    let pPercentatge = pBase1 * 100;
+
+    let diagnostic = "";
+    if (pBase1 > 0.35) {
+        diagnostic = "<span style='color:#16a34a; font-weight:bold;'>Creativitat Excel·lent (Killer)</span>. Peça altament eficient.";
+    } else if (pBase1 >= 0.20) {
+        diagnostic = "<span style='color:#2563eb; font-weight:bold;'>Rendiment Estàndard</span>. Comportament òptim de mercat.";
+    } else {
+        diagnostic = "<span style='color:#ea580c; font-weight:bold;'>Alerta de Saturació/Wear-out</span>. La peça requereix massa pressió per fixar el record.";
+    }
+
+    const resDiv = document.getElementById('resultat-invers');
+    resDiv.innerHTML = `
+        <div class="result-status inverse">
+            <span class="status-icon">✓</span> PROBABILITAT CREATIVA (P NETA): ${pPercentatge.toFixed(1)}%
+        </div>
+        <div class="result-summary">
+            • <b>Freqüència Mitjana Real (&mu;):</b> ${mu.toFixed(2)} impactes<br>
+            • <b>Índex de Record Net (&alpha;):</b> ${(alpha * 100).toFixed(1)}% dels usuaris impactats recorden l'anunci<br>
+            • <b>Diagnòstic Qualitatiu:</b> ${diagnostic}
+        </div>
+    `;
+
+    generarGrafic(grps, beta, pBase1, recallMesurat, reachReal);
+}
+
+function calcularEnfocamentDirecte() {
+    let grps = parseFloat(document.getElementById('dir-grps').value) || 400;
+    let reachTarget = parseFloat(document.getElementById('dir-reach').value) || 80;
+    let pPercentatge = parseFloat(document.getElementById('dir-p').value) || 30;
+    let pBase1 = pPercentatge / 100;
+
+    let beta = trobarBetaNelder(grps, reachTarget);
+    let reachReal = obtenirReachNelder(grps, beta);
+
+    let recallEstimat = calcularAdRecall(reachReal, grps, pBase1);
+    let mu = grps / reachReal;
+
+    const resDiv = document.getElementById('resultat-directe');
+    resDiv.innerHTML = `
+        <div class="result-status">
+            <span class="status-icon">✓</span> AD RECALL GLOBAL PREDICTIU: ${recallEstimat.toFixed(1)}%
+        </div>
+        <div class="result-summary">
+            • <b>Freqüència Mitjana Estimada (&mu;):</b> ${mu.toFixed(2)} impactes<br>
+            • <b>Cobertura Estimada:</b> ${reachReal.toFixed(1)}%<br>
+            • <b>Impacte de Campanya:</b> Un <b>${recallEstimat.toFixed(1)}%</b> del target total acabarà recordant la peça de manera suggerida.
+        </div>
+    `;
+
+    generarGrafic(grps, beta, pBase1, recallEstimat, reachReal);
+}
+
+function generarGrafic(currentGRPs, beta, pBase1, currentRecall, currentReach) {
+    const labels = [];
+    const dataRecall = [];
+    const dataReach = [];
+    
+    const maxGRPs = Math.max(currentGRPs * 2, 800);
+    const step = maxGRPs / 40;
+
+    for (let g = 0; g <= maxGRPs; g += step) {
+        let r = obtenirReachNelder(g, beta);
+        let rec = calcularAdRecall(r, g, pBase1);
+        
+        labels.push(Math.round(g));
+        dataReach.push(parseFloat(r.toFixed(1)));
+        dataRecall.push(parseFloat(rec.toFixed(1)));
+    }
+
+    const ctx = document.getElementById('chartAdRecall').getContext('2d');
+    if (chartInstance) chartInstance.destroy();
+
+    chartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Punt Actual de Mesura / Slider',
+                    data: [{ x: currentGRPs, y: parseFloat(currentRecall.toFixed(1)) }],
+                    type: 'scatter',
+                    backgroundColor: '#ef4444',
+                    borderColor: '#ffffff',
+                    borderWidth: 2,
+                    pointRadius: 8,
+                    pointHoverRadius: 10,
+                    showLine: false,
+                    order: 1
+                },
+                {
+                    label: 'Ad Recall Activat (Record Total %)',
+                    data: dataRecall,
+                    borderColor: '#3b82f6',
+                    borderWidth: 2.5,
+                    backgroundColor: 'rgba(59, 130, 246, 0.04)',
+                    fill: true,
+                    pointRadius: 0,
+                    tension: 0.1,
+                    // ELIMINAT borderDash -> ARA ÉS LÍNIA SÒLIDA / CONTÍNUA
+                    order: 2
+                },
+                {
+                    label: 'Cobertura Neta (Reach %)',
+                    data: dataReach,
+                    borderColor: '#94a3b8',
+                    borderWidth: 2,
+                    fill: false,
+                    pointRadius: 0,
+                    tension: 0.1,
+                    order: 3
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { 
+                        font: { 
+                            family: Font_App, 
+                            size: 12 
+                        } 
+                    }
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false
+                }
+            },
+            scales: {
+                x: { 
+                    type: 'linear',
+                    title: { display: true, text: 'GRPs Totals de la Campanya', font: { weight: '600', family: Font_App } }, 
+                    min: 0,
+                    max: maxGRPs,
+                    ticks: { font: { family: Font_App } }
+                },
+                y: { 
+                    title: { display: true, text: 'Percentatge (%)', font: { weight: '600', family: Font_App } }, 
+                    min: 0, 
+                    max: 100,
+                    ticks: { font: { family: Font_App } }
+                }
+            }
+        }
+    });
+}
+</script>
+
+</body>
+</html>
