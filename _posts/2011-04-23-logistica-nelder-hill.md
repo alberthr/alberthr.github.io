@@ -64,6 +64,7 @@ A continuació es mostra el comportament visual de l'ajust d'ambdós models sobr
 document.addEventListener("DOMContentLoaded", function() {
     function formulaHill(x) { 
 <<<<<<< HEAD
+<<<<<<< HEAD
         // PARÀMETRES RECALCULATS: Emax augmenta lleugerament per compensar la trapezia central,
         // EC50 es mou a 115 i l'exponent n es suavitza a 1.45 per buscar el punt mitjà real.
         return 93.2 * Math.pow(x, 1.45) / (Math.pow(115, 1.45) + Math.pow(x, 1.45)); 
@@ -85,6 +86,12 @@ document.addEventListener("DOMContentLoaded", function() {
     function formulaNelder(x) { 
         return 89.0 * ((1 - Math.exp(-0.0095 * x)) / (1 + 2.1 * Math.exp(-0.0095 * x))); 
 >>>>>>> parent of 60f7486 (Update 2011-04-23-logistica-nelder-hill.md)
+=======
+        return 91.5 * Math.pow(x, 1.75) / (Math.pow(125, 1.75) + Math.pow(x, 1.75)); 
+    }
+    function formulaNelder(x) { 
+        return 89.0 * ((1 - Math.exp(-0.0095 * x)) / (1 + 2.1 * Math.exp(-0.0095 * x))); 
+>>>>>>> parent of 60f7486 (Update 2011-04-23-logistica-nelder-hill.md)
     }
 
     const xValors = [];
@@ -99,6 +106,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Punts de mostra equilibrats (no esbiaixats)
     const puntsReals = [
 <<<<<<< HEAD
+<<<<<<< HEAD
         {x: 10, y: 4.0},   
         {x: 40, y: 15.0},  
         {x: 80, y: 32.0},  
@@ -109,6 +117,11 @@ document.addEventListener("DOMContentLoaded", function() {
         {x: 500, y: 87.0}, 
         {x: 650, y: 88.5}, 
         {x: 800, y: 89.0}  
+=======
+        {x: 10, y: 2.1}, {x: 30, y: 7.3}, {x: 50, y: 15.4}, {x: 100, y: 34.2}, 
+        {x: 150, y: 52.0}, {x: 200, y: 64.5}, {x: 300, y: 78.1}, {x: 400, y: 84.0}, 
+        {x: 600, y: 88.5}, {x: 800, y: 89.2}
+>>>>>>> parent of 60f7486 (Update 2011-04-23-logistica-nelder-hill.md)
 =======
         {x: 10, y: 2.1}, {x: 30, y: 7.3}, {x: 50, y: 15.4}, {x: 100, y: 34.2}, 
         {x: 150, y: 52.0}, {x: 200, y: 64.5}, {x: 300, y: 78.1}, {x: 400, y: 84.0}, 
