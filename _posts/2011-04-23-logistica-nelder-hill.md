@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Corves de Saturacio en el mon publicitari: Ventes vs Cobertura"
+title: "Corbes de Saturació en el món publicitari: Vendes vs Cobertura"
 tags:
   - modelitzacio
   - publicitat
@@ -10,7 +10,6 @@ excerpt: "Reflexió tècnica sobre la naturalesa matemàtica de l'Equació de Hi
 
 En el desplegament de models de **Media Mix Modeling (MMM)** o en el disseny d'algorismes d'optimització de pressupostos publicitaris, l'elecció de la funció de saturació constitueix un dels reptes matemàtics més crítics. 
 
-Sovint, les fórmules heretades de fulls de càlcul corporatius s'utilitzen de manera intercanviable sota termes imprecisos com *"Logística Modificada"* o *"Fórmula Excel"*. Tanmateix, l'**Equació de Hill** i la **Logística de Nelder Modificada (Zero-Intercept)** presenten propietats algebraiques diferents que afecten directament el comportament de l'optimitzador segons si l'objectiu són les **vendes** o la **cobertura neta**.
 
 
 ## L'Equació de Hill i l'efecte de massa crítica
@@ -29,12 +28,12 @@ $$y = E_{max} \cdot \frac{x^n}{EC_{50}^n + x^n}$$
 
 La variant coneguda habitualment en entorns corporatius com a "Logística Modificada" és una adaptació del **Model Logístic de Nelder** de tres paràmetres, alterada algebraicament perquè la intercepció es produeixi estrictament en l'origen $(0,0)$. En una corba logística estàndard, un pressupost de zero genera un resultat positiu ($y > 0$); aquesta modificació aplica una penalització exponencial al numerador per resoldre aquesta incoherència conceptual.
 
-$$y = K \cdot \frac{1 - e^{-\alpha \cdot x}}{1 + \theta \cdot e^{-\alpha \cdot x}}$$
+$$y = K \cdot \frac{1 - e^{-\frac{x}{\beta}}}{1 + \theta \cdot e^{-\frac{x}{\beta}}}$$
 
 ### Propietats dels paràmetres:
-* **$K$ (Sostre de Capacitat):** L'asímptota de saturació del mercat o del canal (equivalent a l'$E_{max}$ de Hill).
-* **$\alpha$ (Taxa d'Amortiment):** Regula la velocitat amb la qual la funció busca el seu límit horitzontal.
-* **$\theta$ (Factor d'Asimetria de Nelder):** Controla la transició inicial. Si $\theta > 0$, es genera una forma en "S" progressiva. Si $\theta = 0$, la funció col·lapsa exactament en un model clàssic de rendiments decreixents exponencials ($y = K(1-e^{-\alpha x})$).
+* **$K$ (Sostre de Capacitat):** L'asímptota de saturació del mercat o del canal (equivalent a l'$E_{max}$ de Hill). Representa el percentatge màxim de cobertura neta assolible per aquell mitjà.
+* **$\beta$ (Constant de Velocitat en GRPs):** Actua com el denominador dins l'exponent. Defineix el volum nominal de GRPs requerit pel canal per desplegar la seva acceleració cap al sostre de saturació. A major valor de $\beta$, més lenta és la corba.
+* **$\theta$ (Factor d'Asimetria de Nelder):** Controla la natura del tram inicial. Si $\theta > 0$, es genera una lleugera forma en "S" progressiva. Si $\theta = 0$, la funció col·lapsa exactament en un model clàssic de rendiments decreixents exponencials pur ($y = K(1-e^{-x/\beta})$), eliminant qualsevol inèrcia inicial.
 
 
 ## Criteris de selecció segons el KPI: Vendes vs. Cobertura
@@ -42,8 +41,8 @@ $$y = K \cdot \frac{1 - e^{-\alpha \cdot x}}{1 + \theta \cdot e^{-\alpha \cdot x
 L'elecció entre ambdós models s'ha de basar en la natura física del fenomen que es pretén descriure:
 
 ### Idoneïtat de Nelder Modificada per a la Cobertura (Reach)
-La **cobertura neta** es caracteritza per una eficiència màxima en el tram inicial: el primer GRP capturarà exclusivament audiència nova. A mesura que augmenta la pressió publicitària, la probabilitat de duplicar impactes s'eleva, de manera que el creixement marginal decreix de forma immediata.
-* **Comportament:** Ajustant el paràmetre $\theta$ a valors nuls o molt baixos, la fórmula de Nelder replica amb exactitud aquesta arrencada vertical i el seu posterior aplanament, essent altament eficient per a mitjans digitals o canals de resposta directa.
+La **cobertura neta** es caracteritza per una eficiència màxima en el tram inicial: el primer GRP capturarà exclusivament audiència nova. A mesura que augmenta la pressió publicitària, la probabilitat de duplicar impactes s'eleva, de manera que el creixement marginal decreix de forma immediata des del primer instant.
+* **Comportament:** Ajustant el paràmetre d'asimetria $\theta$ a valors nuls ($\theta = 0$), la fórmula de Nelder col·lapsa en una corba de rendiments decreixents purs. Replica amb exactitud aquesta arrencada vertical i el seu posterior aplanament, essent el model matemàtic ideal per a la cobertura massiva.
 
 ### Idoneïtat de Hill per a les Vendes
 A diferència de la cobertura, el comportament de les **vendes** o la conversió de marca sol requerir freqüència d'impacte. Un volum baix d'inversió amb prou feines altera el comportament del consumidor; es necessita aconseguir una **massa crítica** o llindar de record perquè la intenció de compra s'activi.
@@ -52,7 +51,7 @@ A diferència de la cobertura, el comportament de les **vendes** o la conversió
 
 ## Exemple d'ajust sobre dades experimentals
 
-A continuació es mostra el comportament visual de l'ajust d'ambdós models sobre un mateix conjunt de dades experimentals simulades. El gràfic reflecteix la diferència en la taxa de creixement inicial de cada funció:
+A continuació es mostra el comportament visual de l'ajust d'ambdós models sobre un mateix conjunt de dades experimentals simulades. El gràfic reflecteix la diferència real en la taxa de creixement inicial de cada funció segons el KPI objectiu (on Nelder s'ha configurat amb $\theta = 0$ i una divisió real per la constant $\beta$ per actuar com a maximitzador de cobertura pur):
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -63,10 +62,18 @@ A continuació es mostra el comportament visual de l'ajust d'ambdós models sobr
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     function formulaHill(x) { 
+        // Paràmetres Vendes: Emax = 91.5, EC50 = 125, n = 1.75 (Forma en S)
         return 91.5 * Math.pow(x, 1.75) / (Math.pow(125, 1.75) + Math.pow(x, 1.75)); 
     }
-    function formulaNelder(x) { 
-        return 89.0 * ((1 - Math.exp(-0.0095 * x)) / (1 + 2.1 * Math.exp(-0.0095 * x))); 
+    function formulaNelderReach(x) { 
+        // Paràmetres Cobertura reals (Divisió): K = 89.0, beta = 105.2, theta = 0
+        const K = 89.0;
+        const beta = 105.2;
+        const theta = 0.0;
+        
+        if (x === 0) return 0;
+        const expVal = Math.exp(-x / beta);
+        return K * ((1 - expVal) / (1 + theta * expVal)); 
     }
 
     const xValors = [];
@@ -75,13 +82,13 @@ document.addEventListener("DOMContentLoaded", function() {
     for (let x = 0; x <= 800; x += 10) {
         xValors.push(x);
         yHill.push(formulaHill(x));
-        yNelder.push(formulaNelder(x));
+        yNelder.push(formulaNelderReach(x));
     }
 
     const puntsReals = [
-        {x: 10, y: 2.1}, {x: 30, y: 7.3}, {x: 50, y: 15.4}, {x: 100, y: 34.2}, 
-        {x: 150, y: 52.0}, {x: 200, y: 64.5}, {x: 300, y: 78.1}, {x: 400, y: 84.0}, 
-        {x: 600, y: 88.5}, {x: 800, y: 89.2}
+        {x: 10, y: 7.5}, {x: 30, y: 18.3}, {x: 50, y: 31.4}, {x: 100, y: 52.2}, 
+        {x: 150, y: 65.0}, {x: 200, y: 74.5}, {x: 300, y: 82.1}, {x: 400, y: 86.0}, 
+        {x: 600, y: 88.5}, {x: 800, y: 89.0}
     ];
 
     const ctx = document.getElementById('graficComparatiu').getContext('2d');
@@ -91,7 +98,7 @@ document.addEventListener("DOMContentLoaded", function() {
             labels: xValors,
             datasets: [
                 {
-                    label: 'Punts de mostra (Dades Reals)',
+                    label: 'Punts de mostra (Dades Reals Cobertura)',
                     data: puntsReals,
                     type: 'scatter',
                     backgroundColor: '#1e293b',
@@ -100,7 +107,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     z: 3
                 },
                 {
-                    label: 'Ajust: Equació de Hill (Forma en S forta)',
+                    label: 'Model Vendes: Equació de Hill (Forma en S / Massa crítica)',
                     data: yHill,
                     borderColor: '#ef4444',
                     borderWidth: 2.5,
@@ -109,7 +116,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     tension: 0.1
                 },
                 {
-                    label: 'Ajust: Logística de Nelder Modificada (Suau / Decreixent)',
+                    label: 'Model Cobertura: Nelder Modificada (Decreixent Pur, theta = 0)',
                     data: yNelder,
                     borderColor: '#3b82f6',
                     borderWidth: 2.5,
@@ -135,7 +142,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     max: 800 
                 },
                 y: { 
-                    title: { display: true, text: 'Eficiència / KPI Assolit (%)', font: { weight: 'bold' } }, 
+                    title: { display: true, text: 'KPI Assolit (%)', font: { weight: 'bold' } }, 
                     min: 0, 
                     max: 100 
                 }
@@ -146,8 +153,8 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 
 ### Observacions sobre la simulació:
-1. **Divergència a l'origen (0 - 150 GRPs):** S'observa com l'ajust de **Hill** (línia vermella) reté la resposta prop del zero en els trams inicials, simulant la necessitat d'una freqüència mínima. Per contra, el model de **Nelder** (línia blava) mostra un pendent inicial més accentuat, descrivint una penetració de cobertura immediata.
-2. **Convergència en la saturació:** Superats els $500$ GRPs, ambdós models descriuen el mateix fenomen físic d'esgotament de l'audiència o saturació de mercat, on els increments de pressupost generen rendiments decreixents marginals pròxims a zero.
+1. **Divergència a l'origen (0 - 150 GRPs):** S'observa clarament com l'ajust de **Hill** (línia vermella) reté la resposta de vendes a prop de l'origen en els trams inicials, simulant la necessitat d'una freqüència mínima eficaç. Per contra, la funció de **Nelder parametritzada per a Cobertura** (línia blava) neix amb el seu pendent màxim des del punt $(0,0)$, descrivint com els primers GRPs impacten exclusivament sobre públic verge de campanya de forma altament eficient.
+2. **Convergència en la saturació:** Superats els $500$ GRPs, ambdós models descriuen el même fenomen físic d'esgotament d'audiència o saturació del mercat potencial, on la inversió addicional es destina gairebé en la seva totalitat a duplicar impactes (freqüència inútil), aplanant el creixement marginal cap a zero.
 
 
 ## Conclusions i paradoxa en l'entorn corporatiu
