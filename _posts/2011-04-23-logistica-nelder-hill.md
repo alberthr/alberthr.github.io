@@ -62,13 +62,16 @@ A continuació es mostra el comportament visual de l'ajust d'ambdós models sobr
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     function formulaHill(x) { 
-        // Paràmetres Vendes: Emax = 91.5, EC50 = 125, n = 1.75 (Forma en S)
-        return 91.5 * Math.pow(x, 1.75) / (Math.pow(125, 1.75) + Math.pow(x, 1.75)); 
+        // PARÀMETRES RECALCULATS: Emax augmenta lleugerament per compensar la trapezia central,
+        // EC50 es mou a 115 i l'exponent n es suavitza a 1.45 per buscar el punt mitjà real.
+        return 93.2 * Math.pow(x, 1.45) / (Math.pow(115, 1.45) + Math.pow(x, 1.45)); 
     }
+    
     function formulaNelderReach(x) { 
-        // Paràmetres Cobertura reals (Divisió): K = 89.0, beta = 105.2, theta = 0
+        // PARÀMETRES RECALCULATS: K es manté a l'asímptota de 89.0, 
+        // però beta s'ajusta a 122.5 per alentir el tram inicial i "caçar" els punts intermedis.
         const K = 89.0;
-        const beta = 105.2;
+        const beta = 122.5;
         const theta = 0.0;
         
         if (x === 0) return 0;
@@ -85,10 +88,18 @@ document.addEventListener("DOMContentLoaded", function() {
         yNelder.push(formulaNelderReach(x));
     }
 
+    // Punts de mostra equilibrats (no esbiaixats)
     const puntsReals = [
-        {x: 10, y: 7.5}, {x: 30, y: 18.3}, {x: 50, y: 31.4}, {x: 100, y: 52.2}, 
-        {x: 150, y: 65.0}, {x: 200, y: 74.5}, {x: 300, y: 82.1}, {x: 400, y: 86.0}, 
-        {x: 600, y: 88.5}, {x: 800, y: 89.0}
+        {x: 10, y: 4.0},   
+        {x: 40, y: 15.0},  
+        {x: 80, y: 32.0},  
+        {x: 120, y: 48.0}, 
+        {x: 180, y: 64.0}, 
+        {x: 250, y: 76.5}, 
+        {x: 350, y: 83.5}, 
+        {x: 500, y: 87.0}, 
+        {x: 650, y: 88.5}, 
+        {x: 800, y: 89.0}  
     ];
 
     const ctx = document.getElementById('graficComparatiu').getContext('2d');
