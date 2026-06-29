@@ -189,19 +189,20 @@
     .ccob-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 13.5px;
+      font-size: 11.5px;
       font-family: var(--cc-font);
     }
     .ccob-table th, .ccob-table td {
       border: 1px solid var(--cc-border);
-      padding: 9px 12px;
+      padding: 7px 10px;
       text-align: center;
+      font-weight: 400;
     }
     .ccob-table th {
       background: var(--cc-primary-light);
       color: var(--cc-dark);
-      font-weight: 600;
-      font-size: 12px;
+      font-weight: 400;
+      font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.3px;
       text-align: left;
@@ -209,9 +210,9 @@
     }
     .ccob-table td { color: var(--cc-dark); font-variant-numeric: tabular-nums; }
     .ccob-table tbody tr:hover { background: transparent; }
-    .ccob-table tbody tr:first-child td { font-weight: 600; background: var(--cc-primary-light); }
+    .ccob-table tbody tr:first-child td { background: var(--cc-primary-light); }
 
-    .ccob-note { margin-top: 18px; font-size: 12.5px; color: var(--cc-text-light); }
+    .ccob-note { margin-top: 40px; font-size: 12.5px; color: var(--cc-text-light); }
     .ccob-note strong { color: var(--cc-dark); }
     .ccob-note code {
       font-family: var(--cc-font);
@@ -267,8 +268,6 @@
     </table>
   </div>
 
-  <div class="ccob-note" id="cc-note"></div>
-
   <div class="ccob-note">
     Model: <code>C<sub>n</sub> = C&#8321; &middot; (1 &minus; C&#8321;/GRP)<sup>n&minus;1</sup></code>,
     derivat assumint que la cobertura decau amb una ràtio constant entre nivells consecutius i que
@@ -281,7 +280,7 @@
     var $ = function (id) { return document.getElementById(id); };
     var elGrp = $('cc-grp'), elC1 = $('cc-c1');
     var outK = $('cc-out-k');
-    var rowHeaders = $('cc-row-headers'), rowValues = $('cc-row-values'), note = $('cc-note');
+    var rowHeaders = $('cc-row-headers'), rowValues = $('cc-row-values');
     var copyBtn = $('cc-copy-btn');
     var yaxis = $('cc-yaxis'), gridlines = $('cc-gridlines'), bars = $('cc-bars'), xlabels = $('cc-xlabels');
 
@@ -330,7 +329,6 @@
       rowValues.innerHTML = '<th>Cobertura</th>';
 
       if (!isFinite(grp) || grp <= 0 || !isFinite(c1) || c1 <= 0 || c1 > 100) {
-        note.textContent = 'Revisa els valors: GRP > 0 i 0 < Cobertura 1+ ≤ 100.';
         outK.textContent = '—';
         lastLevels = null;
         bars.innerHTML = '';
@@ -339,7 +337,6 @@
       }
 
       if (c1 > grp) {
-        note.innerHTML = 'La Cobertura 1+ no pot ser superior als GRPs (implicaria freqüència mitjana &lt; 1). Revisa les dades.';
         outK.textContent = '—';
         lastLevels = null;
         bars.innerHTML = '';
@@ -364,9 +361,6 @@
       }
       rowHeaders.insertAdjacentHTML('beforeend', headersHtml);
       rowValues.insertAdjacentHTML('beforeend', valuesHtml);
-
-      note.innerHTML = 'Amb GRP = ' + grp + ' i Cobertura 1+ = ' + c1 +
-        '%, la Cobertura 10+ estimada és <strong>' + fmt(levels[9]) + '%</strong>.';
 
       copyBtn.classList.remove('copied');
       copyBtn.textContent = 'Copiar per a Excel';
