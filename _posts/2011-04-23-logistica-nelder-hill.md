@@ -61,12 +61,13 @@ A continuació es mostra el comportament visual de l'ajust d'ambdós models sobr
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    function formulaHill(x) { 
-        return 91.5 * Math.pow(x, 1.75) / (Math.pow(125, 1.75) + Math.pow(x, 1.75)); 
+    function formulaHill(x) {
+        return 80 * Math.pow(x, 2.5) / (Math.pow(160, 2.5) + Math.pow(x, 2.5));
     }
-    
-    function formulaNelder(x) { 
-        return 89.0 * ((1 - Math.exp(-0.0095 * x)) / (1 + 2.1 * Math.exp(-0.0095 * x))); 
+
+    function formulaNelder(x) {
+        const e = Math.exp(-x / 160);
+        return 80 * (1 - e) / (1 + 1.2 * e);
     }
 
     const xValors = [];
@@ -78,12 +79,13 @@ document.addEventListener("DOMContentLoaded", function() {
         yNelder.push(formulaNelder(x));
     }
 
-    // Punts de mostra originals
-    const puntsReals = [
-        {x: 10, y: 2.1}, {x: 30, y: 7.3}, {x: 50, y: 15.4}, {x: 100, y: 34.2}, 
-        {x: 150, y: 52.0}, {x: 200, y: 64.5}, {x: 300, y: 78.1}, {x: 400, y: 84.0}, 
-        {x: 600, y: 88.5}, {x: 800, y: 89.2}
-    ];
+    // Punts de mostra: estimats com el punt mitjà entre ambdues corbes a cada x,
+    // de manera que un únic conjunt de dades sigui versemblant per a tots dos ajustos
+    const xsPunts = [10, 30, 50, 100, 150, 200, 300, 400, 500, 600, 700, 800];
+    const puntsReals = xsPunts.map(function(x) {
+        const y = (formulaHill(x) + formulaNelder(x)) / 2;
+        return { x: x, y: Math.round(y * 10) / 10 };
+    });
 
     const ctx = document.getElementById('graficComparatiu').getContext('2d');
     new Chart(ctx, {
@@ -101,7 +103,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     z: 3
                 },
                 {
-                    label: 'Ajust: Equació de Hill (Forma en S forta)',
+                    label: 'Ajust: Equació de Hill (Forma en S)',
                     data: yHill,
                     borderColor: '#ef4444',
                     borderWidth: 2.5,
@@ -110,7 +112,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     tension: 0.1
                 },
                 {
-                    label: 'Ajust: Logística de Nelder Modificada (Suau / Decreixent)',
+                    label: 'Ajust: Logística de Nelder Modificada',
                     data: yNelder,
                     borderColor: '#3b82f6',
                     borderWidth: 2.5,
@@ -123,22 +125,22 @@ document.addEventListener("DOMContentLoaded", function() {
         options: {
             responsive: true,
             plugins: {
-                legend: { 
+                legend: {
                     position: 'bottom',
                     labels: { boxWidth: 12, font: { size: 12 } }
                 }
             },
             scales: {
-                x: { 
-                    type: 'linear', 
-                    title: { display: true, text: 'GRPs Totals', font: { weight: 'bold' } }, 
-                    min: 0, 
-                    max: 800 
+                x: {
+                    type: 'linear',
+                    title: { display: true, text: 'GRPs Totals', font: { weight: 'bold' } },
+                    min: 0,
+                    max: 800
                 },
-                y: { 
-                    title: { display: true, text: 'Eficiència / KPI Assolit (%)', font: { weight: 'bold' } }, 
-                    min: 0, 
-                    max: 100 
+                y: {
+                    title: { display: true, text: 'Eficiència / KPI Assolit (%)', font: { weight: 'bold' } },
+                    min: 0,
+                    max: 100
                 }
             }
         }
@@ -147,10 +149,10 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 
 ### Observacions sobre la simulació:
-1. **Divergència a l'origen (0 - 150 GRPs):** S'observa clarament com l'ajust de **Hill** (línia vermella) reté la resposta de vendes a prop de l'origen en els trams inicials, simulant la necessitat d'una freqüència mínima eficaç. Per contra, la funció de **Nelder** (línia blava) neix amb un pendent diferent adaptant-se a la naturalesa de les dades experimentals des del punt $(0,0)$.
-2. **Convergència en la saturació:** Superats els $500$ GRPs, ambdós models descriuen el même fenomen físic d'esgotament d'audiència o saturació del mercat potencial, on la inversió addicional es destina gairebé en la seva totalitat a duplicar impactes (freqüència inútil), aplanant el creixement marginal cap a zero.
+1. **Proximitat i encreuaments:** Malgrat la seva diferent naturalesa matemàtica, ambdues corbes es mantenen sorprenentment properes en gairebé tot el rang de GRPs, arribant a creuar-se en dos punts diferents (cap als 100-150 GRPs i de nou cap als 700-800 GRPs). La separació màxima entre els dos ajustos és modesta i es produeix al voltant dels 300 GRPs, just quan la **Hill** (línia vermella) ja ha iniciat la seva acceleració sigmoide mentre la **Nelder** (línia blava) encara progressa de forma més gradual.
+2. **Convergència en la saturació:** Superats els 600-700 GRPs, ambdós models tornen a aproximar-se i descriuen pràcticament el mateix fenomen físic d'esgotament d'audiència o saturació del mercat potencial, on la inversió addicional es destina gairebé en la seva totalitat a duplicar impactes (freqüència inútil), aplanant el creixement marginal cap a zero.
 
 
 ## Conclusions i paradoxa en l'entorn corporatiu
 
-L'anàlisi purament matemàtica suggereix l'ús de Hill per a vendes i de Nelder per a cobertura. Malgrat això, s'observa sovint una paradoxa en la pràctica corporativa: molts departaments financers tendeixen a rebutjar l'efecte llindar de Hill en els models de vendes, donat que assumir la corba en "S" implica conceptualitzar que els primers trams d'inversió no ofereixen cap retorn tangible. S'acaba optant, per criteris de prudència pressupostària, per la funció de Nelder, assumint que cada unitat monetària invertida ha de mobilitzar el KPI des del primer instant.
+L'anàlisi purament matemàtica suggereix l'ús de Hill per a vendes i de Nelder per a cobertura. Malgrat això, s'observa sovint una paradoxa en la pràctica corporativa: molts departaments financers tendeixen a rebutjar l'efecte llindar de Hill en els models de vendes, donat que assumir la corba en "S" implica conceptualitzar que els primers trams d'inversió no ofereixen cap retorn tangible. S'acaba optant, per criteris de prudència pressupostària, per la funció de Nelder, assumint que cada unitat monetària invertida ha de mobilitzar el KPI des del primer instant. De fet, quan, com en l'exemple anterior, l'ajust estadístic d'ambdós models és pràcticament indistingible, l'elecció final esdevé encara més una qüestió de criteri conceptual que no pas de bondat d'ajust pur.
