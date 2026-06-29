@@ -2,51 +2,143 @@
 <html lang="ca">
 <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enllaços - Estadística i Publicitat</title>
     <style>
+        :root {
+            --cc-primary: #3b82f6;
+            --cc-primary-hover: #2563eb;
+            --cc-primary-light: #f1f5f9;
+            --cc-dark: #1e293b;
+            --cc-text: #475569;
+            --cc-text-light: #64748b;
+            --cc-card-bg: #ffffff;
+            --cc-border: #e2e8f0;
+            --cc-border-strong: #cbd5e1;
+            --cc-radius: 6px;
+            --cc-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --cc-space-1: 4px;
+            --cc-space-2: 8px;
+            --cc-space-3: 12px;
+            --cc-space-4: 16px;
+            --cc-space-5: 24px;
+            --cc-space-6: 32px;
+            --cc-bg-soft: #f8fafc;
+        }
+
+        html {
+            scrollbar-gutter: stable;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            margin: 30px;
-            background-color: #f4f4f4;
+            font-family: var(--cc-font);
+            margin: 2rem auto;
+            background-color: var(--cc-bg-soft);
+            color: var(--cc-text);
+            font-size: 13.5px;
+            line-height: 1.5;
+            padding: 0 20px;
         }
-        h1 {
-            text-align: center;
-            color: #2c3e50;
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--cc-card-bg);
+            border: 1px solid var(--cc-border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            padding: var(--cc-space-6);
+            border-radius: var(--cc-radius);
         }
+
+        .ccob-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--cc-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--cc-border);
+            padding-bottom: 6px;
+            margin-bottom: 5px;
+        }
+
+        .ccob-subtitle {
+            margin: 0 0 24px 0;
+            color: var(--cc-text-light);
+            font-size: 13px;
+            font-weight: normal;
+        }
+
         section {
-            background-color: #fff;
-            padding: 20px;
-            margin-bottom: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            background: var(--cc-bg-soft);
+            border: 1px solid var(--cc-border);
+            padding: var(--cc-space-4) var(--cc-space-5);
+            border-radius: var(--cc-radius);
+            margin-bottom: var(--cc-space-5);
         }
+
         h2 {
-            color: #2980b9;
-            border-bottom: 2px solid #2980b9;
-            padding-bottom: 5px;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--cc-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 0;
+            margin-bottom: var(--cc-space-3);
+            padding-bottom: var(--cc-space-1);
+            border-bottom: 1px dashed var(--cc-border-strong);
         }
+
         ul {
             list-style: none;
             padding: 0;
+            margin: 0;
         }
+
         li {
-            margin: 10px 0;
+            margin: var(--cc-space-2) 0;
+            padding-left: var(--cc-space-3);
+            position: relative;
         }
+
+        li::before {
+            content: "•";
+            color: var(--cc-primary);
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+            top: -1px;
+        }
+
         a {
             text-decoration: none;
-            color: #34495e;
-            font-weight: bold;
+            color: var(--cc-dark);
+            /*font-weight: 500;*/
+            transition: all 0.2s ease;
         }
+
         a:hover {
-            color: #2980b9;
+            color: var(--cc-primary-hover);
+            text-decoration: underline;
+        }
+
+        .methodology-footer {
+            margin-top: var(--cc-space-6);
+            border-top: 1px dashed var(--cc-border);
+            padding-top: var(--cc-space-4);
+            font-size: 11.5px;
+            color: var(--cc-text-light);
+            text-align: center;
         }
     </style>
 </head>
 <body>
-    <h1>Calculadores Personals</h1>
+
+<div class="container">
+    <h1 class="ccob-title">Calculadores Personals</h1>
+    <h3 class="ccob-subtitle">Índex d'eines dinàmiques de simulació i anàlisi</h3>
 
     <section>
-        <h2>ESTADISTICA</h2>
+        <h2>Estadística</h2>
         <ul>
             <li><a href="https://alberthr.github.io/calculadores/mostra.html" target="_blank">Configuració de Mostra d'Estudi</a></li>
             <li><a href="https://alberthr.github.io/calculadores/binomial.html" target="_blank">Test Binomial</a></li>
@@ -54,12 +146,18 @@
     </section>
 
     <section>
-        <h2>PUBLICITAT</h2>
+        <h2>Publicitat</h2>
         <ul>
-            <li><a href="https://alberthr.github.io/calculadores/reach_frequency.html" target="_blank">Estimació de Corva R&F a partir de GRPs i Reach</a></li>
+            <li><a href="https://alberthr.github.io/calculadores/reach_frequency.html" target="_blank">Estimació de Corba R&F a partir de GRPs i Reach</a></li>
             <li><a href="https://alberthr.github.io/calculadores/suma_cobertura.html" target="_blank">Suma de Cobertures Multimedia (Fins a 6 Mitjans)</a></li>
             <li><a href="https://alberthr.github.io/calculadores/optimitzador_cobertura.html" target="_blank">Optimitzador de Cobertura de pla de Mitjans</a></li>
         </ul>
     </section>
+
+    <div class="methodology-footer">
+        <p>© 2026 · Eines d'anàlisi i models publicitaris iteratius</p>
+    </div>
+</div>
+
 </body>
 </html>
