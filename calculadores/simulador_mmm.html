@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Avançada de Media Mix Modeling (MMM)</title>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { --primary: #1e3a8a; --primary-light: #3b82f6; --secondary: #10b981; --dark: #1f2937; --light: #f9fafb; --border: #e5e7eb; }
+        * { box-sizing: border-box; font-family: sans-serif; }
+        body { margin: 0; padding: 0; background-color: #f3f4f6; color: var(--dark); }
+        header { background: var(--primary); color: white; padding: 20px; text-align: center; }
+        h1 { margin: 0; font-size: 24px; }
+        .main-container { max-width: 1400px; margin: 30px auto; padding: 0 20px; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 25px; border: 1px solid var(--border); }
+        .card h2 { margin-top: 0; font-size: 18px; color: var(--primary); border-bottom: 2px solid var(--border); padding-bottom: 10px; margin-bottom: 15px; }
+        .file-upload { border: 2px dashed var(--primary-light); padding: 30px; text-align: center; border-radius: 8px; background: #eff6ff; cursor: pointer; }
+        .file-upload input { display: none; }
+        table.mapping-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        table.mapping-table th, table.mapping-table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        table.mapping-table th { background: #f8fafc; font-weight: 600; }
+        select, input[type="number"], button, input[type="range"] { padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border); font-size: 14px; }
+        button.btn-primary { background: var(--primary); color: white; border: none; cursor: pointer; font-weight: 600; padding: 10px 20px; }
+        .slider-group { margin-bottom: 15px; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid var(--border); }
+        .slider-container { display: table; width: 100%; margin-top: 10px; }
+        .slider-row { display: table-row; }
+        .slider-cell { display: table-cell; padding: 5px 10px; vertical-align: middle; }
+        .metrics-grid { display: table; width: 100%; margin-bottom: 20px; text-align: center; }
+        .metric-box { display: table-cell; background: #eff6ff; padding: 15px; border-radius: 8px; border: 1px solid #bfdbfe; }
+        .metric-val { font-size: 28px; font-weight: bold; color: var(--primary); }
+        
+        .chart-container-full { position: relative; width: 100%; height: 450px; margin-bottom: 20px; }
+        .chart-container { position: relative; width: 100%; height: 350px; }
+        .charts-table { display: table; width: 100%; }
+        .charts-row { display: table-row; }
+        .charts-cell { display: table-cell; width: 50%; padding: 10px; vertical-align: top; }
+        
+        .flex-container { display: table; width: 100%; }
+        .flex-col { display: table-cell; width: 32%; padding-right: 20px; vertical-align: top; }
+        .flex-col-main { display: table-cell; width: 68%; vertical-align: top; }
+        
+        .coef-table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 20px; background: #ffffff; }
+        .coef-table th, .coef-table td { padding: 10px 15px; border: 1px solid var(--border); text-align: left; font-size: 14px; }
+        .coef-table th { background-color: #f1f5f9; color: var(--primary); font-weight: 600; }
+        .coef-table tr:nth-child(even) { background-color: #f8fafc; }
+        .badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+        .bg-base { background: #e2e8f0; color: #334155; }
+        .bg-media { background: #dbeafe; color: #1e40af; }
+        .bg-promo { background: #fef3c7; color: #92400e; }
+        
+        .inline-inputs { display: flex; gap: 8px; align-items: center; }
+        .inline-inputs input[type="number"] { width: 70px; padding: 4px 6px; }
+        .inline-inputs input[type="range"] { width: 100px; }
+    </style>
+</head>
+<body>
+<header>
+    <h1>📊 Calculadora de Media Mix Modeling (MMM) Profesional</h1>
+</header>
+<div class="main-container">
+    <div class="card">
+        <h2>1. Carrega de dades (Excel o CSV)</h2>
+        <div class="file-upload" onclick="document.getElementById('fileInput').click()">
+            <strong style="color: var(--primary-light);">Prem aquí per seleccionar el teu arxiu (.xlsx, .xls, .csv)</strong>
+            <input type="file" id="fileInput" accept=".xlsx, .xls, .csv">
+        </div>
+        <div id="fileStatus" style="margin-top: 10px; font-weight: 600; color: var(--secondary);"></div>
+    </div>
+    
+    <div class="card" id="mappingCard" style="display:none;">
+        <h2>2. Mapeig de Variables i Configuració del Model</h2>
+        <div style="margin-bottom: 20px; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid var(--border); display: flex; gap: 20px; flex-wrap: wrap;">
+            <div>
+                <label style="font-weight: 600; margin-right: 10px;">Tipus d'Estructura Matemàtica:</label>
+                <select id="modelStructure">
+                    <option value="additive">Model Additiu Lineal (Y = B0 + B1*X1 + B2*X2...)</option>
+                    <option value="multiplicative">Model Multiplicatiu Log-Log (ln(Y) = ln(B0) + B1*ln(X1)...)</option>
+                </select>
+            </div>
+            <div>
+                <label style="font-weight: 600; margin-right: 10px;">Mètrica d'Unitat de Promocions:</label>
+                <select id="promoUnitType">
+                    <option value="euro">Valors en Euros (€) - Calcular ràtio respecte KPI Vendes</option>
+                    <option value="percent">Valors directes en Percentatge (%) o ràtios ja construïts</option>
+                </select>
+            </div>
+        </div>
+        <table class="mapping-table">
+            <thead>
+                <tr>
+                    <th>Nom de la Columna</th>
+                    <th>Tipus de Variable</th>
+                    <th>Restricció de Signe</th>
+                    <th>Configuració Avançada (Només Publicitat)</th>
+                </tr>
+            </thead>
+            <tbody id="mappingTableBody"></tbody>
+        </table>
+        <div style="margin-top: 20px; text-align: right; background: #f1f5f9; padding: 15px; border-radius: 8px;">
+            <button class="btn-primary" style="background: #1e40af; padding: 12px 25px;" onclick="processModel()">Executar Estimació OLS</button>
+        </div>
+    </div>
+
+    <!-- PANEU CENTRAL DE RESULTATS -->
+    <div class="card" id="ajustCardFull" style="display:none;">
+        <h2>Resum de l'Ajust de Modelització i Mètrics de Precisió</h2>
+        <div style="display: flex; gap: 20px; align-items: flex-start; margin-bottom: 20px;">
+            <div class="metrics-grid" style="width: 220px; margin-bottom: 0;">
+                <div class="metric-box">
+                    <div class="metric-val" id="r2Value">0.00</div>
+                    <div style="font-size: 12px; font-weight: 600;">R² (Precisió de l'Ajust)</div>
+                </div>
+            </div>
+            <div style="flex-grow: 1;">
+                <table class="coef-table">
+                    <thead>
+                        <tr>
+                            <th>Variable / Canal</th>
+                            <th>Tipus</th>
+                            <th>Coeficient / Elasticitat</th>
+                            <th>Significació Atribuïda</th>
+                        </tr>
+                    </thead>
+                    <tbody id="coefTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="chart-container-full"><canvas id="chartAjust"></canvas></div>
+    </div>
+
+    <div class="flex-container" id="executionSection" style="display:none;">
+        <div class="flex-col">
+            <div class="card">
+                <h2>3. Ajust de Saturació Hill (Mitjans)</h2>
+                <div id="slidersContainer"></div>
+                <button class="btn-primary" style="width:100%; margin-top:10px; background:#475569;" onclick="processModel()">Recalcular amb noves corbes</button>
+            </div>
+            <div class="card">
+                <h2>4. Optimitzador de Pressupost</h2>
+                <input type="number" id="totalBudgetInput" value="10000" style="width:100%; margin-bottom:10px;">
+                <button class="btn-primary" style="width:100%; background: var(--secondary);" onclick="runBudgetOptimizer()">Optimitzar Mitjans</button>
+                <div id="optimizerResults" style="margin-top: 15px;"></div>
+            </div>
+        </div>
+        
+        <div class="flex-col-main">
+            <div class="card">
+                <h2>5. Explorador Detallat i Descomposició de Vendes per Setmana</h2>
+                <div style="margin-bottom: 15px;">
+                    <label style="font-weight: 600; margin-right: 10px;">Filtre de Visualització Atribuïda:</label>
+                    <select id="variableSelector" onchange="updateWeeklyVariableChart()"></select>
+                </div>
+                <div class="chart-container"><canvas id="chartWeeklyVariable"></canvas></div>
+            </div>
+
+            <div class="card">
+                <h2>6. Distribució del Mix i Corbes de Saturació</h2>
+                <div class="charts-table">
+                    <div class="charts-row">
+                        <div class="charts-cell"><div class="chart-container"><canvas id="chartPie"></canvas></div></div>
+                        <div class="charts-cell"><div class="chart-container"><canvas id="chartRoi"></canvas></div></div>
+                    </div>
+                </div>
+                <div class="chart-container" style="margin-top: 20px;"><canvas id="chartHill"></canvas></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let rawData = []; let columns = [];
+let chartAjustInstance = null; let chartPieInstance = null; let chartRoiInstance = null; let chartHillInstance = null; let chartWeeklyInstance = null;
+let mediaParams = {}; let modelCoefficients = {}; let weeklyContributions = {};
+
+document.getElementById('fileInput').addEventListener('change', function(e) {
+    const file = e.target.files[0]; if (!file) return;
+    document.getElementById('fileStatus').innerText = "Processant fitxer...";
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, {type: 'array'});
+            const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+            const json = XLSX.utils.sheet_to_json(worksheet);
+            if(!json.length) throw new Error("Sense dades vàlides.");
+            rawData = json; columns = Object.keys(json[0]);
+            document.getElementById('fileStatus').innerText = `✓ Carregat correctament. ${json.length} setmanes.`;
+            buildMappingTable();
+        } catch(err) { alert(err.message); }
+    };
+    reader.readAsArrayBuffer(file);
+});
+
+function buildMappingTable() {
+    const tbody = document.getElementById('mappingTableBody'); tbody.innerHTML = '';
+    columns.forEach(col => {
+        let colLower = col.toLowerCase();
+        let isKpi = colLower.includes('vende') || colLower.includes('units') || colLower.includes('kpi') || colLower.includes('sales');
+        let isMedia = colLower.includes('grp') || colLower.includes('pub') || colLower.includes('inv') || colLower.includes('tv') || colLower.includes('radio') || colLower.includes('online');
+        let isPromo = colLower.includes('promo');
+        let isBase = colLower.includes('preu') || colLower.includes('price') || colLower.includes('distrib') || colLower.includes('compet') || colLower.includes('estacio');
+        
+        let selValue = 'ignore';
+        if(isKpi) selValue = 'kpi';
+        else if(isMedia) selValue = 'publicitat';
+        else if(isPromo) selValue = 'promocio';
+        else if(isBase) selValue = 'base';
+
+        let selectHtml = `<select id="map_${col}" onchange="toggleMappingRow('${col}')">
+            <option value="ignore" ${selValue==='ignore'?'selected':''}>Ignorar</option>
+            <option value="kpi" ${selValue==='kpi'?'selected':''}>KPI Vendes (Target)</option>
+            <option value="base" ${selValue==='base'?'selected':''}>Mètrica Explicativa de Baseline</option>
+            <option value="publicitat" ${selValue==='publicitat'?'selected':''}>Publicitat / Mitjà (Amb Adstock)</option>
+            <option value="promocio" ${selValue==='promocio'?'selected':''}>Promoció</option>
+        </select>`;
+        
+        let configHtml = `<div id="config_container_${col}" class="inline-inputs" style="display: ${selValue==='publicitat'?'flex':'none'};">
+            <span>Decay:</span>
+            <input type="number" id="init_decay_num_${col}" value="0.30" min="0" max="0.95" step="0.05" oninput="syncInitDecay('${col}', 'num')">
+            <input type="range" id="init_decay_range_${col}" value="0.30" min="0" max="0.95" step="0.05" oninput="syncInitDecay('${col}', 'range')">
+        </div>`;
+
+        let signDisplay = (selValue === 'ignore' || selValue === 'kpi') ? 'none' : 'inline-block';
+        let signHtml = `<select id="sign_${col}" style="display:${signDisplay};">
+            <option value="free">Lliure (+ o -)</option>
+            <option value="pos">Obligatori &gt;= 0</option>
+            <option value="neg">Obligatori &lt;= 0</option>
+        </select>`;
+
+        tbody.innerHTML += `<tr><td><strong>${col}</strong></td><td>${selectHtml}</td><td>${signHtml}</td><td>${configHtml}</td></tr>`;
+    });
+    document.getElementById('mappingCard').style.display = 'block';
+}
+
+function toggleMappingRow(col) {
+    let val = document.getElementById(`map_${col}`).value;
+    document.getElementById(`config_container_${col}`).style.display = (val === 'publicitat') ? 'flex' : 'none';
+    document.getElementById(`sign_${col}`).style.display = (val === 'ignore' || val === 'kpi') ? 'none' : 'inline-block';
+}
+
+function syncInitDecay(col, source) {
+    if(source === 'num') document.getElementById(`init_decay_range_${col}`).value = document.getElementById(`init_decay_num_${col}`).value;
+    else document.getElementById(`init_decay_num_${col}`).value = document.getElementById(`init_decay_range_${col}`).value;
+}
+
+function solveOLS(X, Y) {
+    const rows = X.length; const cols = X[0].length;
+    let Xt = []; for(let c=0; c<cols; c++) { Xt.push(new Array(rows).fill(0)); for(let r=0; r<rows; r++) Xt[c][r] = X[r][c]; }
+    let XtX = [];
+    for(let i=0; i<cols; i++) {
+        XtX.push(new Array(cols).fill(0));
+        for(let j=0; j<cols; j++) {
+            let s = 0; for(let k=0; k<rows; k++) s += Xt[i][k] * X[k][j];
+            XtX[i][j] = (i === j) ? s + 1e-6 : s;
+        }
+    }
+    let XtY = new Array(cols).fill(0);
+    for(let i=0; i<cols; i++) { let s = 0; for(let k=0; k<rows; k++) s += Xt[i][k] * Y[k]; XtY[i] = s; }
+    let M = [];
+    for(let i=0; i<cols; i++) { M.push([...XtX[i], ...new Array(cols).fill(0)]); M[i][cols + i] = 1; }
+    for(let i=0; i<cols; i++) {
+        let maxRow = i; for(let k=i+1; k<cols; k++) { if(Math.abs(M[k][i]) > Math.abs(M[maxRow][i])) maxRow = k; }
+        let tmp = M[i]; M[i] = M[maxRow]; M[maxRow] = tmp;
+        let pivot = M[i][i]; if(Math.abs(pivot) < 1e-12) continue;
+        for(let j=i; j<2*cols; j++) M[i][j] /= pivot;
+        for(let k=0; k<cols; k++) { if(k !== i) { let c = M[k][i]; for(let j=i; j<2*cols; j++) M[k][j] -= c * M[i][j]; } }
+    }
+    let XtX_inv = []; for(let i=0; i<cols; i++) XtX_inv.push(M[i].slice(cols));
+    let beta = new Array(cols).fill(0);
+    for(let i=0; i<cols; i++) { let s = 0; for(let j=0; j<cols; j++) s += XtX_inv[i][j] * XtY[j]; beta[i] = s; }
+    return beta;
+}
+
+// Regressió OLS amb restriccions de signe per variable (mètode active-set).
+// X_names: noms de les variables explicatives (sense la constant).
+// matX: files = [1, x1, x2, ...] (constant inclosa a la columna 0).
+// signConstraints: { nomVariable: 'free' | 'pos' | 'neg' }
+function solveConstrainedOLS(X_names, matX, Y_reg, signConstraints) {
+    let activeIdx = X_names.map((_, i) => i);
+    while (true) {
+        let colsUsed = [0, ...activeIdx.map(i => i + 1)];
+        let redX = matX.map(row => colsUsed.map(c => row[c]));
+        let redBeta = solveOLS(redX, Y_reg);
+
+        let worstLocalPos = -1; let worstVal = 0;
+        activeIdx.forEach((origIdx, localPos) => {
+            let name = X_names[origIdx];
+            let constraint = signConstraints[name] || 'free';
+            let coef = redBeta[localPos + 1];
+            if (constraint === 'pos' && coef < 0 && Math.abs(coef) > worstVal) { worstVal = Math.abs(coef); worstLocalPos = localPos; }
+            if (constraint === 'neg' && coef > 0 && Math.abs(coef) > worstVal) { worstVal = Math.abs(coef); worstLocalPos = localPos; }
+        });
+
+        if (worstLocalPos === -1 || activeIdx.length === 0) {
+            let fullWeights = new Array(X_names.length).fill(0);
+            activeIdx.forEach((origIdx, localPos) => { fullWeights[origIdx] = redBeta[localPos + 1]; });
+            return { intercept: redBeta[0], weights: fullWeights };
+        }
+        activeIdx.splice(worstLocalPos, 1);
+    }
+}
+
+function processModel() {
+    try {
+        let kpiCol = null; let mediaCols = []; let baseCols = []; let promoCols = [];
+        columns.forEach(col => {
+            let v = document.getElementById(`map_${col}`).value;
+            if(v==='kpi') kpiCol = col; if(v==='publicitat') mediaCols.push(col); if(v==='base') baseCols.push(col); if(v==='promocio') promoCols.push(col);
+        });
+        if(!kpiCol) { alert("Tria el KPI de Vendes."); return; }
+        
+        const isMultiplicative = document.getElementById('modelStructure').value === 'multiplicative';
+        const N = rawData.length;
+        
+        mediaCols.forEach(col => {
+            if(!mediaParams[col]) {
+                let initialDecay = parseFloat(document.getElementById(`init_decay_num_${col}`).value) || 0.30;
+                mediaParams[col] = { decay: initialDecay, K: 0.5 };
+            }
+        });
+
+        let sHtml = '';
+        mediaCols.forEach(col => {
+            sHtml += `<div class="slider-group"><strong>${col}</strong>
+                <div class="slider-container">
+                    <div class="slider-row"><div class="slider-cell">Saturació K: <span id="v_k_${col}">${mediaParams[col].K}</span></div>
+                    <div class="slider-cell"><input type="range" min="0.1" max="1" step="0.05" value="${mediaParams[col].K}" oninput="uParam('${col}','K',this.value)"></div></div>
+                </div></div>`;
+        });
+        document.getElementById('slidersContainer').innerHTML = sHtml || '<p>Sense variables de publicitat.</p>';
+        document.getElementById('ajustCardFull').style.display = 'block';
+        document.getElementById('executionSection').style.display = 'table';
+
+        let Y_original = rawData.map(d => d[kpiCol] || 0);
+        let Y_reg = isMultiplicative ? Y_original.map(v => Math.log(Math.max(v, 1))) : [...Y_original];
+        
+        let mediaTransformed = {};
+        mediaCols.forEach(col => {
+            let adstock = 0; let arr = [];
+            for(let i=0; i<N; i++) { adstock = (rawData[i][col]||0) + mediaParams[col].decay * adstock; arr.push(adstock); }
+            let maxA = Math.max(...arr) || 1;
+            mediaTransformed[col] = arr.map(v => { 
+                let n = v/maxA; return Math.pow(n, 1.2) / (Math.pow(n, 1.2) + Math.pow(mediaParams[col].K, 1.2)); 
+            });
+        });
+
+        let promoTransformed = {};
+        const isPromoInEuros = document.getElementById('promoUnitType').value === 'euro';
+        promoCols.forEach(col => {
+            promoTransformed[col] = [];
+            for(let i=0; i<N; i++) {
+                let originalVal = rawData[i][col] || 0;
+                promoTransformed[col].push(isPromoInEuros ? (originalVal / (Y_original[i] || 1)) : originalVal);
+            }
+        });
+
+        let X_names = [...baseCols, ...promoCols, ...mediaCols];
+        let matX = [];
+        for(let i=0; i<N; i++) {
+            let row = [1];
+            X_names.forEach(name => {
+                let val = mediaCols.includes(name) ? mediaTransformed[name][i] : 
+                          (promoCols.includes(name) ? promoTransformed[name][i] : (rawData[i][name] || 0));
+                if(isMultiplicative) val = Math.log(Math.max(val, 0.0001));
+                row.push(val);
+            });
+            matX.push(row);
+        }
+
+        let signConstraints = {};
+        X_names.forEach(name => {
+            let el = document.getElementById(`sign_${name}`);
+            signConstraints[name] = el ? el.value : 'free';
+        });
+
+        let solved = solveConstrainedOLS(X_names, matX, Y_reg, signConstraints);
+        let intercept = solved.intercept;
+        let weights = solved.weights;
+
+        // Neteja i preparació de volums absoluts integrals
+        weeklyContributions = {};
+        weeklyContributions['Baseline Estructural'] = new Array(N).fill(0);
+        promoCols.forEach(name => weeklyContributions[name] = new Array(N).fill(0));
+        mediaCols.forEach(name => weeklyContributions[name] = new Array(N).fill(0));
+
+        let Y_pred = [];
+        let totalBaselineVolume = 0;
+        let totalPromoVolume = 0;
+        let mediaVolumesGlobal = {}; mediaCols.forEach(c => mediaVolumesGlobal[c] = 0);
+
+        for(let i=0; i<N; i++) {
+            let pred_val = 0;
+            if(isMultiplicative) {
+                let base_exp = Math.exp(intercept);
+                let baseline_weekly = base_exp;
+                baseCols.forEach((name) => {
+                    let origin_idx = X_names.indexOf(name);
+                    let val = Math.max(rawData[i][name]||0, 0.0001);
+                    baseline_weekly *= Math.pow(val, weights[origin_idx]);
+                });
+                weeklyContributions['Baseline Estructural'][i] = baseline_weekly;
+                pred_val = baseline_weekly;
+                totalBaselineVolume += baseline_weekly;
+
+                promoCols.forEach((name) => {
+                    let origin_idx = X_names.indexOf(name);
+                    let val = Math.max(promoTransformed[name][i]||0, 0.0001);
+                    let abs_impact = baseline_weekly * (Math.pow(val, weights[origin_idx]) - 1);
+                    let final_imp = Math.max(0, abs_impact);
+                    weeklyContributions[name][i] = final_imp;
+                    pred_val += final_imp;
+                    totalPromoVolume += final_imp;
+                });
+
+                mediaCols.forEach((name) => {
+                    let origin_idx = X_names.indexOf(name);
+                    let val = Math.max(mediaTransformed[name][i]||0, 0.0001);
+                    let abs_impact = baseline_weekly * (Math.pow(val, weights[origin_idx]) - 1);
+                    let final_imp = Math.max(0, abs_impact);
+                    weeklyContributions[name][i] = final_imp;
+                    pred_val += final_imp;
+                    mediaVolumesGlobal[name] += final_imp;
+                });
+            } else {
+                let baseline_weekly = intercept;
+                baseCols.forEach((name) => {
+                    let origin_idx = X_names.indexOf(name);
+                    baseline_weekly += weights[origin_idx] * (rawData[i][name] || 0);
+                });
+                weeklyContributions['Baseline Estructural'][i] = baseline_weekly;
+                pred_val = baseline_weekly;
+                totalBaselineVolume += baseline_weekly;
+
+                promoCols.forEach((name) => {
+                    let origin_idx = X_names.indexOf(name);
+                    let eff = Math.max(0, weights[origin_idx] * (promoTransformed[name][i] || 0));
+                    weeklyContributions[name][i] = eff;
+                    pred_val += eff;
+                    totalPromoVolume += eff;
+                });
+
+                mediaCols.forEach((name) => {
+                    let origin_idx = X_names.indexOf(name);
+                    let eff = Math.max(0, weights[origin_idx] * (mediaTransformed[name][i] || 0));
+                    weeklyContributions[name][i] = eff;
+                    pred_val += eff;
+                    mediaVolumesGlobal[name] += eff;
+                });
+            }
+            Y_pred.push(pred_val);
+        }
+
+        modelCoefficients = { 'Intercept / Constant': intercept };
+        X_names.forEach((c, idx) => { modelCoefficients[c] = weights[idx]; });
+
+        // Pintar taula d'ajust bàsica
+        const coefTbody = document.getElementById('coefTableBody');
+        coefTbody.innerHTML = `<tr><td><strong>Constant B0</strong></td><td><span class="badge bg-base">Baseline</span></td><td><strong>${intercept.toFixed(4)}</strong></td><td>Punt d'origen estructural</td></tr>`;
+        X_names.forEach((name, idx) => {
+            let badge = baseCols.includes(name) ? '<span class="badge bg-base">Baseline</span>' : (promoCols.includes(name) ? '<span class="badge bg-promo">Promoció</span>' : '<span class="badge bg-media">Mitjà</span>');
+            coefTbody.innerHTML += `<tr><td><strong>${name}</strong></td><td>${badge}</td><td><strong>${weights[idx].toFixed(4)}</strong></td><td>Coeficient estimat</td></tr>`;
+        });
+
+        let meanY = Y_original.reduce((a,b)=>a+b,0)/N;
+        let ssTot = Y_original.reduce((s,y)=>s+Math.pow(y-meanY,2),0);
+        let ssRes = Y_original.reduce((s,y,idx)=>s+Math.pow(y-Y_pred[idx],2),0);
+        document.getElementById('r2Value').innerText = Math.max(0, 1 - (ssRes/(ssTot||1))).toFixed(4);
+
+        // REQUERIMENT REVISAT: L'explorador ja no mostra els components individuals de la baseline, només l'agrupació!
+        const selector = document.getElementById('variableSelector');
+        selector.innerHTML = `<option value="ALL_TOGETHER">-- VEURE TOTS ELS BLOCS JUNTS (Stacked) --</option>
+                              <option value="Baseline Estructural">Baseline Estructural Global</option>`;
+        promoCols.forEach(name => { selector.innerHTML += `<option value="${name}">${name}</option>`; });
+        mediaCols.forEach(name => { selector.innerHTML += `<option value="${name}">${name}</option>`; });
+        selector.value = "ALL_TOGETHER";
+
+        renderAjust(Y_original, Y_pred);
+        updateWeeklyVariableChart();
+        
+        // REQUERIMENT REVISAT: Corregir el Pie Chart perquè agafi de veritat la suma global real i totalitzada
+        renderPie(totalBaselineVolume, totalPromoVolume, mediaVolumesGlobal);
+        renderRoi(mediaCols, mediaVolumesGlobal);
+        renderHill(mediaCols);
+    } catch(err) { alert(err.message); }
+}
+
+function uParam(m, p, v) { mediaParams[m][p] = parseFloat(v); }
+
+function renderAjust(r, p) {
+    const ctx = document.getElementById('chartAjust').getContext('2d'); if(chartAjustInstance) chartAjustInstance.destroy();
+    chartAjustInstance = new Chart(ctx, { 
+        type: 'line', 
+        data: { labels: r.map((_,i)=>`Setmana ${i+1}`), datasets: [{label:'Real', data:r, borderColor:'#1f2937', fill:false}, {label:'Modelat', data:p, borderColor:'#3b82f6', borderDash:[4,4]}] },
+        options: { responsive:true, maintainAspectRatio:false, scales: { y: { beginAtZero: true } } }
+    });
+}
+
+function updateWeeklyVariableChart() {
+    const ctx = document.getElementById('chartWeeklyVariable').getContext('2d'); if(chartWeeklyInstance) chartWeeklyInstance.destroy();
+    const selectedVar = document.getElementById('variableSelector').value;
+    const N = rawData.length; let labels = Array.from({length: N}, (_, i) => `S${i+1}`);
+    
+    if(selectedVar === 'ALL_TOGETHER') {
+        let datasets = [{ label: 'Baseline Estructural Global', data: weeklyContributions['Baseline Estructural'], backgroundColor: '#9ca3af' }];
+        Object.keys(weeklyContributions).forEach((k, idx) => {
+            if(k !== 'Baseline Estructural') {
+                let color = k.toLowerCase().includes('promo') ? `hsl(35, 80%, 55%)` : `hsl(${200 + (idx*30)}, 70%, 50%)`;
+                datasets.push({ label: k, data: weeklyContributions[k], backgroundColor: color });
+            }
+        });
+        chartWeeklyInstance = new Chart(ctx, { type: 'bar', data: { labels: labels, datasets: datasets }, options: { responsive:true, maintainAspectRatio:false, scales:{x:{stacked:true},y:{stacked:true}} } });
+    } else {
+        chartWeeklyInstance = new Chart(ctx, { type: 'bar', data: { labels: labels, datasets: [{ label: selectedVar, data: weeklyContributions[selectedVar], backgroundColor: '#3b82f6' }] }, options: { responsive:true, maintainAspectRatio:false } });
+    }
+}
+
+function renderPie(bVol, pVol, mVolumesObj) {
+    const ctx = document.getElementById('chartPie').getContext('2d'); if(chartPieInstance) chartPieInstance.destroy();
+    
+    // Sumem correctament tot el pastís per tenir percentatges reals sobre la descomposició atribuïda
+    let labels = ['Baseline Estructural Global', 'Volum per Promocions'];
+    let data = [Math.max(0, bVol), Math.max(0, pVol)];
+    let colors = ['#475569', '#f59e0b']; // Gris fosc per baseline, grogós per promocions
+    
+    Object.keys(mVolumesObj).forEach((k, i) => {
+        labels.push(`Mitjà: ${k}`);
+        data.push(Math.max(0, mVolumesObj[k]));
+        colors.push(`hsl(${210 + (i * 35)}, 75%, 50%)`);
+    });
+
+    chartPieInstance = new Chart(ctx, {
+        type: 'pie',
+        data: { labels: labels, datasets: [{ data: data, backgroundColor: colors }] },
+        options: { 
+            responsive: true, 
+            maintainAspectRatio: false,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            let val = context.raw;
+                            let pct = ((val / total) * 100).toFixed(1);
+                            return `${context.label}: ${Math.round(val).toLocaleString()} unitats (${pct}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+function renderRoi(cols, mVolumesObj) {
+    const ctx = document.getElementById('chartRoi').getContext('2d'); if(chartRoiInstance) chartRoiInstance.destroy();
+    let rois = cols.map(c => { let s = rawData.reduce((acc,row)=>acc+(row[c]||0),0); return s>0 ? mVolumesObj[c]/s : 0; });
+    chartRoiInstance = new Chart(ctx, { type: 'bar', data: { labels:cols, datasets:[{label:'ROI / Eficiència marginal', data:rois, backgroundColor:'#10b981'}] }, options: { responsive:true, maintainAspectRatio:false } });
+}
+
+function renderHill(cols) {
+    const ctx = document.getElementById('chartHill').getContext('2d'); if(chartHillInstance) chartHillInstance.destroy();
+    let datasets = [];
+    cols.forEach((c,i) => {
+        let pts = []; for(let x=0; x<=100; x+=10) { let n = x/100; pts.push({x:x, y:(Math.pow(n,1.2)/(Math.pow(n,1.2)+Math.pow(0.5,1.2)))*100}); }
+        datasets.push({ label:c, data:pts, borderColor:`hsl(${210+(i*35)},75%,50%)`, showLine:true, pointRadius:0, fill:false });
+    });
+    chartHillInstance = new Chart(ctx, { type: 'scatter', data: { datasets:datasets }, options: { responsive:true, maintainAspectRatio:false } });
+}
+
+function runBudgetOptimizer() {
+    const budget = parseFloat(document.getElementById('totalBudgetInput').value)||0;
+    const cols = Object.keys(mediaParams); if(!cols.length) return;
+    let alloc = {}; cols.forEach(c=>alloc[c]=0);
+    let steps = 100; let step = budget/steps;
+    for(let s=0; s<steps; s++) {
+        let best = null; let maxM = -Infinity;
+        cols.forEach(c => {
+            let cur = alloc[c]; let nxt = cur + step;
+            let b = modelCoefficients[c] || 1;
+            let satC = Math.pow(cur/budget||0, 1.2) / (Math.pow(cur/budget||0, 1.2) + Math.pow(0.5, 1.2));
+            let satN = Math.pow(nxt/budget, 1.2) / (Math.pow(nxt/budget, 1.2) + Math.pow(0.5, 1.2));
+            let r = (satN - satC) * b; if(r > maxM) { maxM = r; best = c; }
+        });
+        if(best) alloc[best] += step;
+    }
+    let h = '<table class="mapping-table"><thead><tr><th>Canal</th><th>Recomanat</th></tr></thead><tbody>';
+    cols.forEach(c => { h += `<tr><td><strong>${c}</strong></td><td>${alloc[c].toFixed(2)}</td></tr>`; });
+    document.getElementById('optimizerResults').innerHTML = h + '</tbody></table>';
+}
+</script>
+</body>
+</html>
