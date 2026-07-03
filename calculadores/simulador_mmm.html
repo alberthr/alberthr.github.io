@@ -7,171 +7,407 @@
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --primary: #1e3a8a; --primary-light: #3b82f6; --secondary: #10b981; --dark: #1f2937; --light: #f9fafb; --border: #e5e7eb; }
-        * { box-sizing: border-box; font-family: sans-serif; }
-        body { margin: 0; padding: 0; background-color: #f3f4f6; color: var(--dark); }
-        header { background: var(--primary); color: white; padding: 20px; text-align: center; }
-        h1 { margin: 0; font-size: 24px; }
-        .main-container { max-width: 1400px; margin: 30px auto; padding: 0 20px; }
-        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 25px; border: 1px solid var(--border); }
-        .card h2 { margin-top: 0; font-size: 18px; color: var(--primary); border-bottom: 2px solid var(--border); padding-bottom: 10px; margin-bottom: 15px; }
-        .file-upload { border: 2px dashed var(--primary-light); padding: 30px; text-align: center; border-radius: 8px; background: #eff6ff; cursor: pointer; }
+        :root {
+            --cc-primary: #3b82f6;
+            --cc-primary-hover: #2563eb;
+            --cc-primary-light: #f1f5f9;
+            --cc-dark: #1e293b;
+            --cc-text: #475569;
+            --cc-text-light: #64748b;
+            --cc-card-bg: #ffffff;
+            --cc-border: #e2e8f0;
+            --cc-border-strong: #cbd5e1;
+            --cc-disabled-bg: #f3f4f6;
+            --cc-radius: 6px;
+            --cc-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --cc-space-1: 4px;
+            --cc-space-2: 8px;
+            --cc-space-3: 12px;
+            --cc-space-4: 16px;
+            --cc-space-5: 24px;
+            --cc-space-6: 32px;
+            --cc-bg-soft: #f8fafc;
+            --secondary: #10b981;
+        }
+
+        html { scrollbar-gutter: stable; }
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: var(--cc-font);
+            margin: 2rem auto;
+            background-color: #f8fafc;
+            color: var(--cc-text);
+            font-size: 13.5px;
+            line-height: 1.5;
+            padding: 0 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--cc-card-bg);
+            border: 1px solid var(--cc-border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            padding: var(--cc-space-6);
+            border-radius: var(--cc-radius);
+        }
+
+        .ccob-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--cc-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--cc-border);
+            padding-bottom: 6px;
+            margin-bottom: 5px;
+        }
+
+        .ccob-subtitle {
+            margin: 0 0 24px 0;
+            color: var(--cc-text-light);
+            font-size: 13px;
+            font-weight: normal;
+        }
+
+        .tabs-container {
+            display: flex;
+            border-bottom: 2px solid var(--cc-border);
+            margin-bottom: var(--cc-space-5);
+            gap: var(--cc-space-1);
+        }
+
+		.tab-btn {
+			font-family: inherit;     
+			padding: var(--cc-space-3) var(--cc-space-5);
+			font-size: 13px;
+			font-weight: 600;
+			color: var(--cc-text-light);
+			background: none;
+			border: none;
+			border-bottom: 2px solid transparent;
+			cursor: pointer;
+			transition: all 0.2s ease;
+			margin-bottom: -2px;
+			text-transform: uppercase;
+			width: auto;              
+			border-radius: 0;         
+		}
+
+        .tab-btn:hover { color: var(--cc-primary); }
+        .tab-btn.active {
+            background-color: var(--cc-primary-light);
+            color: var(--cc-primary);
+            border-bottom-color: var(--cc-primary);
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .optimizer-box {
+            background: var(--cc-bg-soft);
+            border: 1px solid var(--cc-border);
+            padding: var(--cc-space-5);
+            border-radius: var(--cc-radius);
+            margin-bottom: var(--cc-space-5);
+        }
+
+        .optimizer-box h2 {
+            margin-top: 0;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--cc-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            border-bottom: 1px solid var(--cc-border);
+            padding-bottom: var(--cc-space-3);
+            margin-bottom: var(--cc-space-4);
+        }
+
+        .file-upload {
+            padding: var(--cc-space-6) var(--cc-space-3);
+            border: 1px dashed var(--cc-primary);
+            border-radius: var(--cc-radius);
+            text-align: center;
+            background: var(--cc-primary-light);
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--cc-primary);
+        }
+        .file-upload:hover { background: #e2e8f0; }
         .file-upload input { display: none; }
-        table.mapping-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        table.mapping-table th, table.mapping-table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: middle; }
-        table.mapping-table th { background: #f8fafc; font-weight: 600; }
-        select, input[type="number"], button, input[type="range"] { padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border); font-size: 14px; }
-        button.btn-primary { background: var(--primary); color: white; border: none; cursor: pointer; font-weight: 600; padding: 10px 20px; }
-        .slider-group { margin-bottom: 15px; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid var(--border); }
-        .slider-container { display: table; width: 100%; margin-top: 10px; }
-        .slider-row { display: table-row; }
-        .slider-cell { display: table-cell; padding: 5px 10px; vertical-align: middle; }
-        .metrics-grid { display: table; width: 100%; margin-bottom: 20px; text-align: center; }
-        .metric-box { display: table-cell; background: #eff6ff; padding: 15px; border-radius: 8px; border: 1px solid #bfdbfe; }
-        .metric-val { font-size: 28px; font-weight: bold; color: var(--primary); }
+
+        table.mapping-table { width: 100%; border-collapse: collapse; margin-top: 15px; table-layout: fixed; }
+        table.mapping-table th, table.mapping-table td {
+            padding: 6px var(--cc-space-2);
+            text-align: left;
+            border: none;
+            vertical-align: middle;
+            font-size: 12.5px;
+            color: var(--cc-dark);
+            background: transparent;
+            height: 40px;
+        }
+        table.mapping-table th {
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            font-size: 11px;
+            color: var(--cc-text-light);
+            border-bottom: 1px solid var(--cc-border-strong);
+            padding-bottom: 8px;
+        }
         
-        .chart-container-full { position: relative; width: 100%; height: 450px; margin-bottom: 20px; }
-        .chart-container { position: relative; width: 100%; height: 350px; }
+        table.mapping-table th:nth-child(1), table.mapping-table td:nth-child(1) { width: 25%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+        table.mapping-table th:nth-child(2), table.mapping-table td:nth-child(2) { width: 15%; }
+        table.mapping-table th:nth-child(3), table.mapping-table td:nth-child(3) { width: 15%; }
+        table.mapping-table th:nth-child(4), table.mapping-table td:nth-child(4) { width: 15%; }
+        table.mapping-table th:nth-child(5), table.mapping-table td:nth-child(5) { width: 15%; }
+        table.mapping-table th:nth-child(6), table.mapping-table td:nth-child(6) { width: 15%; }
+        table.mapping-table tbody tr { border-bottom: 1px dashed var(--cc-border); }
+        table.mapping-table tbody tr:hover { background-color: rgba(0, 0, 0, 0.01); }
+
+        select, input[type="number"], button, input[type="range"] {
+            font-family: var(--cc-font);
+            padding: 5px 8px;
+            border-radius: var(--cc-radius);
+            border: 1px solid var(--cc-border);
+            font-size: 12px;
+            color: var(--cc-dark);
+            background: white;
+            width: 100%;
+        }
+		
+		/* Assegura que cap botó dins del contenidor de pestanyes ocupi el 100% d'ample */
+		.tabs-container button {
+			width: auto;
+		}		
+		
+        select { height: 28px; line-height: 1; }
+
+        input[type="number"]:disabled, select:disabled {
+            background-color: var(--cc-disabled-bg);
+            color: var(--cc-text-light);
+            border-color: var(--cc-border);
+            cursor: not-allowed;
+        }
+
+        button.btn-primary {
+            font-family: var(--cc-font);
+            background: var(--cc-primary);
+            color: white;
+            border: 1px solid var(--cc-primary);
+            cursor: pointer;
+            font-weight: 600;
+            padding: var(--cc-space-2) var(--cc-space-4);
+            font-size: 13px;
+            border-radius: var(--cc-radius);
+            transition: all 0.2s ease;
+            width: auto;
+        }
+        button.btn-primary:hover { background: var(--cc-primary-hover); border-color: var(--cc-primary-hover); }
+
+        .chart-container-full { position: relative; width: 100%; height: 400px; margin-bottom: 20px; background: white; border: 1px solid var(--cc-border); padding: 15px; border-radius: var(--cc-radius); }
+        .chart-container { position: relative; width: 100%; height: 350px; background: white; border: 1px solid var(--cc-border); padding: 15px; border-radius: var(--cc-radius); }
         .charts-table { display: table; width: 100%; }
         .charts-row { display: table-row; }
         .charts-cell { display: table-cell; width: 50%; padding: 10px; vertical-align: top; }
-        
-        .flex-container { display: table; width: 100%; }
-        .flex-col { display: table-cell; width: 32%; padding-right: 20px; vertical-align: top; }
-        .flex-col-main { display: table-cell; width: 68%; vertical-align: top; }
-        
-        .coef-table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 20px; background: #ffffff; }
-        .coef-table th, .coef-table td { padding: 10px 15px; border: 1px solid var(--border); text-align: left; font-size: 14px; }
-        .coef-table th { background-color: #f1f5f9; color: var(--primary); font-weight: 600; }
-        .coef-table tr:nth-child(even) { background-color: #f8fafc; }
-        .badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+
+        .coef-table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 20px; background: #ffffff; table-layout: fixed; }
+        .coef-table th, .coef-table td {
+            padding: 0 var(--cc-space-2);
+            border: 1px solid var(--cc-border-strong);
+            text-align: left;
+            font-size: 12px;
+            line-height: 34px;
+            height: 34px;
+            color: var(--cc-dark);
+            overflow: hidden;
+            white-space: nowrap;
+            vertical-align: middle;
+            background-color: #ffffff;
+        }
+        .coef-table th {
+            background-color: var(--cc-bg-soft);
+            color: var(--cc-dark);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            font-size: 11px;
+            line-height: 1.2;
+            height: auto;
+            padding: 8px var(--cc-space-2);
+            white-space: normal;
+        }
+        .coef-table th:nth-child(1), .coef-table td:nth-child(1) { width: 20%; } 
+        .coef-table th:nth-child(2), .coef-table td:nth-child(2) { width: 12%; } 
+        .coef-table th:nth-child(3), .coef-table td:nth-child(3) { width: 12%; } 
+        .coef-table th:nth-child(4), .coef-table td:nth-child(4) { width: 14%; } 
+        .coef-table th:nth-child(5), .coef-table td:nth-child(5) { width: 21%; } 
+        .coef-table th:nth-child(6), .coef-table td:nth-child(6) { width: 21%; } 
+
+        .hill-config-row { display: flex; align-items: center; gap: 6px; height: 34px; width: 100%; justify-content: space-between; }
+        .hill-config-row input[type="range"] { flex: 1; min-width: 0; padding: 0 !important; height: auto !important; background: transparent !important; border: none !important; appearance: auto !important; -webkit-appearance: auto !important; cursor: pointer; }
+        .hill-config-num { width: 55px !important; flex: 0 0 55px !important; padding: 2px 4px !important; font-size: 11px; text-align: center; height: 24px !important; font-weight: normal; box-sizing: border-box; }
+
+        .badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; line-height: 1.2; }
         .bg-base { background: #e2e8f0; color: #334155; }
         .bg-media { background: #dbeafe; color: #1e40af; }
         .bg-promo { background: #fef3c7; color: #92400e; }
-        
-        .inline-inputs { display: flex; gap: 8px; align-items: center; }
-        .inline-inputs input[type="number"] { width: 70px; padding: 4px 6px; }
-        .inline-inputs input[type="range"] { width: 100px; }
+        .bg-dummy { background: #ede9fe; color: #6d28d9; }
+
+        .methodology-footer { margin-top: var(--cc-space-6); border-top: 1px dashed var(--cc-border); padding-top: var(--cc-space-4); font-size: 11.5px; color: var(--cc-text-light); line-height: 1.5; }
     </style>
 </head>
 <body>
-<header>
-    <h1>📊 Calculadora de Media Mix Modeling (MMM) Profesional</h1>
-</header>
-<div class="main-container">
-    <div class="card">
-        <h2>1. Carrega de dades (Excel o CSV)</h2>
-        <div class="file-upload" onclick="document.getElementById('fileInput').click()">
-            <strong style="color: var(--primary-light);">Prem aquí per seleccionar el teu arxiu (.xlsx, .xls, .csv)</strong>
-            <input type="file" id="fileInput" accept=".xlsx, .xls, .csv">
-        </div>
-        <div id="fileStatus" style="margin-top: 10px; font-weight: 600; color: var(--secondary);"></div>
+
+<div class="container">
+    <div class="ccob-title">Calculadora de Media Mix Modeling (MMM)</div>
+    <h3 class="ccob-subtitle">Model d'estimació OLS amb adstock, saturació i optimització de pressupost publicitari</h3>
+
+    <div class="tabs-container">
+        <button class="tab-btn active" id="btn-carrega" onclick="switchTab('tab-carrega')">Càrrega de Dades</button>
+        <button class="tab-btn" id="btn-ajust" onclick="switchTab('tab-ajust')">Ajust del Model</button>
+        <button class="tab-btn" id="btn-outputs" onclick="switchTab('tab-outputs')">Descomposició i ROI</button>
     </div>
-    
-    <div class="card" id="mappingCard" style="display:none;">
-        <h2>2. Mapeig de Variables i Configuració del Model</h2>
-        <div style="margin-bottom: 20px; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid var(--border); display: flex; gap: 20px; flex-wrap: wrap;">
-            <div>
-                <label style="font-weight: 600; margin-right: 10px;">Tipus d'Estructura Matemàtica:</label>
-                <select id="modelStructure">
-                    <option value="additive">Model Additiu Lineal (Y = B0 + B1*X1 + B2*X2...)</option>
-                    <option value="multiplicative">Model Multiplicatiu Log-Log (ln(Y) = ln(B0) + B1*ln(X1)...)</option>
-                </select>
+
+    <div id="tab-carrega" class="tab-content active">
+        <div class="optimizer-box">
+            <h2>Carrega de dades (Excel o CSV)</h2>
+            <div class="file-upload" onclick="document.getElementById('fileInput').click()">
+                <strong>Prem aquí per seleccionar el teu arxiu (.xlsx, .xls, .csv)</strong>
+                <input type="file" id="fileInput" accept=".xlsx, .xls, .csv">
             </div>
-            <div>
-                <label style="font-weight: 600; margin-right: 10px;">Mètrica d'Unitat de Promocions:</label>
-                <select id="promoUnitType">
-                    <option value="euro">Valors en Euros (€) - Calcular ràtio respecte KPI Vendes</option>
-                    <option value="percent">Valors directes en Percentatge (%) o ràtios ja construïts</option>
-                </select>
-            </div>
+            <div id="fileStatus" style="margin-top: 10px; font-weight: 600; color: var(--secondary);"></div>
         </div>
-        <table class="mapping-table">
-            <thead>
-                <tr>
-                    <th>Nom de la Columna</th>
-                    <th>Tipus de Variable</th>
-                    <th>Restricció de Signe</th>
-                    <th>Configuració Avançada (Només Publicitat)</th>
-                </tr>
-            </thead>
-            <tbody id="mappingTableBody"></tbody>
-        </table>
-        <div style="margin-top: 20px; text-align: right; background: #f1f5f9; padding: 15px; border-radius: 8px;">
-            <button class="btn-primary" style="background: #1e40af; padding: 12px 25px;" onclick="processModel()">Executar Estimació OLS</button>
+        
+        <div class="optimizer-box" id="mappingCard" style="display:none; background: white;">
+            <h2>Mapeig de Variables i Configuració del Model</h2>
+            <div style="margin-bottom: 20px; background: var(--cc-bg-soft); padding: var(--cc-space-4); border-radius: var(--cc-radius); border: 1px solid var(--cc-border); display: flex; gap: 20px; flex-wrap: wrap;">
+                <div>
+                    <label style="font-weight: 600; margin-right: 10px; color: var(--cc-dark);">Tipus d'Estructura Matemàtica:</label>
+                    <select id="modelStructure" style="width: auto;">
+                        <option value="additive">Model Additiu Lineal</option>
+                        <option value="multiplicative">Model Multiplicatiu Log-Log</option>
+                    </select>
+                </div>
+            </div>
+            <table class="mapping-table">
+                <thead>
+                    <tr>
+                        <th>Nom de la Columna</th>
+                        <th>Tipus de Variable</th>
+                        <th>Restricció Signe</th>
+                        <th>Mètrica Promoció</th>
+                        <th>Mètrica Mitjans</th>
+                        <th>Cost per GRP (€)</th>
+                    </tr>
+                </thead>
+                <tbody id="mappingTableBody"></tbody>
+            </table>
+            <div style="margin-top: 20px; text-align: right;">
+                <button class="btn-primary" onclick="processModel(true)">Executar i Optimitzar Modelització</button>
+            </div>
         </div>
     </div>
 
-    <!-- PANEU CENTRAL DE RESULTATS -->
-    <div class="card" id="ajustCardFull" style="display:none;">
-        <h2>Resum de l'Ajust de Modelització i Mètrics de Precisió</h2>
-        <div style="display: flex; gap: 20px; align-items: flex-start; margin-bottom: 20px;">
-            <div class="metrics-grid" style="width: 220px; margin-bottom: 0;">
-                <div class="metric-box">
-                    <div class="metric-val" id="r2Value">0.00</div>
-                    <div style="font-size: 12px; font-weight: 600;">R² (Precisió de l'Ajust)</div>
+    <div id="tab-ajust" class="tab-content">
+        <div id="ajustCardFull" style="display:none;">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap: var(--cc-space-3); border-bottom: 1px solid var(--cc-border); padding-bottom: var(--cc-space-3); margin-bottom: var(--cc-space-4);">
+                <h2 style="margin:0; font-size: 14px; font-weight: 600; color: var(--cc-dark); text-transform: uppercase;">Resum de l'Ajust de Modelització i Mètrics de Precisió</h2>
+                <button class="btn-primary" style="background:#475569; border-color:#475569; white-space:nowrap;" onclick="processModel(false)">Modelitzar amb nous paràmetres</button>
+            </div>
+
+            <div style="background: var(--cc-primary-light); border: 1px solid var(--cc-primary); padding: var(--cc-space-3); border-radius: var(--cc-radius); margin-bottom: var(--cc-space-4); display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 14px; font-weight: 600; color: var(--cc-dark);">R²:</span>
+                    <span id="r2TopBadge" style="font-size: 18px; font-weight: 800; color: var(--cc-primary);">—</span>
+                    <span style="font-size: 13px; color: var(--cc-text-light); margin-left: 5px;">(Coeficient de Determinació)</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 14px; font-weight: 600; color: var(--cc-dark);">RMSE:</span>
+                    <span id="rmseTopBadge" style="font-size: 18px; font-weight: 800; color: var(--cc-primary);">—</span>
+                    <span style="font-size: 13px; color: var(--cc-text-light); margin-left: 5px;">(Error Quadràtic Mig)</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 14px; font-weight: 600; color: var(--cc-dark);">MAPE:</span>
+                    <span id="mapeTopBadge" style="font-size: 18px; font-weight: 800; color: var(--cc-primary);">—</span>
+                    <span style="font-size: 13px; color: var(--cc-text-light); margin-left: 5px;">(Error Percentual Absolut Mig)</span>
                 </div>
             </div>
-            <div style="flex-grow: 1;">
+
+            <div style="margin-bottom: 20px; overflow-x: auto;">
                 <table class="coef-table">
                     <thead>
                         <tr>
                             <th>Variable / Canal</th>
                             <th>Tipus</th>
-                            <th>Coeficient / Elasticitat</th>
-                            <th>Significació Atribuïda</th>
+                            <th>Coeficient</th>
+                            <th>Significació</th>
+                            <th>Decay (Mitjans)</th>
+                            <th>Saturació K (Mitjans)</th>
                         </tr>
                     </thead>
                     <tbody id="coefTableBody"></tbody>
                 </table>
             </div>
+            
+            <h2 style="font-size: 13px; font-weight: 600; color: var(--cc-dark); text-transform: uppercase; margin-bottom: var(--cc-space-3);">Gràfic d'Ajust: Vendes Reals vs. Estimades pel Model</h2>
+            <div class="chart-container-full"><canvas id="chartAjust"></canvas></div>
         </div>
-        <div class="chart-container-full"><canvas id="chartAjust"></canvas></div>
+        <div id="ajustAvis" class="optimizer-box" style="text-align: center; color: var(--cc-text-light);">
+            Si us plau, carrega les dades i executa el model a la pestanya 1 per veure l'ajust.
+        </div>
     </div>
 
-    <div class="flex-container" id="executionSection" style="display:none;">
-        <div class="flex-col">
-            <div class="card">
-                <h2>3. Ajust de Saturació Hill (Mitjans)</h2>
-                <div id="slidersContainer"></div>
-                <button class="btn-primary" style="width:100%; margin-top:10px; background:#475569;" onclick="processModel()">Recalcular amb noves corbes</button>
-            </div>
-            <div class="card">
-                <h2>4. Optimitzador de Pressupost</h2>
-                <input type="number" id="totalBudgetInput" value="10000" style="width:100%; margin-bottom:10px;">
-                <button class="btn-primary" style="width:100%; background: var(--secondary);" onclick="runBudgetOptimizer()">Optimitzar Mitjans</button>
-                <div id="optimizerResults" style="margin-top: 15px;"></div>
-            </div>
-        </div>
-        
-        <div class="flex-col-main">
-            <div class="card">
-                <h2>5. Explorador Detallat i Descomposició de Vendes per Setmana</h2>
+    <div id="tab-outputs" class="tab-content">
+        <div id="executionSection" style="display:none;">
+            <div class="optimizer-box" style="background: white;">
+                <h2 style="border-bottom: 1px solid var(--cc-border); padding-bottom: 8px;">Explorador Detallat i Descomposició de Vendes per Setmana</h2>
                 <div style="margin-bottom: 15px;">
                     <label style="font-weight: 600; margin-right: 10px;">Filtre de Visualització Atribuïda:</label>
-                    <select id="variableSelector" onchange="updateWeeklyVariableChart()"></select>
+                    <select id="variableSelector" onchange="updateWeeklyVariableChart()" style="width: auto;"></select>
                 </div>
-                <div class="chart-container"><canvas id="chartWeeklyVariable"></canvas></div>
+                <div class="chart-container" style="height: 400px;"><canvas id="chartWeeklyVariable"></canvas></div>
             </div>
 
-            <div class="card">
-                <h2>6. Distribució del Mix i Corbes de Saturació</h2>
+            <div class="optimizer-box" style="background: white;">
+                <h2 style="border-bottom: 1px solid var(--cc-border); padding-bottom: 8px;">Distribució del Mix i Rendibilitat (ROI)</h2>
                 <div class="charts-table">
                     <div class="charts-row">
                         <div class="charts-cell"><div class="chart-container"><canvas id="chartPie"></canvas></div></div>
                         <div class="charts-cell"><div class="chart-container"><canvas id="chartRoi"></canvas></div></div>
                     </div>
                 </div>
-                <div class="chart-container" style="margin-top: 20px;"><canvas id="chartHill"></canvas></div>
             </div>
         </div>
+        <div id="outputsAvis" class="optimizer-box" style="text-align: center; color: var(--cc-text-light);">
+            Si us plau, carrega les dades i executa el model a la pestanya 1 per veure la descomposició.
+        </div>
+    </div>
+
+    <div class="methodology-footer">
+        <p><b>Nota Metodològica de Modelització:</b> Aquesta eina utilitza mètodes de regressió lineal multivariable estimats mitjançant OLS amb transformacions dinàmiques d'Adstock de caiguda geomètrica i corbes de saturació no lineals. L'algoritme de background cerca numèricament l'hiperparàmetre que minimitza l'error de predicció global. Les estimacions reflecteixen valors d'atribució directa sobre el KPI triat.</p>
     </div>
 </div>
 
 <script>
+Chart.defaults.animation = false; // <-- Afegeix-ho aquí
+
 let rawData = []; let columns = [];
-let chartAjustInstance = null; let chartPieInstance = null; let chartRoiInstance = null; let chartHillInstance = null; let chartWeeklyInstance = null;
+let chartAjustInstance = null; let chartPieInstance = null; let chartRoiInstance = null; let chartWeeklyInstance = null;
 let mediaParams = {}; let modelCoefficients = {}; let weeklyContributions = {};
+
+function switchTab(tabId) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    
+    document.getElementById(tabId).classList.add('active');
+    if (tabId === 'tab-carrega') document.getElementById('btn-carrega').classList.add('active');
+    if (tabId === 'tab-ajust') document.getElementById('btn-ajust').classList.add('active');
+    if (tabId === 'tab-outputs') document.getElementById('btn-outputs').classList.add('active');
+}
 
 document.getElementById('fileInput').addEventListener('change', function(e) {
     const file = e.target.files[0]; if (!file) return;
@@ -186,6 +422,7 @@ document.getElementById('fileInput').addEventListener('change', function(e) {
             if(!json.length) throw new Error("Sense dades vàlides.");
             rawData = json; columns = Object.keys(json[0]);
             document.getElementById('fileStatus').innerText = `✓ Carregat correctament. ${json.length} setmanes.`;
+            mediaParams = {}; 
             buildMappingTable();
         } catch(err) { alert(err.message); }
     };
@@ -209,39 +446,74 @@ function buildMappingTable() {
 
         let selectHtml = `<select id="map_${col}" onchange="toggleMappingRow('${col}')">
             <option value="ignore" ${selValue==='ignore'?'selected':''}>Ignorar</option>
-            <option value="kpi" ${selValue==='kpi'?'selected':''}>KPI Vendes (Target)</option>
-            <option value="base" ${selValue==='base'?'selected':''}>Mètrica Explicativa de Baseline</option>
-            <option value="publicitat" ${selValue==='publicitat'?'selected':''}>Publicitat / Mitjà (Amb Adstock)</option>
+            <option value="kpi" ${selValue==='kpi'?'selected':''}>KPI Anàlisi</option>
+            <option value="base" ${selValue==='base'?'selected':''}>Baseline</option>
+            <option value="publicitat" ${selValue==='publicitat'?'selected':''}>Publicitat</option>
             <option value="promocio" ${selValue==='promocio'?'selected':''}>Promoció</option>
+            <option value="dummy_base" ${selValue==='dummy_base'?'selected':''}>Dummy Baseline</option>
+            <option value="dummy_no_base" ${selValue==='dummy_no_base'?'selected':''}>Dummy No Baseline</option>
         </select>`;
-        
-        let configHtml = `<div id="config_container_${col}" class="inline-inputs" style="display: ${selValue==='publicitat'?'flex':'none'};">
-            <span>Decay:</span>
-            <input type="number" id="init_decay_num_${col}" value="0.30" min="0" max="0.95" step="0.05" oninput="syncInitDecay('${col}', 'num')">
-            <input type="range" id="init_decay_range_${col}" value="0.30" min="0" max="0.95" step="0.05" oninput="syncInitDecay('${col}', 'range')">
-        </div>`;
 
+        let defaultSign = (selValue === 'publicitat' || selValue === 'promocio') ? 'pos' : 'free';
         let signDisplay = (selValue === 'ignore' || selValue === 'kpi') ? 'none' : 'inline-block';
         let signHtml = `<select id="sign_${col}" style="display:${signDisplay};">
-            <option value="free">Lliure (+ o -)</option>
-            <option value="pos">Obligatori &gt;= 0</option>
-            <option value="neg">Obligatori &lt;= 0</option>
+            <option value="free" ${defaultSign==='free'?'selected':''}>Lliure</option>
+            <option value="pos" ${defaultSign==='pos'?'selected':''}>Positiu</option>
+            <option value="neg">Negatiu</option>
         </select>`;
 
-        tbody.innerHTML += `<tr><td><strong>${col}</strong></td><td>${selectHtml}</td><td>${signHtml}</td><td>${configHtml}</td></tr>`;
+        let promoUnitDisplay = (selValue === 'promocio') ? 'inline-block' : 'none';
+        let promoUnitHtml = `<select id="promounit_${col}" style="display:${promoUnitDisplay};">
+            <option value="euro">Percentatge KPI (%)</option>
+            <option value="percent" selected>Escala KPI Analisis</option>
+        </select>`;
+
+        let mediaDisplay = (selValue === 'publicitat') ? 'inline-block' : 'none';
+        let mediaTypeHtml = `<select id="mediatype_${col}" style="display:${mediaDisplay};" onchange="toggleMediaCostLabel('${col}')">
+            <option value="grp" selected>GRPs</option>
+            <option value="euro">Inversió €</option>
+        </select>`;
+        let grpCostHtml = `<input type="number" id="grpcost_${col}" style="display:${mediaDisplay};" min="0" step="1" value="500" placeholder="Cost GRP (€)">`;
+
+        tbody.innerHTML += `<tr>
+            <td><strong>${col}</strong></td>
+            <td>${selectHtml}</td>
+            <td>${signHtml}</td>
+            <td>${promoUnitHtml}</td>
+            <td>${mediaTypeHtml}</td>
+            <td>${grpCostHtml}</td>
+        </tr>`;
     });
     document.getElementById('mappingCard').style.display = 'block';
 }
 
 function toggleMappingRow(col) {
     let val = document.getElementById(`map_${col}`).value;
-    document.getElementById(`config_container_${col}`).style.display = (val === 'publicitat') ? 'flex' : 'none';
-    document.getElementById(`sign_${col}`).style.display = (val === 'ignore' || val === 'kpi') ? 'none' : 'inline-block';
+    let signEl = document.getElementById(`sign_${col}`);
+    if (signEl) {
+        signEl.style.display = (val === 'ignore' || val === 'kpi') ? 'none' : 'inline-block';
+        if (val === 'publicitat' || val === 'promocio') {
+            signEl.value = 'pos';
+        } else {
+            signEl.value = 'free';
+        }
+    }
+    let promoEl = document.getElementById(`promounit_${col}`);
+    if(promoEl) promoEl.style.display = (val === 'promocio') ? 'inline-block' : 'none';
+    let mediaTypeEl = document.getElementById(`mediatype_${col}`);
+    let grpCostEl = document.getElementById(`grpcost_${col}`);
+    if(mediaTypeEl && grpCostEl) {
+        let isMedia = (val === 'publicitat');
+        mediaTypeEl.style.display = isMedia ? 'inline-block' : 'none';
+        grpCostEl.style.display = isMedia ? 'inline-block' : 'none';
+    }
 }
 
-function syncInitDecay(col, source) {
-    if(source === 'num') document.getElementById(`init_decay_range_${col}`).value = document.getElementById(`init_decay_num_${col}`).value;
-    else document.getElementById(`init_decay_num_${col}`).value = document.getElementById(`init_decay_range_${col}`).value;
+function toggleMediaCostLabel(col) {
+    let typeEl = document.getElementById(`mediatype_${col}`);
+    let costEl = document.getElementById(`grpcost_${col}`);
+    if(!typeEl || !costEl) return;
+    costEl.placeholder = (typeEl.value === 'euro') ? 'Factor conv.' : 'Cost GRP (€)';
 }
 
 function solveOLS(X, Y) {
@@ -272,7 +544,6 @@ function solveOLS(X, Y) {
     return beta;
 }
 
-// --- Significació estadística (errors estàndard, t-test, p-valors) ---
 function gammaln(x) {
     let cof = [76.18009172947146,-86.50532032941677,24.01409824083091,-1.231739572450155,0.1208650973866179e-2,-0.5395239384953e-5];
     let y=x, tmp=x+5.5; tmp -= (x+0.5)*Math.log(tmp);
@@ -306,7 +577,6 @@ function betai(a,b,x) {
     if(x < (a+1)/(a+b+2)) return bt*betacf(a,b,x)/a;
     else return 1-bt*betacf(b,a,1-x)/b;
 }
-// p-valor bilateral d'un estadístic t amb df graus de llibertat
 function tTestPValue(t, df) {
     if(df <= 0) return null;
     let x = df/(df+t*t);
@@ -320,7 +590,24 @@ function sigCode(p) {
     if(p < 0.1) return '.';
     return '';
 }
-// Calcula errors estàndard dels coeficients d'una regressió OLS ja resolta (beta)
+function updateParamFromInput(name, param, value) {
+    let val = parseFloat(value);
+    if (isNaN(val)) return;
+    if (param === 'decay') {
+        if (val < 0) val = 0;
+        if (val > 0.95) val = 0.95;
+    } else if (param === 'K') {
+        if (val < 0.1) val = 0.1;
+        if (val > 1) val = 1;
+    }
+    mediaParams[name][param] = parseFloat(val.toFixed(2));
+    let suffix = param === 'decay' ? 'decay' : 'k';
+    let rngEl = document.getElementById(`rng_${suffix}_${name}`);
+    let numEl = document.getElementById(`num_${suffix}_${name}`);
+    if(rngEl) rngEl.value = val.toFixed(2);
+    if(numEl) numEl.value = val.toFixed(2);
+}
+
 function olsStandardErrors(X, Y, beta) {
     const rows = X.length, cols = X[0].length;
     let resid = [];
@@ -335,12 +622,12 @@ function olsStandardErrors(X, Y, beta) {
     let XtX=[];
     for(let i=0;i<cols;i++){ XtX.push(new Array(cols).fill(0)); for(let j=0;j<cols;j++){ let s=0; for(let k=0;k<rows;k++) s+=Xt[i][k]*X[k][j]; XtX[i][j]=(i===j)?s+1e-6:s; } }
     let M=[]; for(let i=0;i<cols;i++){ M.push([...XtX[i], ...new Array(cols).fill(0)]); M[i][cols+i]=1; }
-    for(let i=0;i<cols;i++){
+    for(let i=0; i<cols; i++){
         let maxRow=i; for(let k=i+1;k<cols;k++){ if(Math.abs(M[k][i])>Math.abs(M[maxRow][i])) maxRow=k; }
         let tmp=M[i]; M[i]=M[maxRow]; M[maxRow]=tmp;
         let pivot=M[i][i]; if(Math.abs(pivot)<1e-12) continue;
         for(let j=i;j<2*cols;j++) M[i][j]/=pivot;
-        for(let k=0;k<cols;k++){ if(k!==i){ let c=M[k][i]; for(let j=i;j<2*cols;j++) M[k][j]-=c*M[i][j]; } }
+        for(let k=0;k<cols;k++){ if(k!==i){ let c = M[k][i]; for(let j=i;j<2*cols;j++) M[k][j] -= c * M[i][j]; } }
     }
     let XtX_inv=[]; for(let i=0;i<cols;i++) XtX_inv.push(M[i].slice(cols));
     let se = new Array(cols).fill(0);
@@ -348,10 +635,6 @@ function olsStandardErrors(X, Y, beta) {
     return { se, df, sigma2 };
 }
 
-// Regressió OLS amb restriccions de signe per variable (mètode active-set).
-// X_names: noms de les variables explicatives (sense la constant).
-// matX: files = [1, x1, x2, ...] (constant inclosa a la columna 0).
-// signConstraints: { nomVariable: 'free' | 'pos' | 'neg' }
 function solveConstrainedOLS(X_names, matX, Y_reg, signConstraints) {
     let activeIdx = X_names.map((_, i) => i);
     while (true) {
@@ -389,85 +672,201 @@ function solveConstrainedOLS(X_names, matX, Y_reg, signConstraints) {
     }
 }
 
-function processModel() {
+function computeCurrentRMSE(mediaCols, baseCols, dummyBaseCols, promoCols, dummyNoBaseCols, mediaGrpSeries, promoTransformed, signConstraints, X_names, Y_reg, Y_original, isMultiplicative) {
+    const N = rawData.length;
+    let mediaTransformed = {};
+    
+    mediaCols.forEach(col => {
+        let adstock = 0; let arr = [];
+        let pDecay = mediaParams[col].decay;
+        let pK = mediaParams[col].K;
+        for(let i=0; i<N; i++) { 
+            adstock = (mediaGrpSeries[col][i]||0) + pDecay * adstock; 
+            arr.push(adstock); 
+        }
+        let maxA = Math.max(...arr) || 1;
+        mediaTransformed[col] = arr.map(v => { 
+            let n = v/maxA; return Math.pow(n, 1.2) / (Math.pow(n, 1.2) + Math.pow(pK, 1.2)); 
+        });
+    });
+
+    let matX = [];
+    for(let i=0; i<N; i++) {
+        let row = [1];
+        X_names.forEach(name => {
+            let val = mediaCols.includes(name) ? mediaTransformed[name][i] : 
+                      (promoCols.includes(name) ? promoTransformed[name][i] : (rawData[i][name] || 0));
+            if(isMultiplicative && baseCols.includes(name)) val = Math.log(Math.max(val, 0.0001));
+            row.push(val);
+        });
+        matX.push(row);
+    }
+
+    let solved = solveConstrainedOLS(X_names, matX, Y_reg, signConstraints);
+    let intercept = solved.intercept;
+    let weights = solved.weights;
+
+    let ssRes = 0;
+    for(let i=0; i<N; i++) {
+        let pred_val = 0;
+        if(isMultiplicative) {
+            let baseline_weekly = Math.exp(intercept);
+            baseCols.forEach((name) => {
+                let origin_idx = X_names.indexOf(name);
+                baseline_weekly *= Math.pow(Math.max(rawData[i][name]||0, 0.0001), weights[origin_idx]);
+            });
+            dummyBaseCols.forEach((name) => {
+                let origin_idx = X_names.indexOf(name);
+                baseline_weekly *= Math.exp(weights[origin_idx] * (rawData[i][name] || 0));
+            });
+            let runningProd = baseline_weekly;
+            promoCols.forEach((name) => { runningProd *= Math.exp(weights[X_names.indexOf(name)] * (promoTransformed[name][i] || 0)); });
+            dummyNoBaseCols.forEach((name) => { runningProd *= Math.exp(weights[X_names.indexOf(name)] * (rawData[i][name] || 0)); });
+            mediaCols.forEach((name) => { runningProd *= Math.exp(weights[X_names.indexOf(name)] * (mediaTransformed[name][i] || 0)); });
+            pred_val = runningProd;
+        } else {
+            let baseline_weekly = intercept;
+            baseCols.forEach((name) => { baseline_weekly += weights[X_names.indexOf(name)] * (rawData[i][name] || 0); });
+            dummyBaseCols.forEach((name) => { baseline_weekly += weights[X_names.indexOf(name)] * (rawData[i][name] || 0); });
+            pred_val = baseline_weekly;
+            promoCols.forEach((name) => { pred_val += weights[X_names.indexOf(name)] * (promoTransformed[name][i] || 0); });
+            dummyNoBaseCols.forEach((name) => { pred_val += weights[X_names.indexOf(name)] * (rawData[i][name] || 0); });
+            mediaCols.forEach((name) => { pred_val += weights[X_names.indexOf(name)] * (mediaTransformed[name][i] || 0); });
+        }
+        ssRes += Math.pow(Y_original[i] - pred_val, 2);
+    }
+    return Math.sqrt(ssRes / N);
+}
+
+function optimizeHyperparameters(mediaCols, baseCols, dummyBaseCols, promoCols, dummyNoBaseCols, mediaGrpSeries, promoTransformed, signConstraints, X_names, Y_reg, Y_original, isMultiplicative) {
+    mediaCols.forEach(col => {
+        if (!mediaParams[col]) mediaParams[col] = { decay: 0.30, K: 0.50 };
+    });
+    for (let pass = 0; pass < 2; pass++) {
+        mediaCols.forEach(targetCol => {
+            let bestDecay = mediaParams[targetCol].decay;
+            let bestK = mediaParams[targetCol].K;
+            let minRMSE = Infinity;
+            for (let d = 0; d <= 0.95; d += 0.05) {
+                for (let k = 0.1; k <= 1.0; k += 0.05) {
+                    mediaParams[targetCol].decay = parseFloat(d.toFixed(2));
+                    mediaParams[targetCol].K = parseFloat(k.toFixed(2));
+                    let currentRMSE = computeCurrentRMSE(
+                        mediaCols, baseCols, dummyBaseCols, promoCols, dummyNoBaseCols, 
+                        mediaGrpSeries, promoTransformed, signConstraints, X_names, Y_reg, Y_original, isMultiplicative
+                    );
+                    if (currentRMSE < minRMSE) {
+                        minRMSE = currentRMSE;
+                        bestDecay = mediaParams[targetCol].decay;
+                        bestK = mediaParams[targetCol].K;
+                    }
+                }
+            }
+            mediaParams[targetCol].decay = bestDecay;
+            mediaParams[targetCol].K = bestK;
+        });
+    }
+}
+
+function processModel(isFirstExecution = false) {
     try {
-        let kpiCol = null; let mediaCols = []; let baseCols = []; let promoCols = [];
+        let kpiCol = null; let mediaCols = []; let baseCols = []; let promoCols = []; let dummyBaseCols = []; let dummyNoBaseCols = [];
         columns.forEach(col => {
             let v = document.getElementById(`map_${col}`).value;
-            if(v==='kpi') kpiCol = col; if(v==='publicitat') mediaCols.push(col); if(v==='base') baseCols.push(col); if(v==='promocio') promoCols.push(col);
+            if(v==='kpi') kpiCol = col;
+            if(v==='publicitat') mediaCols.push(col);
+            if(v==='base') baseCols.push(col);
+            if(v==='promocio') promoCols.push(col);
+            if(v==='dummy_base') dummyBaseCols.push(col);
+            if(v==='dummy_no_base') dummyNoBaseCols.push(col);
         });
         if(!kpiCol) { alert("Tria el KPI de Vendes."); return; }
         
         const isMultiplicative = document.getElementById('modelStructure').value === 'multiplicative';
         const N = rawData.length;
-        
+
+        let mediaCost = {};
+        let mediaUnitType = {};
+        let mediaGrpSeries = {};
+        let mediaSpendSeries = {};
         mediaCols.forEach(col => {
-            let initialDecay = parseFloat(document.getElementById(`init_decay_num_${col}`).value) || 0.30;
-            if(!mediaParams[col]) {
-                mediaParams[col] = { decay: initialDecay, K: 0.5 };
-            } else {
-                // El decay sempre es re-sincronitza des del camp del pas 2 (única font de veritat),
-                // perquè si no, un canvi de decay no es reflectia mai en re-executar el model.
-                mediaParams[col].decay = initialDecay;
+            let costEl = document.getElementById(`grpcost_${col}`);
+            let cv = costEl ? parseFloat(costEl.value) : NaN;
+            let cost = (!isNaN(cv) && cv > 0) ? cv : 500;
+            mediaCost[col] = cost;
+            let typeEl = document.getElementById(`mediatype_${col}`);
+            let type = typeEl ? typeEl.value : 'grp';
+            mediaUnitType[col] = type;
+            mediaGrpSeries[col] = [];
+            mediaSpendSeries[col] = [];
+            for(let i=0; i<N; i++) {
+                let raw = rawData[i][col] || 0;
+                if(type === 'euro') {
+                    mediaSpendSeries[col].push(raw);
+                    mediaGrpSeries[col].push(raw / cost);
+                } else {
+                    mediaGrpSeries[col].push(raw);
+                    mediaSpendSeries[col].push(raw * cost);
+                }
             }
         });
 
-        let sHtml = '';
-        mediaCols.forEach(col => {
-            sHtml += `<div class="slider-group"><strong>${col}</strong>
-                <div class="slider-container">
-                    <div class="slider-row"><div class="slider-cell">Saturació K: <span id="v_k_${col}">${mediaParams[col].K}</span></div>
-                    <div class="slider-cell"><input type="range" min="0.1" max="1" step="0.05" value="${mediaParams[col].K}" oninput="uParam('${col}','K',this.value)"></div></div>
-                </div></div>`;
-        });
-        document.getElementById('slidersContainer').innerHTML = sHtml || '<p>Sense variables de publicitat.</p>';
-        document.getElementById('ajustCardFull').style.display = 'block';
-        document.getElementById('executionSection').style.display = 'table';
-
         let Y_original = rawData.map(d => d[kpiCol] || 0);
         let Y_reg = isMultiplicative ? Y_original.map(v => Math.log(Math.max(v, 1))) : [...Y_original];
+
+		let promoTransformed = {};
+		promoCols.forEach(col => {
+			promoTransformed[col] = [];
+			let unitType = document.getElementById(`promounit_${col}`).value;
+			for(let i=0; i<N; i++) {
+				let originalVal = rawData[i][col] || 0;
+				if (isMultiplicative && unitType === 'euro') {
+					let kpiVal = rawData[i][kpiCol] || 1; 
+					if (kpiVal === 0) kpiVal = 1; 
+					promoTransformed[col].push(originalVal / kpiVal);
+				} else {
+					promoTransformed[col].push(originalVal);
+				}
+			}
+		});
+
+        let X_names = [...baseCols, ...dummyBaseCols, ...dummyNoBaseCols, ...promoCols, ...mediaCols];
+        let signConstraints = {};
+        X_names.forEach(name => {
+            let el = document.getElementById(`sign_${name}`);
+            signConstraints[name] = el ? el.value : 'free';
+        });
+
+        if (isFirstExecution || Object.keys(mediaParams).length === 0) {
+            optimizeHyperparameters(mediaCols, baseCols, dummyBaseCols, promoCols, dummyNoBaseCols, mediaGrpSeries, promoTransformed, signConstraints, X_names, Y_reg, Y_original, isMultiplicative);
+        }
+
+        document.getElementById('ajustCardFull').style.display = 'block';
+        document.getElementById('ajustAvis').style.display = 'none';
+        document.getElementById('executionSection').style.display = 'block';
+        document.getElementById('outputsAvis').style.display = 'none';
         
         let mediaTransformed = {};
         mediaCols.forEach(col => {
             let adstock = 0; let arr = [];
-            for(let i=0; i<N; i++) { adstock = (rawData[i][col]||0) + mediaParams[col].decay * adstock; arr.push(adstock); }
+            for(let i=0; i<N; i++) { adstock = (mediaGrpSeries[col][i]||0) + mediaParams[col].decay * adstock; arr.push(adstock); }
             let maxA = Math.max(...arr) || 1;
             mediaTransformed[col] = arr.map(v => { 
                 let n = v/maxA; return Math.pow(n, 1.2) / (Math.pow(n, 1.2) + Math.pow(mediaParams[col].K, 1.2)); 
             });
         });
 
-        let promoTransformed = {};
-        const isPromoInEuros = document.getElementById('promoUnitType').value === 'euro';
-        promoCols.forEach(col => {
-            promoTransformed[col] = [];
-            for(let i=0; i<N; i++) {
-                let originalVal = rawData[i][col] || 0;
-                promoTransformed[col].push(isPromoInEuros ? (originalVal / (Y_original[i] || 1)) : originalVal);
-            }
-        });
-
-        let X_names = [...baseCols, ...promoCols, ...mediaCols];
         let matX = [];
         for(let i=0; i<N; i++) {
             let row = [1];
             X_names.forEach(name => {
                 let val = mediaCols.includes(name) ? mediaTransformed[name][i] : 
                           (promoCols.includes(name) ? promoTransformed[name][i] : (rawData[i][name] || 0));
-                // En el model multiplicatiu, només les variables de Baseline entren en log-log
-                // (elasticitat clàssica). Promoció i Publicitat entren amb el seu valor original
-                // (semi-elasticitat): el seu efecte és proporcional, no log-log.
                 if(isMultiplicative && baseCols.includes(name)) val = Math.log(Math.max(val, 0.0001));
                 row.push(val);
             });
             matX.push(row);
         }
-
-        let signConstraints = {};
-        X_names.forEach(name => {
-            let el = document.getElementById(`sign_${name}`);
-            signConstraints[name] = el ? el.value : 'free';
-        });
 
         let solved = solveConstrainedOLS(X_names, matX, Y_reg, signConstraints);
         let intercept = solved.intercept;
@@ -475,16 +874,18 @@ function processModel() {
         let pValues = solved.pValues;
         let interceptP = solved.interceptP;
 
-        // Neteja i preparació de volums absoluts integrals
         weeklyContributions = {};
         weeklyContributions['Baseline Estructural'] = new Array(N).fill(0);
         promoCols.forEach(name => weeklyContributions[name] = new Array(N).fill(0));
         mediaCols.forEach(name => weeklyContributions[name] = new Array(N).fill(0));
+        dummyNoBaseCols.forEach(name => weeklyContributions[name] = new Array(N).fill(0));
 
         let Y_pred = [];
         let totalBaselineVolume = 0;
         let totalPromoVolume = 0;
         let mediaVolumesGlobal = {}; mediaCols.forEach(c => mediaVolumesGlobal[c] = 0);
+        let dummyVolumesGlobal = {}; dummyNoBaseCols.forEach(c => dummyVolumesGlobal[c] = 0);
+        let sumAbsolutePercentageError = 0;
 
         for(let i=0; i<N; i++) {
             let pred_val = 0;
@@ -496,40 +897,50 @@ function processModel() {
                     let val = Math.max(rawData[i][name]||0, 0.0001);
                     baseline_weekly *= Math.pow(val, weights[origin_idx]);
                 });
+                dummyBaseCols.forEach((name) => {
+                    let origin_idx = X_names.indexOf(name);
+                    let val = rawData[i][name] || 0;
+                    baseline_weekly *= Math.exp(weights[origin_idx] * val);
+                });
                 weeklyContributions['Baseline Estructural'][i] = baseline_weekly;
                 totalBaselineVolume += baseline_weekly;
-
-                // Descomposició en cascada (waterfall): cada factor s'aplica sobre el producte
-                // acumulat fins al moment, de manera que la suma de contribucions reconstrueix
-                // EXACTAMENT la predicció multiplicativa (baseline * Π promos * Π mitjans).
                 let runningProd = baseline_weekly;
 
                 promoCols.forEach((name) => {
                     let origin_idx = X_names.indexOf(name);
                     let val = promoTransformed[name][i] || 0;
-                    // Semi-elasticitat: factor multiplicatiu = exp(coeficient * valor original)
                     let newProd = runningProd * Math.exp(weights[origin_idx] * val);
                     let contrib = newProd - runningProd;
                     weeklyContributions[name][i] = contrib;
                     totalPromoVolume += contrib;
                     runningProd = newProd;
                 });
-
+                dummyNoBaseCols.forEach((name) => {
+                    let origin_idx = X_names.indexOf(name);
+                    let val = rawData[i][name] || 0;
+                    let newProd = runningProd * Math.exp(weights[origin_idx] * val);
+                    let contrib = newProd - runningProd;
+                    weeklyContributions[name][i] = contrib;
+                    dummyVolumesGlobal[name] += contrib;
+                    runningProd = newProd;
+                });
                 mediaCols.forEach((name) => {
                     let origin_idx = X_names.indexOf(name);
                     let val = mediaTransformed[name][i] || 0;
-                    // Semi-elasticitat: factor multiplicatiu = exp(coeficient * valor original)
                     let newProd = runningProd * Math.exp(weights[origin_idx] * val);
                     let contrib = newProd - runningProd;
                     weeklyContributions[name][i] = contrib;
                     mediaVolumesGlobal[name] += contrib;
                     runningProd = newProd;
                 });
-
                 pred_val = runningProd;
             } else {
                 let baseline_weekly = intercept;
                 baseCols.forEach((name) => {
+                    let origin_idx = X_names.indexOf(name);
+                    baseline_weekly += weights[origin_idx] * (rawData[i][name] || 0);
+                });
+                dummyBaseCols.forEach((name) => {
                     let origin_idx = X_names.indexOf(name);
                     baseline_weekly += weights[origin_idx] * (rawData[i][name] || 0);
                 });
@@ -539,12 +950,18 @@ function processModel() {
 
                 promoCols.forEach((name) => {
                     let origin_idx = X_names.indexOf(name);
-                    let eff = Math.max(0, weights[origin_idx] * (promoTransformed[name][i] || 0));
+                    let eff = weights[origin_idx] * (promoTransformed[name][i] || 0);
                     weeklyContributions[name][i] = eff;
                     pred_val += eff;
                     totalPromoVolume += eff;
                 });
-
+                dummyNoBaseCols.forEach((name) => {
+                    let origin_idx = X_names.indexOf(name);
+                    let eff = weights[origin_idx] * (rawData[i][name] || 0);
+                    weeklyContributions[name][i] = eff;
+                    pred_val += eff;
+                    dummyVolumesGlobal[name] += eff;
+                });
                 mediaCols.forEach((name) => {
                     let origin_idx = X_names.indexOf(name);
                     let eff = Math.max(0, weights[origin_idx] * (mediaTransformed[name][i] || 0));
@@ -554,60 +971,99 @@ function processModel() {
                 });
             }
             Y_pred.push(pred_val);
+            if (Y_original[i] !== 0) {
+                sumAbsolutePercentageError += Math.abs((Y_original[i] - pred_val) / Y_original[i]);
+            }
         }
 
         modelCoefficients = { 'Intercept / Constant': intercept };
         X_names.forEach((c, idx) => { modelCoefficients[c] = weights[idx]; });
 
-        // Pintar taula d'ajust bàsica
-        const coefTbody = document.getElementById('coefTableBody');
-        coefTbody.innerHTML = `<tr><td><strong>Constant B0</strong></td><td><span class="badge bg-base">Baseline</span></td><td><strong>${intercept.toFixed(4)}</strong> <span style="color:#dc2626;font-weight:700;">${sigCode(interceptP)}</span></td><td>p=${interceptP!==null?interceptP.toFixed(4):'—'}</td></tr>`;
-        X_names.forEach((name, idx) => {
-            let badge = baseCols.includes(name) ? '<span class="badge bg-base">Baseline</span>' : (promoCols.includes(name) ? '<span class="badge bg-promo">Promoció</span>' : '<span class="badge bg-media">Mitjà</span>');
-            let p = pValues[idx];
-            let pText = p !== null ? `p=${p.toFixed(4)}` : 'exclosa per restricció de signe';
-            coefTbody.innerHTML += `<tr><td><strong>${name}</strong></td><td>${badge}</td><td><strong>${weights[idx].toFixed(4)}</strong> <span style="color:#dc2626;font-weight:700;">${sigCode(p)}</span></td><td>${pText}</td></tr>`;
-        });
-        coefTbody.innerHTML += `<tr><td colspan="4" style="font-size:11px; color:#64748b; border:none; padding-top:8px;">Codis de significació: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</td></tr>`;
-
         let meanY = Y_original.reduce((a,b)=>a+b,0)/N;
         let ssTot = Y_original.reduce((s,y)=>s+Math.pow(y-meanY,2),0);
         let ssRes = Y_original.reduce((s,y,idx)=>s+Math.pow(y-Y_pred[idx],2),0);
-        document.getElementById('r2Value').innerText = Math.max(0, 1 - (ssRes/(ssTot||1))).toFixed(4);
+        let r2Fit = Math.max(0, 1 - (ssRes/(ssTot||1)));
+        let rmseFit = Math.sqrt(ssRes / N);
+        let mapeFit = (sumAbsolutePercentageError / N) * 100;
 
-        // REQUERIMENT REVISAT: L'explorador ja no mostra els components individuals de la baseline, només l'agrupació!
+        document.getElementById('r2TopBadge').innerText = r2Fit.toFixed(4);
+        document.getElementById('rmseTopBadge').innerText = rmseFit.toFixed(2);
+        document.getElementById('mapeTopBadge').innerText = mapeFit.toFixed(2) + "%";
+
+        const coefTbody = document.getElementById('coefTableBody');
+        coefTbody.innerHTML = `<tr><td>Constant B0</td><td><span class="badge bg-base">Baseline</span></td><td>${intercept.toFixed(4)}</td><td>p=${interceptP!==null?interceptP.toFixed(4):'—'} <span style="color:#dc2626;">${sigCode(interceptP)}</span></td><td></td><td></td></tr>`;
+        X_names.forEach((name, idx) => {
+            let badge = (baseCols.includes(name) || dummyBaseCols.includes(name)) ? '<span class="badge bg-base">Baseline</span>' :
+                        (promoCols.includes(name) ? '<span class="badge bg-promo">Promoció</span>' :
+                        (dummyNoBaseCols.includes(name) ? '<span class="badge bg-dummy">Dummy</span>' : '<span class="badge bg-media">Mitjà</span>'));
+            let p = pValues[idx];
+            let pText = p !== null ? `p=${p.toFixed(4)}` : 'exclosa';
+            let decayCell = ''; let satCell = '';
+            if (mediaCols.includes(name)) {
+                let mp = mediaParams[name];
+                decayCell = `<div class="hill-config-row">
+                    <input type="range" id="rng_decay_${name}" min="0" max="0.95" step="0.05" value="${mp.decay.toFixed(2)}" oninput="updateParamFromInput('${name}','decay',this.value)">
+                    <input type="number" id="num_decay_${name}" class="hill-config-num" min="0" max="0.95" step="0.05" value="${mp.decay.toFixed(2)}" oninput="updateParamFromInput('${name}','decay',this.value)">
+                </div>`;
+                satCell = `<div class="hill-config-row">
+                    <input type="range" id="rng_k_${name}" min="0.1" max="1" step="0.05" value="${mp.K.toFixed(2)}" oninput="updateParamFromInput('${name}','K',this.value)">
+                    <input type="number" id="num_k_${name}" class="hill-config-num" min="0.1" max="1" step="0.05" value="${mp.K.toFixed(2)}" oninput="updateParamFromInput('${name}','K',this.value)">
+                </div>`;
+            }
+            coefTbody.innerHTML += `<tr><td>${name}</td><td>${badge}</td><td>${weights[idx].toFixed(4)}</td><td>${pText} <span style="color:#dc2626;">${sigCode(p)}</span></td><td>${decayCell}</td><td>${satCell}</td></tr>`;
+        });
+
         const selector = document.getElementById('variableSelector');
         selector.innerHTML = `<option value="ALL_TOGETHER">-- VEURE TOTS ELS BLOCS JUNTS (Stacked) --</option>
                               <option value="Baseline Estructural">Baseline Estructural Global</option>`;
         promoCols.forEach(name => { selector.innerHTML += `<option value="${name}">${name}</option>`; });
+        dummyNoBaseCols.forEach(name => { selector.innerHTML += `<option value="${name}">${name}</option>`; });
         mediaCols.forEach(name => { selector.innerHTML += `<option value="${name}">${name}</option>`; });
         selector.value = "ALL_TOGETHER";
 
         renderAjust(Y_original, Y_pred);
         updateWeeklyVariableChart();
-        
-        // REQUERIMENT REVISAT: Corregir el Pie Chart perquè agafi de veritat la suma global real i totalitzada
-        renderPie(totalBaselineVolume, totalPromoVolume, mediaVolumesGlobal);
-        renderRoi(mediaCols, mediaVolumesGlobal);
-        renderHill(mediaCols);
+        renderPie(totalBaselineVolume, totalPromoVolume, mediaVolumesGlobal, dummyVolumesGlobal);
+        renderRoi(mediaCols, mediaVolumesGlobal, mediaSpendSeries);
+
+        if (isFirstExecution) {
+            switchTab('tab-ajust');
+        }
+
     } catch(err) { alert(err.message); }
 }
-
-function uParam(m, p, v) { mediaParams[m][p] = parseFloat(v); }
 
 function renderAjust(r, p) {
     const ctx = document.getElementById('chartAjust').getContext('2d'); if(chartAjustInstance) chartAjustInstance.destroy();
     chartAjustInstance = new Chart(ctx, { 
         type: 'line', 
-        data: { labels: r.map((_,i)=>`Setmana ${i+1}`), datasets: [{label:'Real', data:r, borderColor:'#1f2937', fill:false}, {label:'Modelat', data:p, borderColor:'#3b82f6', borderDash:[4,4]}] },
-        options: { responsive:true, maintainAspectRatio:false, scales: { y: { beginAtZero: true } } }
+        data: { labels: r.map((_,i)=>`P${i+1}`), datasets: [
+            {label:'Real', data:r, borderColor:'#1f2937', fill:false, pointRadius:0, tension:0.15},
+            {label:'Modelat', data:p, borderColor:'#3b82f6', borderDash:[4,4], pointRadius:0, tension:0.15}
+        ] },
+        options: { responsive:true, maintainAspectRatio:false, scales: {
+            x: { ticks: {
+                maxRotation: 0, minRotation: 0, autoSkip: false,
+                callback: function(value, index) {
+                    const total = this.chart.data.labels.length;
+                    let step = 1;
+                    if (total > 60) step = 8;
+                    else if (total > 40) step = 6;
+                    else if (total > 26) step = 4;
+                    else if (total > 16) step = 3;
+                    else if (total > 10) step = 2;
+                    return (index % step === 0) ? this.getLabelForValue(value) : '';
+                }
+            } },
+            y: { beginAtZero: true }
+        } }
     });
 }
 
 function updateWeeklyVariableChart() {
     const ctx = document.getElementById('chartWeeklyVariable').getContext('2d'); if(chartWeeklyInstance) chartWeeklyInstance.destroy();
     const selectedVar = document.getElementById('variableSelector').value;
-    const N = rawData.length; let labels = Array.from({length: N}, (_, i) => `S${i+1}`);
+    const N = rawData.length; let labels = Array.from({length: N}, (_, i) => `P${i+1}`);
     
     if(selectedVar === 'ALL_TOGETHER') {
         let datasets = [{ label: 'Baseline Estructural Global', data: weeklyContributions['Baseline Estructural'], backgroundColor: '#9ca3af' }];
@@ -617,83 +1073,40 @@ function updateWeeklyVariableChart() {
                 datasets.push({ label: k, data: weeklyContributions[k], backgroundColor: color });
             }
         });
-        chartWeeklyInstance = new Chart(ctx, { type: 'bar', data: { labels: labels, datasets: datasets }, options: { responsive:true, maintainAspectRatio:false, scales:{x:{stacked:true},y:{stacked:true}} } });
+        chartWeeklyInstance = new Chart(ctx, { 
+            type: 'bar', 
+            data: { labels: labels, datasets: datasets }, 
+            options: { 
+                responsive:true, maintainAspectRatio:false, 
+                scales:{
+                    x:{ stacked:true, ticks: { maxRotation: 0, minRotation: 0, autoSkip: false, callback: function(value, index) { const total = this.chart.data.labels.length; let step = 1; if (total > 60) step = 8; else if (total > 40) step = 6; else if (total > 26) step = 4; else if (total > 16) step = 3; else if (total > 10) step = 2; return (index % step === 0) ? this.getLabelForValue(value) : ''; } } },
+                    y:{ stacked:true }
+                } 
+            } 
+        });
     } else {
-        chartWeeklyInstance = new Chart(ctx, { type: 'bar', data: { labels: labels, datasets: [{ label: selectedVar, data: weeklyContributions[selectedVar], backgroundColor: '#3b82f6' }] }, options: { responsive:true, maintainAspectRatio:false } });
+        chartWeeklyInstance = new Chart(ctx, { 
+            type: 'bar', 
+            data: { labels: labels, datasets: [{ label: selectedVar, data: weeklyContributions[selectedVar], backgroundColor: '#3b82f6' }] }, 
+            options: { responsive:true, maintainAspectRatio:false, scales: { x: { ticks: { maxRotation: 0, minRotation: 0, autoSkip: false, callback: function(value, index) { const total = this.chart.data.labels.length; let step = 1; if (total > 60) step = 8; else if (total > 40) step = 6; else if (total > 26) step = 4; else if (total > 16) step = 3; else if (total > 10) step = 2; return (index % step === 0) ? this.getLabelForValue(value) : ''; } } } } } 
+        });
     }
 }
 
-function renderPie(bVol, pVol, mVolumesObj) {
+function renderPie(bVol, pVol, mVolumesObj, dVolumesObj) {
     const ctx = document.getElementById('chartPie').getContext('2d'); if(chartPieInstance) chartPieInstance.destroy();
-    
-    // Sumem correctament tot el pastís per tenir percentatges reals sobre la descomposició atribuïda
     let labels = ['Baseline Estructural Global', 'Volum per Promocions'];
     let data = [Math.max(0, bVol), Math.max(0, pVol)];
-    let colors = ['#475569', '#f59e0b']; // Gris fosc per baseline, grogós per promocions
-    
-    Object.keys(mVolumesObj).forEach((k, i) => {
-        labels.push(`Mitjà: ${k}`);
-        data.push(Math.max(0, mVolumesObj[k]));
-        colors.push(`hsl(${210 + (i * 35)}, 75%, 50%)`);
-    });
-
-    chartPieInstance = new Chart(ctx, {
-        type: 'pie',
-        data: { labels: labels, datasets: [{ data: data, backgroundColor: colors }] },
-        options: { 
-            responsive: true, 
-            maintainAspectRatio: false,
-            plugins: {
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            let total = context.dataset.data.reduce((a, b) => a + b, 0);
-                            let val = context.raw;
-                            let pct = ((val / total) * 100).toFixed(1);
-                            return `${context.label}: ${Math.round(val).toLocaleString()} unitats (${pct}%)`;
-                        }
-                    }
-                }
-            }
-        }
-    });
+    let colors = ['#475569', '#f59e0b'];
+    Object.keys(mVolumesObj).forEach((k, i) => { labels.push(`Mitjà: ${k}`); data.push(Math.max(0, mVolumesObj[k])); colors.push(`hsl(${210 + (i * 35)}, 75%, 50%)`); });
+    if (dVolumesObj) { Object.keys(dVolumesObj).forEach((k, i) => { labels.push(`Dummy: ${k}`); data.push(Math.max(0, dVolumesObj[k])); colors.push(`hsl(${265 + (i * 20)}, 65%, 55%)`); }); }
+    chartPieInstance = new Chart(ctx, { type: 'pie', data: { labels: labels, datasets: [{ data: data, backgroundColor: colors }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { tooltip: { callbacks: { label: function(context) { let total = context.dataset.data.reduce((a, b) => a + b, 0); let val = context.raw; let pct = ((val / total) * 100).toFixed(1); return `${context.label}: ${Math.round(val).toLocaleString()} unitats (${pct}%)`; } } } } } });
 }
 
-function renderRoi(cols, mVolumesObj) {
+function renderRoi(cols, mVolumesObj, spendSeriesObj) {
     const ctx = document.getElementById('chartRoi').getContext('2d'); if(chartRoiInstance) chartRoiInstance.destroy();
-    let rois = cols.map(c => { let s = rawData.reduce((acc,row)=>acc+(row[c]||0),0); return s>0 ? mVolumesObj[c]/s : 0; });
-    chartRoiInstance = new Chart(ctx, { type: 'bar', data: { labels:cols, datasets:[{label:'ROI / Eficiència marginal', data:rois, backgroundColor:'#10b981'}] }, options: { responsive:true, maintainAspectRatio:false } });
-}
-
-function renderHill(cols) {
-    const ctx = document.getElementById('chartHill').getContext('2d'); if(chartHillInstance) chartHillInstance.destroy();
-    let datasets = [];
-    cols.forEach((c,i) => {
-        let pts = []; for(let x=0; x<=100; x+=10) { let n = x/100; pts.push({x:x, y:(Math.pow(n,1.2)/(Math.pow(n,1.2)+Math.pow(0.5,1.2)))*100}); }
-        datasets.push({ label:c, data:pts, borderColor:`hsl(${210+(i*35)},75%,50%)`, showLine:true, pointRadius:0, fill:false });
-    });
-    chartHillInstance = new Chart(ctx, { type: 'scatter', data: { datasets:datasets }, options: { responsive:true, maintainAspectRatio:false } });
-}
-
-function runBudgetOptimizer() {
-    const budget = parseFloat(document.getElementById('totalBudgetInput').value)||0;
-    const cols = Object.keys(mediaParams); if(!cols.length) return;
-    let alloc = {}; cols.forEach(c=>alloc[c]=0);
-    let steps = 100; let step = budget/steps;
-    for(let s=0; s<steps; s++) {
-        let best = null; let maxM = -Infinity;
-        cols.forEach(c => {
-            let cur = alloc[c]; let nxt = cur + step;
-            let b = modelCoefficients[c] || 1;
-            let satC = Math.pow(cur/budget||0, 1.2) / (Math.pow(cur/budget||0, 1.2) + Math.pow(0.5, 1.2));
-            let satN = Math.pow(nxt/budget, 1.2) / (Math.pow(nxt/budget, 1.2) + Math.pow(0.5, 1.2));
-            let r = (satN - satC) * b; if(r > maxM) { maxM = r; best = c; }
-        });
-        if(best) alloc[best] += step;
-    }
-    let h = '<table class="mapping-table"><thead><tr><th>Canal</th><th>Recomanat</th></tr></thead><tbody>';
-    cols.forEach(c => { h += `<tr><td><strong>${c}</strong></td><td>${alloc[c].toFixed(2)}</td></tr>`; });
-    document.getElementById('optimizerResults').innerHTML = h + '</tbody></table>';
+    let rois = cols.map(c => { let series = (spendSeriesObj && spendSeriesObj[c]) ? spendSeriesObj[c] : []; let spend = series.reduce((acc,v)=>acc+(v||0), 0); return spend > 0 ? mVolumesObj[c]/spend : 0; });
+    chartRoiInstance = new Chart(ctx, { type: 'bar', data: { labels: cols, datasets: [{ label: 'ROI (unitats per € invertit)', data: rois, backgroundColor: '#10b981' }] }, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, scales: { x: { beginAtZero: true } } } });
 }
 </script>
 </body>
