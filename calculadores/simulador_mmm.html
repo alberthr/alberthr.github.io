@@ -179,7 +179,6 @@
             width: 100%;
         }
 		
-		/* Assegura que cap botó dins del contenidor de pestanyes ocupi el 100% d'ample */
 		.tabs-container button {
 			width: auto;
 		}		
@@ -210,7 +209,7 @@
 
         .chart-container-full { position: relative; width: 100%; height: 400px; margin-bottom: 20px; background: white; border: 1px solid var(--cc-border); padding: 15px; border-radius: var(--cc-radius); }
         .chart-container { position: relative; width: 100%; height: 350px; background: white; border: 1px solid var(--cc-border); padding: 15px; border-radius: var(--cc-radius); }
-        .charts-table { display: table; width: 100%; }
+        .charts-table { display: table; width: 100%; table-layout: fixed; }
         .charts-row { display: table-row; }
         .charts-cell { display: table-cell; width: 50%; padding: 10px; vertical-align: top; }
 
@@ -257,19 +256,20 @@
         .bg-promo { background: #fef3c7; color: #92400e; }
         .bg-dummy { background: #ede9fe; color: #6d28d9; }
 
-        .methodology-footer { margin-top: var(--cc-space-6); border-top: 1px dashed var(--cc-border); padding-top: var(--cc-space-4); font-size: 11.5px; color: var(--cc-text-light); line-height: 1.5; }
+        .methodology-footer { margin-top: var(--cc-space-6); border-top: 1px dashed var(--cc-border); padding-top: var(--cc-space-4); font-size: 11.5px; color: var(--text-light); line-height: 1.5; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="ccob-title">Simlador de Marketing Mix Modeling (MMM)</div>
+    <div class="ccob-title">Simulador de Marketing Mix Modeling (MMM)</div>
     <h3 class="ccob-subtitle">Model d'estimació OLS amb adstock i saturació</h3>
 
     <div class="tabs-container">
         <button class="tab-btn active" id="btn-carrega" onclick="switchTab('tab-carrega')">Càrrega de Dades</button>
         <button class="tab-btn" id="btn-ajust" onclick="switchTab('tab-ajust')">Ajust del Model</button>
         <button class="tab-btn" id="btn-outputs" onclick="switchTab('tab-outputs')">Descomposició i ROI</button>
+        <button class="tab-btn" id="btn-optimitzacion" onclick="switchTab('tab-optimitzacion')">Optimització de pressupost</button>
     </div>
 
     <div id="tab-carrega" class="tab-content active">
@@ -316,7 +316,7 @@
         <div id="ajustCardFull" style="display:none;">
             <div style="display:flex; align-items:center; justify-content:space-between; gap: var(--cc-space-3); border-bottom: 1px solid var(--cc-border); padding-bottom: var(--cc-space-3); margin-bottom: var(--cc-space-4);">
                 <h2 style="margin:0; font-size: 14px; font-weight: 600; color: var(--cc-dark); text-transform: uppercase;">Resum de l'Ajust de Modelització i Mètrics de Precisió</h2>
-                <button class="btn-primary" style="background:#475569; border-color:#475569; white-space:nowrap;" onclick="processModel(false)">Modelitzar amb nous paràmetres</button>
+                <button class="btn-primary" style="background:#475569; border-color:#475569; white-space:nowrap;" onclick="processModel(false)">Modelitzar amb novos paràmetres</button>
             </div>
 
             <div style="background: var(--cc-primary-light); border: 1px solid var(--cc-primary); padding: var(--cc-space-3); border-radius: var(--cc-radius); margin-bottom: var(--cc-space-4); display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
@@ -357,7 +357,7 @@
             <div class="chart-container-full"><canvas id="chartAjust"></canvas></div>
         </div>
         <div id="ajustAvis" class="optimizer-box" style="text-align: center; color: var(--cc-text-light);">
-            Si us plau, carrega les dades i executa el model a la pestanya 1 per veure l'ajust.
+            Si us plau, carrega les dades i executa el model a la pestanya 1 per ver l'ajust.
         </div>
     </div>
 
@@ -387,17 +387,58 @@
         </div>
     </div>
 
+    <div id="tab-optimitzacion" class="tab-content">
+        <div id="optimitzacionSection" style="display:none;">
+            <div class="optimizer-box" style="background: white;">
+                <h2>Corbes de Rendiment Anuals i Optimització</h2>
+                <p class="text-muted" style="margin-bottom: 15px; color: var(--cc-text-light);">Aquest gràfic mostra la resposta acumulada anual de cada mitjà simulant escenaris des del 0 € fins a la inversió total màxima anualitzada del mix multiplicada per 1.5. Les funcions estan limitades asimptòticament a un màxim d'un 125% de la venda incremental històrica per evitar distorsions irreals.</p>
+                <div class="chart-container-full" style="height: 500px;"><canvas id="chartCorbesAnuals"></canvas></div>
+            </div>
+
+            <div class="optimizer-box" style="background: white;">
+                <h2>Optimitzador Automàtic de Pressupost Anual</h2>
+                <p style="color: var(--cc-text-light); margin-bottom: 15px;">Introdueix el pressupost total anual disponible. El sistema simularà de forma incremental l'assignació òptima euro a euro distribuïda uniformement en el temps, maximitzant el retorn total esperat segons les corbes de saturació del model actual.</p>
+                
+                <div style="display: flex; gap: 15px; align-items: flex-end; margin-bottom: 25px; max-width: 500px;">
+                    <div style="flex: 1;">
+                        <label style="font-weight: 600; display: block; margin-bottom: 5px; color: var(--cc-dark);">Pressupost Anual Total (€):</label>
+                        <input type="number" id="inputPressupostOptim" value="500000" min="1000" step="5000" style="height: 35px; font-size: 14px;">
+                    </div>
+                    <button class="btn-primary" style="height: 35px; padding: 0 25px;" onclick="calcularOptimitzacioPressupost()">Optimitzar Mix</button>
+                </div>
+
+                <div class="charts-table" id="resultadosOptimetria" style="display: none;">
+                    <div class="charts-row">
+                        <div class="charts-cell" style="width: 45%;">
+                            <div class="chart-container" style="height: 360px;"><canvas id="chartPieOptim"></canvas></div>
+                        </div>
+                        <div class="charts-cell" style="width: 55%;">
+                            <div style="background: var(--cc-bg-soft); border: 1px solid var(--cc-border); padding: 15px; border-radius: var(--cc-radius); height: 360px; overflow-y: auto;">
+                                <h3 style="margin-top:0; font-size:12px; text-transform:uppercase; color:var(--cc-dark); border-bottom:1px solid var(--cc-border); padding-bottom:5px;">Distribució Detallada</h3>
+                                <div id="taulaDetallOptim" style="font-size: 12.5px; width: 100%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="optimitzacionAvis" class="optimizer-box" style="text-align: center; color: var(--cc-text-light);">
+            Si us plau, carrega les dades i executa el model a la pestanya 1 per veure les corbes de rendiment anualitzades i l'optimitzador.
+        </div>
+    </div>
+
     <div class="methodology-footer">
         <p><b>Nota Metodològica de Modelització:</b> Aquesta eina utilitza mètodes de regressió lineal multivariable estimats mitjançant OLS amb transformacions dinàmiques d'Adstock de caiguda geomètrica i corbes de saturació no lineals. L'algoritme de background cerca numèricament l'hiperparàmetre que minimitza l'error de predicció global. Les estimacions reflecteixen valors d'atribució directa sobre el KPI triat.</p>
     </div>
 </div>
 
 <script>
-Chart.defaults.animation = false; // <-- Afegeix-ho aquí
+Chart.defaults.animation = false;
 
 let rawData = []; let columns = [];
-let chartAjustInstance = null; let chartPieInstance = null; let chartRoiInstance = null; let chartWeeklyInstance = null;
+let chartAjustInstance = null; let chartPieInstance = null; let chartRoiInstance = null; let chartWeeklyInstance = null; let chartCorbesAnualsInstance = null; let chartPieOptimInstance = null;
 let mediaParams = {}; let modelCoefficients = {}; let weeklyContributions = {};
+let dadesGlobalsPerOptimitzar = null; // Guardarà referències del model per l'optimitzador
 
 function switchTab(tabId) {
     document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -407,6 +448,7 @@ function switchTab(tabId) {
     if (tabId === 'tab-carrega') document.getElementById('btn-carrega').classList.add('active');
     if (tabId === 'tab-ajust') document.getElementById('btn-ajust').classList.add('active');
     if (tabId === 'tab-outputs') document.getElementById('btn-outputs').classList.add('active');
+    if (tabId === 'tab-optimitzacion') document.getElementById('btn-optimitzacion').classList.add('active');
 }
 
 document.getElementById('fileInput').addEventListener('change', function(e) {
@@ -845,6 +887,8 @@ function processModel(isFirstExecution = false) {
         document.getElementById('ajustAvis').style.display = 'none';
         document.getElementById('executionSection').style.display = 'block';
         document.getElementById('outputsAvis').style.display = 'none';
+        document.getElementById('optimitzacionSection').style.display = 'block';
+        document.getElementById('optimitzacionAvis').style.display = 'none';
         
         let mediaTransformed = {};
         mediaCols.forEach(col => {
@@ -887,6 +931,8 @@ function processModel(isFirstExecution = false) {
         let dummyVolumesGlobal = {}; dummyNoBaseCols.forEach(c => dummyVolumesGlobal[c] = 0);
         let sumAbsolutePercentageError = 0;
 
+        window.weeklyBaseProd = new Array(N).fill(1);
+
         for(let i=0; i<N; i++) {
             let pred_val = 0;
             if(isMultiplicative) {
@@ -924,6 +970,9 @@ function processModel(isFirstExecution = false) {
                     dummyVolumesGlobal[name] += contrib;
                     runningProd = newProd;
                 });
+                
+                window.weeklyBaseProd[i] = runningProd;
+
                 mediaCols.forEach((name) => {
                     let origin_idx = X_names.indexOf(name);
                     let val = mediaTransformed[name][i] || 0;
@@ -1025,6 +1074,16 @@ function processModel(isFirstExecution = false) {
         updateWeeklyVariableChart();
         renderPie(totalBaselineVolume, totalPromoVolume, mediaVolumesGlobal, dummyVolumesGlobal);
         renderRoi(mediaCols, mediaVolumesGlobal, mediaSpendSeries);
+        
+        // Guardar dades necessàries en una referència global per l'optimitzador
+        dadesGlobalsPerOptimitzar = {
+            mediaCols, isMultiplicative, mediaGrpSeries, mediaSpendSeries, X_names, weights, mediaCost, mediaUnitType, N
+        };
+        
+        renderCorbesAnuals(mediaCols, isMultiplicative, mediaGrpSeries, mediaSpendSeries, X_names, weights, mediaCost, mediaUnitType);
+        
+        // Disparar automàticament la primera optimització amb el valor per defecte de l'input
+        calcularOptimitzacioPressupost();
 
         if (isFirstExecution) {
             switchTab('tab-ajust');
@@ -1107,6 +1166,288 @@ function renderRoi(cols, mVolumesObj, spendSeriesObj) {
     const ctx = document.getElementById('chartRoi').getContext('2d'); if(chartRoiInstance) chartRoiInstance.destroy();
     let rois = cols.map(c => { let series = (spendSeriesObj && spendSeriesObj[c]) ? spendSeriesObj[c] : []; let spend = series.reduce((acc,v)=>acc+(v||0), 0); return spend > 0 ? mVolumesObj[c]/spend : 0; });
     chartRoiInstance = new Chart(ctx, { type: 'bar', data: { labels: cols, datasets: [{ label: 'ROI (unitats per € invertit)', data: rois, backgroundColor: '#10b981' }] }, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, scales: { x: { beginAtZero: true } } } });
+}
+
+function renderCorbesAnuals(mediaCols, isMultiplicative, mediaGrpSeries, mediaSpendSeries, X_names, weights, mediaCost, mediaUnitType) {
+    const ctx = document.getElementById('chartCorbesAnuals').getContext('2d'); if(chartCorbesAnualsInstance) chartCorbesAnualsInstance.destroy();
+
+    let datasets = [];
+    const N = rawData.length;
+
+    let totalSpendMixSetmanal = 0;
+    mediaCols.forEach(nomMitja => {
+        const inversioOriginals = mediaSpendSeries[nomMitja] || [];
+        totalSpendMixSetmanal += inversioOriginals.reduce((a, b) => a + (b || 0), 0) / N;
+    });
+    const totalMixSpendAnualitzat = totalSpendMixSetmanal * 52;
+    const maximInversioEixX = Math.round(totalMixSpendAnualitzat * 1.5) || 1000000;
+
+    let maxVendaIncrementalSetmanalHist = 0;
+    for(let t=0; t<N; t++) {
+        let sumaSetmanalMedia = 0;
+        mediaCols.forEach(nomMitja => {
+            if(weeklyContributions[nomMitja]) {
+                sumaSetmanalMedia += weeklyContributions[nomMitja][t] || 0;
+            }
+        });
+        if(sumaSetmanalMedia > maxVendaIncrementalSetmanalHist) {
+            maxVendaIncrementalSetmanalHist = sumaSetmanalMedia;
+        }
+    }
+    const sostreVendaAnualHill = (maxVendaIncrementalSetmanalHist * 52) * 1.25;
+
+    mediaCols.forEach((nomMitja, index) => {
+        let puntsCorba = [];
+        const beta = weights[X_names.indexOf(nomMitja)] || 0;
+        const decay = mediaParams[nomMitja].decay;
+        const K = mediaParams[nomMitja].K;
+        const costUnitari = mediaCost[nomMitja] || 500;
+        const gprsOriginals = mediaGrpSeries[nomMitja] || [];
+        
+        if (beta === 0) return;
+
+        let tempAdstock = 0; let tempArr = [];
+        for(let i=0; i<N; i++) { tempAdstock = (gprsOriginals[i]||0) + decay * tempAdstock; tempArr.push(tempAdstock); }
+        const maxA = Math.max(...tempArr) || 1;
+
+        const totalPassos = 100;
+        for (let p = 0; p <= totalPassos; p++) {
+            let inversioSimuladaAnual = (maximInversioEixX / totalPassos) * p;
+            let resultatsVendes = simularVendaCanalAnual(nomMitja, inversioSimuladaAnual, beta, decay, K, maxA, costUnitari, mediaUnitType[nomMitja], isMultiplicative, N, sostreVendaAnualHill);
+
+            puntsCorba.push({
+                x: Math.round(inversioSimuladaAnual),
+                y: Math.round(resultatsVendes)
+            });
+        }
+
+        let color = `hsl(${210 + (index * 35)}, 75%, 50%)`;
+        datasets.push({
+            label: nomMitja,
+            data: puntsCorba,
+            borderColor: color,
+            backgroundColor: color,
+            borderWidth: 3,
+            pointRadius: 0,
+            hoverPointRadius: 5,
+            fill: false,
+            tension: 0.15
+        });
+    });
+
+    chartCorbesAnualsInstance = new Chart(ctx, {
+        type: 'line',
+        data: { datasets: datasets },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    type: 'linear',
+                    min: 0,
+                    max: maximInversioEixX,
+                    title: { display: true, text: 'Inversió Anual de l\'Eix de Canals (€)', font: { weight: 'bold' } },
+                    ticks: { callback: function(value) { return value.toLocaleString() + ' €'; } }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: { display: true, text: 'Vendes Anualitzades Incrementals Atribuïdes (Unitats)', font: { weight: 'bold' } },
+                    ticks: { callback: function(value) { return value.toLocaleString(); } }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.dataset.label}: ${context.raw.y.toLocaleString()} unitats (${context.raw.x.toLocaleString()} €)`;
+                        }
+                    }
+                },
+                legend: { position: 'top', labels: { boxWidth: 20 } }
+            }
+        }
+    });
+}
+
+/* FUNCIONS AUXILIARS I MOTOR DE L'OPTIMITZADOR */
+
+function simularVendaCanalAnual(nomMitja, inversioAnual, beta, decay, K, maxA, costUnitari, unitType, isMultiplicative, N, sostreVendaAnualHill) {
+    let inversioSetmanalSimulada = (inversioAnual / 52);
+    let unitatSetmanalSimulada = (unitType === 'grp') ? (inversioSetmanalSimulada / costUnitari) : inversioSetmanalSimulada;
+
+    let adstockAcumulat = 0;
+    let vendesTotalsAnualsEscenari = 0;
+
+    for (let t = 0; t < N; t++) {
+        adstockAcumulat = unitatSetmanalSimulada + (decay * adstockAcumulat);
+        let n = adstockAcumulat / maxA;
+        let sat = Math.pow(n, 1.2) / (Math.pow(n, 1.2) + Math.pow(K, 1.2));
+
+        let contribSetmana = 0;
+        if (isMultiplicative) {
+            let baseProd = window.weeklyBaseProd ? window.weeklyBaseProd[t] : 1;
+            contribSetmana = baseProd * (Math.exp(beta * sat) - 1);
+        } else {
+            contribSetmana = beta * sat;
+        }
+        vendesTotalsAnualsEscenari += Math.max(0, contribSetmana);
+    }
+
+    let vendesAnualitzades = vendesTotalsAnualsEscenari * (52 / N);
+    if (vendesAnualitzades > sostreVendaAnualHill) {
+        vendesAnualitzades = sostreVendaAnualHill;
+    }
+    return vendesAnualitzades;
+}
+
+function calcularOptimitzacioPressupost() {
+    if (!dadesGlobalsPerOptimitzar) return;
+    
+    const { mediaCols, isMultiplicative, mediaGrpSeries, X_names, weights, mediaCost, mediaUnitType, N } = dadesGlobalsPerOptimitzar;
+    const pressupostTotalAnual = parseFloat(document.getElementById('inputPressupostOptim').value);
+    
+    if (isNaN(pressupostTotalAnual) || pressupostTotalAnual <= 0) {
+        alert("Si us plau, introdueix un pressupost vàlid.");
+        return;
+    }
+
+    // Unificació del sostre (mateix criteri de la funció matriu)
+    let maxVendaIncrementalSetmanalHist = 0;
+    for(let t=0; t<N; t++) {
+        let sumaSetmanalMedia = 0;
+        mediaCols.forEach(m => { if(weeklyContributions[m]) { sumaSetmanalMedia += weeklyContributions[m][t] || 0; } });
+        if(sumaSetmanalMedia > maxVendaIncrementalSetmanalHist) maxVendaIncrementalSetmanalHist = sumaSetmanalMedia;
+    }
+    const sostreVendaAnualHill = (maxVendaIncrementalSetmanalHist * 52) * 1.25;
+
+    // Extreure els paràmetres base estables de cada canal de mitjans actiu
+    let canalsInfo = mediaCols.map((nomMitja, idx) => {
+        const beta = weights[X_names.indexOf(nomMitja)] || 0;
+        const decay = mediaParams[nomMitja].decay;
+        const K = mediaParams[nomMitja].K;
+        const costUnitari = mediaCost[nomMitja] || 500;
+        const gprsOriginals = mediaGrpSeries[nomMitja] || [];
+        
+        let tempAdstock = 0; let tempArr = [];
+        for(let i=0; i<N; i++) { tempAdstock = (gprsOriginals[i]||0) + decay * tempAdstock; tempArr.push(tempAdstock); }
+        const maxA = Math.max(...tempArr) || 1;
+
+        return { nom: nomMitja, beta, decay, K, maxA, costUnitari, type: mediaUnitType[nomMitja] };
+    }).filter(c => c.beta > 0);
+
+    if(canalsInfo.length === 0) {
+        alert("No hi ha canals de publicitat amb coeficients positius vàlids per optimitzar.");
+        return;
+    }
+
+    // Algorisme incremental d'optimització Greedy (repartiment en 200 iteracions numèriques per precisió/velocitat)
+    let inversionsAssignades = {};
+    canalsInfo.forEach(c => inversionsAssignades[c.nom] = 0);
+    
+    const passosAlgorisme = 200;
+    const incrementEuros = pressupostTotalAnual / passosAlgorisme;
+
+    for (let step = 0; step < passosAlgorisme; step++) {
+        let millorCanal = null;
+        let maximRetornMarginal = -Infinity;
+
+        canalsInfo.forEach(c => {
+            let invActual = inversionsAssignades[c.nom];
+            
+            let vActual = simularVendaCanalAnual(c.nom, invActual, c.beta, c.decay, c.K, c.maxA, c.costUnitari, c.type, isMultiplicative, N, sostreVendaAnualHill);
+            let vSimulada = simularVendaCanalAnual(c.nom, invActual + incrementEuros, c.beta, c.decay, c.K, c.maxA, c.costUnitari, c.type, isMultiplicative, N, sostreVendaAnualHill);
+            
+            let retornMarginal = vSimulada - vActual;
+            if (retornMarginal > maximRetornMarginal) {
+                maximRetornMarginal = retornMarginal;
+                millorCanal = c.nom;
+            }
+        });
+
+        if (millorCanal) {
+            inversionsAssignades[millorCanal] += incrementEuros;
+        }
+    }
+
+    // Preparar les dades i resultats finals de l'optimització
+    let labelsPie = [];
+    let dadesPie = [];
+    let colorsPie = [];
+    let htmlTaula = `<table style="width:100%; border-collapse:collapse; margin-top:10px; table-layout:fixed;">
+        <thead>
+            <tr style="border-bottom:1px solid var(--cc-border-strong); text-align:left; font-size:11px; color:var(--cc-text-light); text-transform:uppercase;">
+                <th style="padding:6px 0; width:40%;">Canal</th>
+                <th style="text-align:right; width:20%;">Inversió Òptima</th>
+                <th style="text-align:right; width:20%;">Mix (%)</th>
+                <th style="text-align:right; width:20%;">Vendes Est. (Inc)</th>
+            </tr>
+        </thead>
+        <tbody>`;
+
+    let totalVendesMaximitza = 0;
+
+    canalsInfo.forEach((c, index) => {
+        let finalInv = inversionsAssignades[c.nom];
+        let pctMix = (finalInv / pressupostTotalAnual) * 100;
+        let vendesEstimades = simularVendaCanalAnual(c.nom, finalInv, c.beta, c.decay, c.K, c.maxA, c.costUnitari, c.type, isMultiplicative, N, sostreVendaAnualHill);
+        totalVendesMaximitza += vendesEstimades;
+
+        labelsPie.push(c.nom);
+        dadesPie.push(Math.round(finalInv));
+        let col = `hsl(${210 + (index * 35)}, 75%, 50%)`;
+        colorsPie.push(col);
+
+        htmlTaula += `<tr style="border-bottom:1px dashed var(--cc-border);">
+            <td style="padding:8px 0; font-weight:600; word-wrap:break-word; width:40%;">${c.nom}</td>
+            <td style="text-align:right; width:20%;">${Math.round(finalInv).toLocaleString()} €</td>
+            <td style="text-align:right; width:20%;">${pctMix.toFixed(1)}%</td>
+            <td style="text-align:right; font-weight:600; color:var(--cc-primary); width:20%;">${Math.round(vendesEstimades).toLocaleString()}</td>
+        </tr>`;
+    });
+
+    htmlTaula += `<tr style="background:#f1f5f9; font-weight:bold;">
+        <td style="padding:8px 5px; width:40%;">TOTAL MIX</td>
+        <td style="padding:8px 0; text-align:right; width:20%;">${Math.round(pressupostTotalAnual).toLocaleString()} €</td>
+        <td style="text-align:right; width:20%;">100%</td>
+        <td style="text-align:right; padding:8px 5px; color:var(--secondary); width:20%;">${Math.round(totalVendesMaximitza).toLocaleString()}</td>
+    </tr></tbody></table>`;
+
+    document.getElementById('taulaDetallOptim').innerHTML = htmlTaula;
+    document.getElementById('resultadosOptimetria').style.display = 'block';
+
+    // Renderitzar el nou gràfic de tipus Pie dels pressupostos òptims
+    const ctx = document.getElementById('chartPieOptim').getContext('2d');
+    if (chartPieOptimInstance) chartPieOptimInstance.destroy();
+
+    chartPieOptimInstance = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: labelsPie,
+            datasets: [{
+                data: dadesPie,
+                backgroundColor: colorsPie
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: { display: true, text: 'Repartiment Òptim del Pressupost Anual', font: { weight: 'bold', size: 13 } },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            let val = context.raw;
+                            let pct = ((val / total) * 100).toFixed(1);
+                            return `${context.label}: ${val.toLocaleString()} € (${pct}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
 }
 </script>
 </body>
