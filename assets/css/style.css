@@ -61,6 +61,13 @@ header {
   gap: 1rem;
 }
 
+/* NUEVO: Agrupador del título y los links */
+.branding-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
 .site-title {
   font-family: "Oxanium", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
   font-weight: 700;
@@ -81,6 +88,28 @@ header {
 .site-title:hover {
   color: var(--accent-color);  
 }
+
+/* NUEVO: Estilos para los enlaces horizontales */
+.custom-nav-links {
+  display: flex;
+  gap: 1.2rem;
+  margin-top: 0.2rem;
+}
+
+.custom-nav-links a {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-muted); /* Color gris elegante por defecto */
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: color 0.2s ease;
+}
+
+.custom-nav-links a:hover {
+  color: var(--accent-color); /* Cambia al azul de tu blog al pasar el cursor */
+  text-decoration: underline;
+}
+
 
 /* Barra de cerca */
 .search-container {
