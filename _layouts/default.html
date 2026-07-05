@@ -5,26 +5,18 @@
 <body>
   
   <div class="site-wrapper">
-	<header>
-	  <div class="branding-container">
-		<a href="{{ '/' | relative_url }}" class="site-title">{{ site.title }}</a>
-		
-		<div class="custom-nav-links">
-		  <a href="{{ '/cv/' | relative_url }}">Mi CV</a>
-		  <a href="{{ '/calculadores/' | relative_url }}">Calculadoras</a>
-		</div>
-	  </div>
-
-	  <div class="search-container">
-		<input 
-		  type="text" 
-		  id="search-input" 
-		  class="search-input" 
-		  placeholder="🔍 Cercar posts..."
-		  aria-label="Cercar posts"
-		>
-	  </div>
-	</header>
+    <header>
+      <a href="{{ '/' | relative_url }}" class="site-title">{{ site.title }}</a>
+      <div class="search-container">
+        <input 
+          type="text" 
+          id="search-input" 
+          class="search-input" 
+          placeholder="🔍 Cercar posts..."
+          aria-label="Cercar posts"
+        >
+      </div>
+    </header>
 
     <main class="site-content">
       {{ content }}
