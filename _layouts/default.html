@@ -3,29 +3,33 @@
 
 {% include head.html %}
 <body>
-  
-  <div class="site-wrapper">
-    <header>
-      <a href="{{ '/' | relative_url }}" class="site-title">{{ site.title }}</a>
-      <div class="search-container">
-        <input 
-          type="text" 
-          id="search-input" 
-          class="search-input" 
-          placeholder="🔍 Cercar posts..."
-          aria-label="Cercar posts"
-        >
+
+  <div class="site-container">
+
+    <header class="site-header-card">
+      <div class="site-header-row">
+        <a href="{{ '/' | relative_url }}" class="site-brand">
+          <span class="site-logo-mark">&Sigma;</span>
+          <span class="site-title">{{ site.title }}</span>
+        </a>
+
+        <nav class="site-nav">
+          <a class="site-nav-link" href="{{ '/calculadores/' | relative_url }}">Calculadores</a>
+          <a class="site-nav-link" href="{{ '/cv/' | relative_url }}">CV</a>
+        </nav>
       </div>
+
+      <span class="site-tagline">{{ site.description }}</span>
     </header>
 
-    <main class="site-content">
+    <div class="page-shell">
       {{ content }}
-    </main>
+    </div>
 
     {% include footer.html %}
+
   </div>
 
-  <!-- Script per a la funcionalitat de cerca -->
   <script src="{{ '/assets/js/search.js' | relative_url }}"></script>
 </body>
 </html>

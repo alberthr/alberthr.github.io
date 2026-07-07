@@ -2,84 +2,175 @@
 <html lang="ca">
 {% include head.html %}
 <body>
-  <div class="site-wrapper">
-    <header>
-      <a href="{{ '/' | relative_url }}" class="site-title">{{ site.title }}</a>
+
+  <div class="site-container">
+
+    <header class="site-header-card">
+      <div class="site-header-row">
+        <a href="{{ '/' | relative_url }}" class="site-brand">
+          <span class="site-logo-mark">&Sigma;</span>
+          <span class="site-title">{{ site.title }}</span>
+        </a>
+        <nav class="site-nav">
+          <a class="site-nav-link" href="{{ '/calculadores/' | relative_url }}">Calculadores</a>
+          <a class="site-nav-link" href="{{ '/cv/' | relative_url }}">CV</a>
+        </nav>
+      </div>
+
+      <span class="site-tagline">{{ site.description }}</span>
     </header>
 
-    <main class="site-content">
-      <article class="post-content">
-        <h1>{{ page.title }}</h1>
-        
-        <div class="post-tags">
-          {% for tag in page.tags %}
-            <span class="tag-sm">{{ tag }}</span>
-          {% endfor %}
-        </div>
+    <div class="post-shell">
 
-        {{ content }}
-      </article>
+      <div class="post-article-col">
 
-      <!-- Secció de posts relacionats (llista senzilla) -->
-      {% assign current_post_tags = page.tags %}
-      {% assign related_posts = "" | split: "" %}
-      {% assign max_related = 3 %}
+        <article class="post-content">
+          <h1>{{ page.title }}</h1>
 
-      {% for post in site.posts %}
-        {% if post.url != page.url %}
-          {% assign match_count = 0 %}
-          {% for post_tag in post.tags %}
-            {% if current_post_tags contains post_tag %}
-              {% assign match_count = match_count | plus: 1 %}
-            {% endif %}
-          {% endfor %}
-          
-          {% if match_count > 0 %}
-            {% assign related_posts = related_posts | push: post %}
-          {% endif %}
-        {% endif %}
-      {% endfor %}
-
-      {% if related_posts.size > 0 %}
-        <section class="related-posts">
-          <h2 class="related-posts-title">Posts Relacionats</h2>
-          <ul class="related-posts-list">
-            {% for post in related_posts limit: max_related %}
-              <li>
-                <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-              </li>
+          {% if page.tags.size > 0 %}
+          <div class="post-tags-row">
+            {% for tag in page.tags %}
+              <span class="tag-sm">{{ tag }}</span>
             {% endfor %}
-          </ul>
+          </div>
+          {% endif %}
+
+          <details class="mobile-toc">
+            <summary>Contingut</summary>
+            <nav class="toc-list" id="toc-list-mobile"></nav>
+          </details>
+
+          {{ content }}
+        </article>
+
+        {% assign current_post_tags = page.tags %}
+        {% assign related_posts = "" | split: "" %}
+        {% assign max_related = 3 %}
+
+        {% for post in site.posts %}
+          {% if post.url != page.url %}
+            {% assign match_count = 0 %}
+            {% for post_tag in post.tags %}
+              {% if current_post_tags contains post_tag %}
+                {% assign match_count = match_count | plus: 1 %}
+              {% endif %}
+            {% endfor %}
+            {% if match_count > 0 %}
+              {% assign related_posts = related_posts | push: post %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+
+        {% if related_posts.size > 0 %}
+          <section class="related-posts">
+            <h2 class="related-posts-title">Posts Relacionats</h2>
+            <ul class="related-posts-list">
+              {% for post in related_posts limit: max_related %}
+                <li><a href="{{ post.url | relative_url }}">{{ post.title }}</a></li>
+              {% endfor %}
+            </ul>
+          </section>
+        {% endif %}
+
+        <section class="comments-section">
+          <script src="https://giscus.app/client.js"
+                  data-repo="alberthr/alberthr.github.io"
+                  data-repo-id="R_kgDOS1HLmA"
+                  data-category="Announcements"
+                  data-category-id="DIC_kwDOS1HLmM4C_AGq"
+                  data-mapping="title"
+                  data-strict="0"
+                  data-reactions-enabled="1"
+                  data-emit-metadata="0"
+                  data-input-position="bottom"
+                  data-theme="preferred_color_scheme"
+                  data-lang="ca"
+                  crossorigin="anonymous"
+                  async>
+          </script>
         </section>
-      {% endif %}
 
-      <p style="margin-top: 3rem; text-align: center;">
-        <a href="{{ '/' | relative_url }}" style="display: inline-block; padding: 0.5rem 1rem; border: 1px solid #e0e0e0; border-radius: 4px; transition: all 0.2s ease;">
-          &larr; Tornar a l'inici
-        </a>
-      </p>
-    </main>
+        <p class="back-to-posts">
+          <a href="{{ '/' | relative_url }}" class="btn-back">&larr; Tornar a tots els posts</a>
+        </p>
 
-    <script src="https://giscus.app/client.js"
-            data-repo="alberthr/alberthr.github.io"
-            data-repo-id="R_kgDOS1HLmA"
-            data-category="Announcements"
-            data-category-id="DIC_kwDOS1HLmM4C_AGq"
-            data-mapping="title"
-            data-strict="0"
-            data-reactions-enabled="1"
-            data-emit-metadata="0"
-            data-input-position="bottom"
-            data-theme="preferred_color_scheme"
-            data-lang="ca"
-            crossorigin="anonymous"
-            async>
-    </script>
-    
+      </div>
+
+      <aside class="post-margin">
+        <div class="margin-block">
+          <h3 class="margin-title">Contingut</h3>
+          <nav class="toc-list" id="toc-list"></nav>
+        </div>
+        <div class="margin-block">
+          <h3 class="margin-title">Lectura</h3>
+          <span class="sidebar-meta" id="reading-time">…</span>
+        </div>
+      </aside>
+
+    </div>
+
     {% include footer.html %}
+
   </div>
 
-  <!-- Script per a la funcionalitat de cerca -->
   <script src="{{ '/assets/js/search.js' | relative_url }}"></script>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var article = document.querySelector('.post-content');
+    var tocList = document.getElementById('toc-list');
+    var tocListMobile = document.getElementById('toc-list-mobile');
+    if (!article) return;
+
+    var headings = article.querySelectorAll('h2, h3');
+
+    function buildToc(target) {
+      if (!target) return;
+      if (headings.length === 0) {
+        target.innerHTML = '<span class="sidebar-meta">Sense seccions</span>';
+        return;
+      }
+      headings.forEach(function (heading, i) {
+        if (!heading.id) { heading.id = 'seccio-' + i; }
+        var link = document.createElement('a');
+        link.href = '#' + heading.id;
+        link.textContent = heading.textContent;
+        link.classList.add('toc-level-' + heading.tagName.charAt(1));
+        target.appendChild(link);
+      });
+    }
+
+    buildToc(tocList);
+    buildToc(tocListMobile);
+
+    var readingTimeEl = document.getElementById('reading-time');
+    if (readingTimeEl) {
+      var words = article.textContent.trim().split(/\s+/).length;
+      var minutes = Math.max(1, Math.round(words / 200));
+      readingTimeEl.textContent = minutes + ' min de lectura';
+    }
+
+    if (tocList) {
+      var tocLinks = tocList.querySelectorAll('a');
+      if (tocLinks.length > 0 && 'IntersectionObserver' in window) {
+        var linkByHref = {};
+        tocLinks.forEach(function (link) { linkByHref[link.getAttribute('href')] = link; });
+
+        var observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            var link = linkByHref['#' + entry.target.id];
+            if (!link) return;
+            if (entry.isIntersecting) {
+              tocLinks.forEach(function (l) { l.classList.remove('active'); });
+              link.classList.add('active');
+            }
+          });
+        }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+
+        headings.forEach(function (heading) { observer.observe(heading); });
+      }
+    }
+  });
+  </script>
 </body>
 </html>
