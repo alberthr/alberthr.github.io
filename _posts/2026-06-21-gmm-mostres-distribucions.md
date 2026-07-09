@@ -97,7 +97,6 @@ La diferència pràctica entre tots dos:
 
 A la pràctica: s'ajusta el model per a un rang de K (per exemple 1 a 6), es grafica BIC i AIC en funció de K, i es tria el mínim. Als exemples de codi de sota ja s'inclou aquest pas.
 
----
 
 ## Implementació en Python
 
@@ -226,7 +225,6 @@ plot(model, what = "classification")
 
 > **Atenció amb el signe del BIC a `mclust`**: a diferència de `sklearn` (on `model.bic()` segueix la convenció clàssica i el millor model és el de valor **més baix**), `mclust` defineix el BIC amb el signe invertit, de manera que el millor model és el de valor **més alt**. `summary(model)` i `model$G` ja seleccionen el millor model correctament; només cal tenir-ho present si es comparen els números directament amb els de Python.
 
----
 
 ## GMM com a alternativa a K-means
 
