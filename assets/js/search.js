@@ -9,6 +9,23 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
+// Treu la vora inferior del darrer post visible (filtratge per tags o cerca)
+function actualitzarVoraDarrerPost() {
+  const posts = document.querySelectorAll('.post-item');
+  let darrerVisible = null;
+
+  posts.forEach(post => {
+    post.classList.remove('no-border');
+    if (post.style.display !== 'none') {
+      darrerVisible = post;
+    }
+  });
+
+  if (darrerVisible) {
+    darrerVisible.classList.add('no-border');
+  }
+}
+
 function performSearch(query) {
   const posts = document.querySelectorAll('.post-item');
   const searchTerm = query.toLowerCase().trim();
@@ -45,4 +62,6 @@ function performSearch(query) {
   } else if (document.querySelector('.no-results-message')) {
     document.querySelector('.no-results-message').remove();
   }
+
+  actualitzarVoraDarrerPost();
 }

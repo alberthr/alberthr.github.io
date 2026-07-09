@@ -46,7 +46,7 @@ a:hover { color: var(--accent-hover); }
 
 /* ===================== CAIXA UNICA (com les calculadores) ===================== */
 .site-container {
-  max-width: 980px;
+  max-width: 1080px;   /* abans 980 */
   margin: 0 auto;
   background: var(--card-bg);
   border: 1px solid var(--border);
@@ -86,11 +86,11 @@ a:hover { color: var(--accent-hover); }
   padding-top: 14px;
 }
 
-.site-brand { display: flex; align-items: center; gap: 0.7rem; }
+.site-brand { display: flex; align-items: center; gap: 1.5rem; }
 
 .site-logo-mark {
-  width: 32px;
-  height: 32px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   background: var(--accent);
   color: #fff;
@@ -98,14 +98,14 @@ a:hover { color: var(--accent-hover); }
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 1.5rem;
   flex-shrink: 0;
   font-family: Georgia, "Times New Roman", serif;
 }
 
 .site-title {
   font-weight: 600;
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--text);
@@ -122,13 +122,14 @@ a:hover { color: var(--accent-hover); }
   color: var(--text);
   font-weight: 300;
   font-style: italic;
-  padding-top: 20px;
+  padding-top: 0px;
+  padding-bottom: 6px;
 }
 
 .site-nav {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
   flex-wrap: wrap;
 }
 
@@ -136,10 +137,13 @@ a:hover { color: var(--accent-hover); }
   font-size: var(--fs-3);
   font-weight: 600;
   color: var(--text-muted);
-  padding: 0 0 0 1.25rem;
+  /*padding: 0 0 0 1.25rem;*/
+  background-color: var(--page-bg);
+  padding: 5px 15px;
+  border-radius: var(--radius);
 }
 
-.site-nav-link:first-of-type { border-left: none; padding-left: 0; }
+.site-nav-link:first-of-type { border-left: none; /*padding-left: 0;*/ }
 .site-nav-link:hover { color: var(--accent); }
 
 .search-container { position: relative; }
@@ -160,7 +164,7 @@ a:hover { color: var(--accent-hover); }
 .search-input:focus { outline: none; border-color: var(--accent); background: #fff; width: 200px; box-shadow: 0 0 0 3px rgba(79,70,229,0.1); }
 
 /* ===================== CONTINGUT PRINCIPAL (dins de la caixa) ===================== */
-.page-shell { padding: 2rem 3rem; }
+.page-shell { padding: 2rem 2.75rem; }
 
 .about {
   font-size: var(--fs-3);
@@ -176,6 +180,7 @@ a:hover { color: var(--accent-hover); }
   flex-wrap: wrap;
   justify-content: center;
   gap: 0.35rem;
+  padding: 0 3rem;
   /*margin-bottom: 2rem;
   padding-bottom: 1.5rem;
   border-bottom: 1px solid var(--border);*/
@@ -212,6 +217,7 @@ ul { padding: 0; list-style: none; }
 }
 
 .post-item:last-child { border-bottom: none; }
+.post-item.no-border { border-bottom: none; }
 .post-item:hover { padding-left: 0.5rem; }
 
 .post-link {
@@ -253,7 +259,7 @@ ul { padding: 0; list-style: none; }
 .post-article-col {
   flex: 1;
   min-width: 0;
-  padding: 2rem 1.75rem;
+  padding: 2rem 1.75rem 2rem 2.75rem;
 }
 
 .post-margin {
@@ -308,7 +314,7 @@ ul { padding: 0; list-style: none; }
 }
 
 .toc-list a.toc-level-3 { padding-left: 1.5rem; opacity: 0.85; }
-.toc-list a:hover { color: var(--text); background-color: #ffffff; }
+.toc-list a:hover { color: var(--text); /*background-color: #ffffff;*/ }
 .toc-list a.active {
   color: var(--accent);
   border-left-color: var(--accent);
@@ -413,20 +419,20 @@ h2 {
   font-size: var(--fs-2);
   text-transform: uppercase;
   letter-spacing: 0.0em;
-  margin-top: 2.25rem;
+  margin-top: 3rem;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px dashed var(--border-strong);
+  border-bottom: 1px solid var(--border-strong);
 }
 
-h3 { font-size: var(--fs-3); margin-top: 1.5rem; margin-bottom: 0.7rem; }
+h3 { font-size: var(--fs-3); margin-top: 1.5rem; margin-bottom: 0.7rem; text-transform: uppercase;}
 h4 { font-size: var(--fs-3); margin-top: 1rem; margin-bottom: 0.5rem; }
 
 .post-content { line-height: 1.75; word-wrap: break-word; font-size: var(--fs-3); }
 .post-content p { margin-bottom: 1rem; }
 
 /* ===================== POSTS RELACIONATS ===================== */
-.related-posts { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+.related-posts { padding-top: 1.5rem; }
 .related-posts-title { font-size: var(--fs-2); }
 .related-posts-list { padding-left: 0; list-style: none; }
 .related-posts-list li { margin-bottom: 0.6rem; }
@@ -434,7 +440,7 @@ h4 { font-size: var(--fs-3); margin-top: 1rem; margin-bottom: 0.5rem; }
 .related-posts-list a:hover { text-decoration: underline; }
 
 /* ===================== COMENTARIS ===================== */
-.comments-section { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+.comments-section { margin-top: 2.5rem; padding-top: 1.5rem; }
 
 /* ===================== BLOCS DE CODI: SENSE SCROLL HORITZONTAL ===================== */
 pre {
@@ -494,7 +500,7 @@ th { background-color: var(--accent-light); font-weight: 700; color: var(--text)
   text-align: center;
   padding: 1.1rem 1.5rem;
   font-size: var(--fs-4);
-  font-weight: 600;
+  font-weight: 200;
   color: var(--text-light);
 }
 
@@ -516,4 +522,4 @@ th { background-color: var(--accent-light); font-weight: 700; color: var(--text)
   to { opacity: 1; transform: translateY(0); }
 }
 
-.post-item { animation: fadeIn 0.3s ease; }
+

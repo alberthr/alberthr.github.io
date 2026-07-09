@@ -6,6 +6,7 @@ tags:
 excerpt: "Quan fem servir dplyr dins de funcions pròpies, el nom de columna sovint no és fix sinó un paràmetre. Repasso {{ }}, .data[[ ]], across() i := per parametritzar group_by, mutate i summarise, amb un exemple final que combina les tres operacions de forma totalment dinàmica."
 
 ---
+{% raw %}
 
 Quan comencem a fer servir `dplyr` dins de funcions pròpies, més d'hora que tard ens trobem amb el mateix problema: volem que el nom de la columna sobre la qual agrupem, calculem o resumim **no estigui fixat al codi**, sinó que es passi com a paràmetre.
 
@@ -13,7 +14,7 @@ El problema és que `dplyr` està pensat per fer-se servir de manera interactiva
 
 En aquest article repasso les eines que ofereix el `tidyverse` (concretament `rlang`, integrat dins `dplyr`) per resoldre això de manera neta, i acabo amb un exemple complet que combina `group_by`, `mutate` i `summarise` dins d'una mateixa funció amb columnes totalment dinàmiques.
 
-## Per què passa això: avaluació diferida (NSE)
+## Avaluació diferida (NSE)
 
 `dplyr` fa servir el que es coneix com **non-standard evaluation** (NSE): quan escrius `group_by(botiga)`, `dplyr` no avalua `botiga` com si fos un objecte que ja existeix a l'entorn; interpreta literalment el text `botiga` com el nom d'una columna del `data.frame`.
 
@@ -31,7 +32,7 @@ agrupar_per <- function(dades, columna) {
 
 ## Les tres eines bàsiques
 
-### 1. `{{ }}` (embrace) — la més habitual
+### 1. `{{ }}` (embrace)
 
 L'operador `{{ }}` és la manera més senzilla de "reenviar" un argument d'una funció cap a dins d'una funció de `dplyr`. Funciona quan l'usuari et passa el **nom de la columna sense cometes** (com a símbol):
 
@@ -47,7 +48,7 @@ agrupar_per(vendes_diaries, botiga)
 
 Aquí `columna` arriba com una expressió no avaluada (gràcies a la *tidy evaluation*), i `{{ }}` li diu a `dplyr`: "avalua això en el context de les dades, no com un literal".
 
-### 2. `.data[[ ]]` — quan el nom arriba com a text (string)
+### 2. `.data[[ ]]` per a strings
 
 Si el que reps és un `string` (per exemple, ve d'un paràmetre de configuració, d'un fitxer JSON o d'un `purrr::map` sobre un vector de noms), `{{ }}` no serveix. Aquí fem servir `.data[[ ]]`, del paquet `rlang`, que permet indexar columnes per nom textual:
 
@@ -63,7 +64,7 @@ agrupar_per_text(vendes_diaries, "botiga")
 
 Regla pràctica: **`{{ }}` per a símbols (noms sense cometes), `.data[[ ]]` per a strings**.
 
-### 3. `across()` — quan no és una sola columna, sinó vàries
+### 3. `across()` per a vàries columnes
 
 Quan el que volem parametritzar és un conjunt de columnes (per exemple, totes les mètriques que s'han de resumir alhora), la solució és `across()`:
 
@@ -78,7 +79,7 @@ resumir_metriques(vendes_diaries, c(vendes, unitats))
 
 `across()` accepta tant `tidyselect` (`starts_with("vendes_")`, `where(is.numeric)`...) com vectors de noms, el que el fa molt versàtil per a funcions genèriques.
 
-## I quan necessito crear el nom de la nova columna també de forma dinàmica?
+## Noms de columna nova dinàmics
 
 Aquí entra en joc `:=` (de `rlang`), que permet que el **nom** d'una columna nova (no només el seu contingut) sigui dinàmic:
 
@@ -100,7 +101,7 @@ crear_columna_text <- function(dades, nom_nova, columna_origen, factor) {
 
 El símbol `!!` (*bang-bang*) "desempaqueta" un valor avaluat (com un string) perquè `dplyr` el faci servir com si fos codi. És l'operador clàssic de `rlang` previ a `{{ }}`, i encara és imprescindible en aquest tipus de situacions (nom de columna dinàmic en el costat esquerre d'una assignació).
 
-## Resum de quina eina fer servir segons el cas
+## Resum: Quina eina fer servir
 
 | Situació | Eina |
 |---|---|
@@ -110,11 +111,11 @@ El símbol `!!` (*bang-bang*) "desempaqueta" un valor avaluat (com un string) pe
 | Nom de columna nova dinàmic (costat esquerre) | `"{{ nom }}" :=` o `!!nom :=` |
 | Múltiples expressions a desempaquetar | `!!!` (per a llistes d'arguments) |
 
-## I als altres verbs de dplyr? `group_by`, `mutate` i `summarise` només són la punta de l'iceberg
+## Resta de verbs de dplyr?
 
 Les mateixes regles que hem vist fins ara s'apliquen a la majoria de verbs de `dplyr`, perquè tots comparteixen el mateix motor de *tidy evaluation*. La manera més pràctica d'organitzar-ho no és verb per verb, sinó per **grups de comportament**:
 
-### Grup 1: verbs que simplement "llegeixen" una columna existent
+### 1. Verbs que llegeixen
 
 `select()`, `arrange()`, `count()`, `distinct()`, `pull()` i `relocate()` funcionen exactament igual que `group_by()`: reben una referència a una columna (símbol o string) i no en creen cap de nova. Si ja domines `{{ }}` i `.data[[ ]]` per a `group_by()`, els tens tots resolts:
 
@@ -132,7 +133,7 @@ ordenar_per <- function(dades, columna) {
 
 Amb strings, el patró és sempre `.data[[columna]]`, i per seleccionar diverses columnes a la vegada, `select(all_of(vector_de_noms))`.
 
-### Grup 2: verbs que avaluen una expressió (no només un nom)
+### 2. Verbs amb expressió
 
 `filter()` és el cas més habitual d'aquest grup: no rep només el nom d'una columna, sinó una condició completa que la fa servir. La columna es parametritza igual (`{{ }}` o `.data[[ ]]`), però normalment hi acompanya un altre paràmetre amb el valor de comparació:
 
@@ -144,7 +145,7 @@ filtrar_per <- function(dades, columna, valor) {
 
 `case_when()` dins d'un `mutate()` es comporta igual: la columna dinàmica simplement apareix dins d'una condició (`.data[[columna]] > 10 ~ "alt"`), sense cap regla nova respecte al que ja coneixem.
 
-### Grup 3: verbs que creen una columna amb nom nou
+### 3. Verbs que creen columna
 
 Aquí hi entren `mutate()` i `summarise()` (ja vistos), i també `rename()`, amb la particularitat que el nom nou hi va explícitament a l'esquerra:
 
@@ -156,7 +157,7 @@ renombrar <- function(dades, nom_nou, columna_vella) {
 
 La regla és la mateixa que ja hem aplicat: si el nom nou arriba com a string, `"{nom}" :=`; si arriba com a símbol que vols capturar literalment, `{{ nom }}` al costat esquerre de `:=`.
 
-### Grup 4: l'excepció real — els `joins`
+### 4. L'excepció dels `joins`
 
 `left_join()`, `inner_join()` i companyia **no accepten `{{ }}`** a l'argument `by`. Aquest argument espera directament un string o un vector amb nom, no una expressió no avaluada, així que la sintaxi és diferent de tota la resta:
 
@@ -175,7 +176,7 @@ unir_per2 <- function(d1, d2, clau) {
 
 En definitiva: si ja saps moure't amb `group_by()`, `mutate()` i `summarise()`, en realitat ja saps moure't amb gairebé tot `dplyr`. Els únics paràmetres que trenquen el patró són els que, com `by =` als joins o `.names =` dins `across()`, esperen explícitament text en lloc d'una expressió.
 
-## 📊 Exemple final
+## Exemple final
 
 Posem-ho tot junt amb un cas real: una funció que, donat un `data.frame` de vendes, agrupa per la columna que li indiquem, crea una columna calculada amb el nom que li indiquem, resumeix un conjunt variable de columnes amb `across()`, i finalment en resumeix el total amb el nom que li indiquem també.
 
@@ -239,3 +240,4 @@ La part més confusa de la *tidy evaluation* no és cap operador en concret, sin
 - Excepció: paràmetres que esperen text explícit (`by =` als joins) → `sym()` / `join_by()`
 
 Amb aquestes regles n'hi ha prou per escriure funcions de `dplyr` genèriques i reutilitzables, sense haver de duplicar codi cada vegada que canvia la columna sobre la qual treballem, sigui quin sigui el verb que facis servir.
+{% endraw %}
