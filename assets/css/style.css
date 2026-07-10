@@ -12,9 +12,9 @@
   --border: #e2e8f0;
   --border-strong: #cbd5e1;
 
-  --accent: #4f46e5;
-  --accent-hover: #4338ca;
-  --accent-light: #eef0fe;
+  --accent: #1e40af;
+  --accent-hover: #1e3a8a;
+  --accent-light: #dbeafe;
 
   --code-bg: #1e2430;
   --code-text: #eef1f8;
@@ -161,7 +161,7 @@ a:hover { color: var(--accent-hover); }
 }
 
 .search-input::placeholder { color: var(--text-light); }
-.search-input:focus { outline: none; border-color: var(--accent); background: #fff; width: 200px; box-shadow: 0 0 0 3px rgba(79,70,229,0.1); }
+.search-input:focus { outline: none; border-color: var(--accent); background: #fff; width: 200px; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
 
 /* ===================== CONTINGUT PRINCIPAL (dins de la caixa) ===================== */
 .page-shell { padding: 2rem 2.75rem; }
@@ -243,7 +243,7 @@ ul { padding: 0; list-style: none; }
 
 .tag-sm {
   font-size: var(--fs-4);
-  font-weight: 600;
+  /*font-weight: 600;*/
   color: var(--accent);
   background: var(--accent-light);
   padding: 0.25rem 0.65rem;
@@ -280,7 +280,7 @@ ul { padding: 0; list-style: none; }
     background: var(--page-bg);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 1.5rem;
+    padding: 1.5rem 0.75rem;
   }
 }
 
@@ -290,25 +290,24 @@ ul { padding: 0; list-style: none; }
 .margin-title {
   font-size: var(--fs-4);
   font-weight: 600;
-  color: var(--text-light);
+  /*color: var(--text-light);*/
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  margin: 0 0 0.85rem 0;
+  margin: 0 0.8rem 0.8rem 0.8rem;
 }
 
 .toc-list {
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
-  border-left: 2px solid var(--border);
 }
 
 .toc-list a {
   font-size: var(--fs-4);
   color: var(--text-muted);
-  padding: 0.3rem 0 0.3rem 0.8rem;
-  margin-left: -2px;
-  border-left: 2px solid transparent;
+  padding: 0.3rem 0.8rem 0.3rem 0.8rem;
+  /*margin-left: -2px;
+  border-left: 2px solid transparent;*/
   line-height: 1.4;
   transition: all 0.15s ease;
 }
@@ -316,14 +315,13 @@ ul { padding: 0; list-style: none; }
 .toc-list a.toc-level-3 { padding-left: 1.5rem; opacity: 0.85; }
 .toc-list a:hover { color: var(--text); /*background-color: #ffffff;*/ }
 .toc-list a.active {
-  color: var(--accent);
-  border-left-color: var(--accent);
+  color: var(--text);
+  /*border-left-color: transparent;
   border-left-width: 3px;
   margin-left: -3px;
-  padding-left: calc(0.8rem - 1px);
-  font-weight: 700;
-  background-color: var(--accent-light);
-  border-radius: 0 4px 4px 0;
+  padding-left: calc(0.8rem - 1px);*/
+  background-color: var(--border);
+  border-radius: 4px;
 }
 
 .sidebar-meta {
@@ -428,8 +426,16 @@ h2 {
 h3 { font-size: var(--fs-3); margin-top: 1.5rem; margin-bottom: 0.7rem; text-transform: uppercase;}
 h4 { font-size: var(--fs-3); margin-top: 1rem; margin-bottom: 0.5rem; }
 
+
 .post-content { line-height: 1.75; word-wrap: break-word; font-size: var(--fs-3); }
 .post-content p { margin-bottom: 1rem; }
+
+.post-content h3::before {
+  content: "▪️";
+  margin-right: 4px;
+  color: var(--accent);
+}
+
 
 /* ===================== POSTS RELACIONATS ===================== */
 .related-posts { padding-top: 1.5rem; }
