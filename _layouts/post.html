@@ -149,6 +149,9 @@
 
     if (tocList) {
       var tocLinks = tocList.querySelectorAll('a');
+      if (tocLinks.length > 0) {
+        tocLinks[0].classList.add('active');
+      }
       if (tocLinks.length > 0 && 'IntersectionObserver' in window) {
         var linkByHref = {};
         tocLinks.forEach(function (link) { linkByHref[link.getAttribute('href')] = link; });
