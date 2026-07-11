@@ -218,7 +218,7 @@ ul { padding: 0; list-style: none; }
 
 .post-item:last-child { border-bottom: none; }
 .post-item.no-border { border-bottom: none; }
-.post-item:hover { padding-left: 0.5rem; }
+.post-item:hover { padding-left: 1rem; border-left: solid 4px var(--accent); }
 
 .post-link {
   font-size: var(--fs-2);
