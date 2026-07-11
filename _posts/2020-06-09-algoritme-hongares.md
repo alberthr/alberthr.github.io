@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "L'Algorisme Hongarès: Optimització i assignació de parelles o recursos"
+title: "L'Algoritme Hongarès: Optimització i assignació de parelles o recursos"
 tags: 
   - matematiques
   - python
@@ -12,7 +12,7 @@ A l'hora d'executar un test A/B, en cas de voler testejar canvis en una mostra p
 
 L'objectiu és trobar, dins d'aquestes 20 opcions, les **5 botigues de control que siguin el més similars possibles** a les 5 botigues tractades (en facturació, mida del local, nombre de clients, etc.). Com pots fer aquest emparellament de manera que la diferència total de tot el conjunt sigui la mínima possible? L'eina matemàtica perfecta és l'**Algorisme Hongarès**.
 
-## Què és l'Algorisme Hongarès?
+## Què és l'Algoritme Hongarès?
 
 L'algoritme hongarès (mètode de Kuhn-Munkres) és un algoritme d'optimització combinatòria dissenyat per resoldre el **problema de l'assignació**. 
 
@@ -29,7 +29,7 @@ L'algoritme transforma la matriu de costos original en una matriu de "costos d'o
 3. **Cobertura de zeros:** Traçar el menor nombre possible de línies verticals i horitzontals per cobrir tots les valors zero de la matriu.
 4. **Optimització:** Si el nombre de línies és igual a $n$ (la dimensió de la matriu), ja tenim l'assignació òptima als zeros coberts. Si és menor, s'ajusta la matriu (restant el valor mínim no cobert als valors lliures i sumant-lo a les interseccions de les línies) i es torna al pas 3.
 
-## Altres utilitats de l'algorisme en la indústria i la tecnologia
+## Altres utilitats
 
 Tot i que l'emparellament d'individus o botigues similars és molt útil en analítica de negoci, l'algorisme hongarès és un pilar fonamental en logística, gestió de projectes i ciència de dades aplicada a negocis:
 
@@ -37,13 +37,12 @@ Tot i que l'emparellament d'individus o botigues similars és molt útil en anal
 * **Logística de flotes:** Decidir quin vehicle repartidor s'ha d'enviar a cada punt de recollida per minimitzar el combustible o el temps de ruta total.
 * **Economia de plataformes (Matching):** Algoritmes de repartiment de menjar a domicili o aplicacions de transport viatger per assignar conductors als clients més propers eficientment.
 
----
 
 ## Implementació pràctica
 
 Anem a simular el cas de les nostres botigues: Tenim el **Grup A** (5 botigues tractades) i el **Grup B** (20 botigues candidates a control). Cada botiga es defineix per 3 variables (Facturació, Superfície, Clients).
 
-### 📊 Exemple en R (fent servir `RcppHungarian`)
+### Exemple en R
 
 A R evitem fer servir el paquet clàssic `clue` perquè ens obligaria a fer la matriu quadrada de forma artificial (afegint files buides). Amb `RcppHungarian` (escrit en C++), el càlcul amb matrius rectangulars és directe i automàtic.
 
@@ -77,7 +76,7 @@ for(i in 1:nrow(parelles)) {
 }
 ```
 
-### 🐍 Exemple en Python (fent servir `scipy`)
+### Exemple en Python
 
 A Python, la funció nativa linear_sum_assignment de la llibreria `scipy` gestiona les matrius rectangulars a la perfecció de manera interna.
 

@@ -5,21 +5,7 @@
 
   <div class="site-container">
 
-    <header class="site-header-card">
-      <div class="site-header-row">
-        <a href="{{ '/' | relative_url }}" class="site-brand">
-          <span class="site-logo-mark">&Sigma;</span>
-          <span class="site-title">{{ site.title }}</span>
-        </a>
-        <nav class="site-nav">
-		  <span>Links: </span>		
-          <a class="site-nav-link" href="{{ '/calculadores/' | relative_url }}" target="_blank">Calculadores</a>
-          <a class="site-nav-link" href="{{ '/cv/' | relative_url }} " target="_blank">CV</a>
-        </nav>
-      </div>
-
-      <span class="site-tagline">{{ site.description }}</span>
-    </header>
+    {% include header.html %}
 
     <div class="post-shell">
 

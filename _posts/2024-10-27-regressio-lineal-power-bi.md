@@ -50,7 +50,7 @@ Totes dues retornen una **taula d'una sola fila** amb columnes com:
 
 Imaginem una taula `Vendes` amb una fila per botiga i setmana, amb columnes `Vendes[Import]` i `Vendes[InversioPromocio]`.
 
-### 1. Mesura de regressió simple
+### Mesura de regressió simple
 
 ```dax
 RegressioSimple =
@@ -63,7 +63,7 @@ LINESTX (
 
 Aquesta mesura/taula calculada retorna una fila amb `Slope1`, `Intercept`, `CoefficientOfDetermination`, etc., calculats sobre el context de filtre actiu (per exemple, si hi ha un segmentador de botiga, el model es recalcula només amb les files visibles).
 
-### 2. Extreure'n els valors individuals
+### Extreure'n els valors individuals
 
 Com que `LINESTX` retorna una taula i no un escalar, cal aïllar els valors amb `SELECTCOLUMNS` i variables, perquè no es recalculi la regressió cada cop que es referencia un resultat:
 
@@ -99,7 +99,7 @@ RETURN
     SELECTCOLUMNS ( Resultat, "R2", [CoefficientOfDetermination] )
 ```
 
-### 3. Predicció (estimació) a partir del model
+### Predicció (estimació) a partir del model
 
 Un cop tenim pendent i intercepció, la predicció és senzilla:
 
@@ -119,7 +119,7 @@ RETURN
 
 `[InversioPromocioSeleccionada]` pot ser una mesura lligada a una taula de paràmetres (*what-if parameter*), de manera que des d'un slicer es pugui simular "si invertim X € en promoció, quina venda esperem?".
 
-### 4. Regressió múltiple
+### Regressió múltiple
 
 Si volem afegir més variables explicatives, per exemple el nombre de cares (*facings*) de producte a botiga:
 
@@ -139,7 +139,7 @@ L'equació resultant seguirà la forma:
 Import = Slope1 * InversioPromocio + Slope2 * Facings + Intercept
 ```
 
-### 5. Regressió sobre dades agregades amb `SUMMARIZECOLUMNS`
+### Regressió sobre dades agregades amb `SUMMARIZECOLUMNS`
 
 Sovint interessa més fer la regressió a nivell de botiga (agregant totes les setmanes) que fila a fila:
 

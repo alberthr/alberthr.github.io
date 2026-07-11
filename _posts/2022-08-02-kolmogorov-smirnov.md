@@ -152,13 +152,12 @@ Hi ha dues variants principals d'aquest test:
 * **Detecció de *Data Drift*:** En entorns de producció d'aprenentatge automàtic (Machine Learning), s'utilitza per analitzar si les dades d'entrada actuals mantenen la mateixa distribució que les dades d'entrenament originals.
 
 
----
 
-## Exemples pràctiques: Python i R
+## Exemples pràctics
 
 Anem a veure com aplicar el test de dues mostres utilitzant codi. Imaginem que volem comparar si el temps de càrrega de la nostra web amb un servidor nou (Grup B) és diferent del servidor antic (Grup A).
 
-### 🐍 Implementació en Python
+### Implementació en Python
 
 Farem servir la llibreria `scipy.stats`. Generarem dades aleatòries on el Grup B és lleugerament més ràpid.
 
@@ -187,7 +186,7 @@ else:
     print("No podem rebutjar l'hipòtesi nul·la: No hi ha evidència que les distribucions siguin diferents.")
 ```
 
-### 📊 Implementacio en R
+### Implementacio en R
 
 ```r
 # Fixem la llavor

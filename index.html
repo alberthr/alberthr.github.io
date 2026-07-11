@@ -6,13 +6,14 @@ title: "Inici"
 <div class="sidebar-tags">
   <button class="tag-filter-btn active" onclick="filtrarTags('tots')">#tots</button>
 
-	{% assign sorted_tags = site.tags | sort %}
-	{% for tag in sorted_tags %}
-		<button class="tag-filter-btn" onclick="filtrarTags('{{ tag[0] }}')">#{{ tag[0] }}</button>
-	{% endfor %}
-	<div class="search-container">
-		<input type="text" id="search-input" class="search-input" placeholder="Cercar..." aria-label="Cercar posts">
-	</div>
+  {% assign sorted_tags = site.tags | sort %}
+  {% for tag in sorted_tags %}
+    <button class="tag-filter-btn" onclick="filtrarTags('{{ tag[0] }}')">#{{ tag[0] }}</button>
+  {% endfor %}
+
+  <div class="search-container">
+    <input type="text" id="search-input" class="search-input" placeholder="Cercar..." aria-label="Cercar posts">
+  </div>
 </div>
 
 <section class="posts-list">
@@ -25,7 +26,9 @@ title: "Inici"
       {% endif %}
 
       {% assign full_content = post.content | strip_html | downcase %}
-      <li class="post-item" data-tags="{{ post.tags | join: ',' }}" data-search="{{ post.title | downcase }} {{ post.tags | join: ' ' | downcase }} {{ excerpt | downcase }} {{ full_content }}">
+      {% assign tags_str = post.tags | join: ' ' | downcase %}
+      {% assign search_blob = post.title | downcase | append: " " | append: tags_str | append: " " | append: excerpt | downcase | append: " " | append: full_content %}
+      <li class="post-item" data-tags="{{ post.tags | join: ',' }}">
         <a href="{{ post.url | relative_url }}" class="post-link">{{ post.title }}</a>
         <div class="post-excerpt">{{ excerpt }}</div>
         <div class="list-tags">
@@ -33,6 +36,7 @@ title: "Inici"
             <span class="tag-sm">{{ tag }}</span>
           {% endfor %}
         </div>
+        <script type="application/json" class="post-search-data">{{ search_blob | jsonify }}</script>
       </li>
     {% endfor %}
   </ul>

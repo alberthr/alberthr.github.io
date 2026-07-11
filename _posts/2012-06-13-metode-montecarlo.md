@@ -26,7 +26,6 @@ Aquest mètode és una autèntica "navalla suís" en la ciència de dades i s'ut
 * **Optimització:** Trobar la millor configuració d'un sistema simulant diferents escenaris i avaluant quin dona el millor resultat.
 * **Predicció d'estocs i logística:** Simular cadenes de subministrament o la demanda de productes sota condicions d'alta variabilitat.
 
----
 
 ## Un exemple clàssic: Estimació de $\pi$
 
@@ -40,7 +39,7 @@ Per tant, si simulem milers de punts aleatoris, podem estimar $\pi$ com:
 
 $$\pi \approx 4 \times \frac{\text{Punts dins del cercle}}{\text{Punts totals}}$$
 
-### 🐍 Implementació en Python
+### Implementació en Python
 
 Utilitzant `numpy`, podem vectoritzar aquesta simulació per fer-la extremadament ràpida.
 
@@ -68,7 +67,7 @@ resultat = estimar_pi_montecarlo(n)
 print(f"Estimació de Pi amb {n} simulacions: {resultat}")
 ```
 
-### 📊 Implementació en R
+### Implementació en R
 
 ```r
 estimar_pi_montecarlo <- function(n_simulacions) {

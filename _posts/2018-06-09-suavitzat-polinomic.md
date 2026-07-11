@@ -35,13 +35,12 @@ El paràmetre que controla com es comporta aquesta línia s'anomena formalment *
 * **Un `span` proper a 0:** Utilitza veïnats molt petits. La línia s'ajustarà moltíssim a les dades reals, capturant tot el soroll i els pics (sobreajust o *overfitting*). **Ajust total = 100% al soroll.**
 * **Un `span` proper a 1 (o superior):** Utilitza pràcticament totes les dades alhora per a cada punt. El resultat és una línia molt suau que s'aproxima a una línia recta o una corba molt tènue. **Tendència general neta.**
 
----
 
-## Implementació pràctica: Exemple en R i Python
+## Implementació pràctica
 
 A continuació veurem com aplicar LOESS a una sèrie temporal simulada amb soroll utilitzant els dos llenguatges estàndard de la ciència de dades. En els dos casos comparem un `span` baix (ajust total) amb un `span` alt (línia de tendència).
 
-### 📊 Exemple en R
+### Exemple en R
 
 A R, la funció està integrada de forma nativa mitjançant `loess()`.
 
@@ -70,7 +69,7 @@ legend("topright", legend=c("Dades", "span = 0.1 (Ajust)", "span = 0.75 (Línia)
 ```
 
 
-### 🐍 Exemple en Python
+### Exemple en Python
 
 A Python, podem utilitzar la llibreria statsmodels que inclou la funció lowess dins del seu mòdul de models no paramètrics.
 

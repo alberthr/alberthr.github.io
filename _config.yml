@@ -1,11 +1,11 @@
 title: "Quadern d'Anàlisis Personal"
 description: "Notes personals sobre data analysis, i altres temes d'interès."
-baseurl: "" 
+baseurl: ""
 url: ""
 
 remote_theme: pages-themes/minimal@v0.2.0
 plugins:
-- jekyll-remote-theme # add this line to the plugins list if you already have one
+  - jekyll-remote-theme
 
 # Configuració de Google Analytics
 google_analytics: "G-24FW05JLVP"

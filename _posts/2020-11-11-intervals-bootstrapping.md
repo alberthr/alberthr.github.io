@@ -14,7 +14,7 @@ Si no coneixes la distribució de les teves dades, com pots calcular un **interv
 
 La resposta és el **Bootstrapping** (o mostreig repetit). Una tècnica de computació estadística que sembla màgia, però que es basa en un principi molt sòlid: **utilitzar la teva pròpia mostra com si fos la població sencera.**
 
-## Què és el Bootstrapping i per a què serveix?
+## Què és el Bootstrapping?
 
 El terme prové de l'expressió anglesa *"to pull oneself up by one's bootstraps"* (aixecar-se a un mateix estirant els cordons de les pròpies botes), que fa referència a una tasca impossible. En estadística, reflecteix la idea d'obtenir inferències d'una població utilitzant **únicament** la informació de la mostra que ja tenim.
 
@@ -35,7 +35,6 @@ El *bootstrapping* és el teu millor aliat en situacions com:
 * **Estadístics sense fórmula teòrica fàcil:** Trobar l'IC de la mitjana és fàcil gràcies al Teorema del Límit Central, però quin és l'IC exacte de la *mediana* o de la *correlació de Spearman* en una mostra petita? La teoria matemàtica es complica; el *bootstrapping* ho resol en tres línies de codi.
 * **A/B Testing i Tests no paramètrics:** Quan fas experiments en productes digitals i vols calcular l'interval de confiança de la millora d'una mètrica ràtio (ex: conversions / clics), on no es pot extreure el IC directament per mètodes clàssics.
 
----
 
 ## Exemple Pràctic: Interval de Confiança per a la Mediana
 
@@ -43,7 +42,7 @@ Imagina que tenim una mostra petita ($n=30$) del temps que triguen els usuaris a
 
 A continuació, veurem com resoldre-ho tant en Python com en R.
 
-### 🐍 Implementació en Python
+### Implementació en Python
 
 ```python
 import numpy as np
@@ -78,7 +77,7 @@ print(f"Mediana observada: {mediana_obs:.2f}")
 print(f"Interval de Confiança 95% (Bootstrap): [{ic_inf:.2f}, {ic_sup:.2f}]")
 ```
 
-### 📊 Implementacio a R
+### Implementacio a R
 ```r
 # Fixem la llavor
 set.seed(42)

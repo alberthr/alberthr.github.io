@@ -1,7 +1,7 @@
 // Funcionalitat de cerca avançada en temps real
 document.addEventListener('DOMContentLoaded', function() {
   const searchInput = document.getElementById('search-input');
-  
+
   if (searchInput) {
     searchInput.addEventListener('keyup', function(e) {
       performSearch(this.value);
@@ -32,15 +32,17 @@ function performSearch(query) {
   let visibleCount = 0;
 
   posts.forEach(post => {
-    const title = post.querySelector('.post-link').textContent.toLowerCase();
-    const excerpt = post.querySelector('.post-excerpt')?.textContent.toLowerCase() || '';
-    const tags = post.getAttribute('data-tags').toLowerCase();
-    
-    // Cercar en títol, resum i tags
-    const matches = title.includes(searchTerm) || 
-                    excerpt.includes(searchTerm) || 
-                    tags.includes(searchTerm);
-    
+    // El bloc <script type="application/json"> inclou títol, tags, resum i contingut
+    // sencer del post (generat a index.html). S'evita ficar-ho en un atribut HTML
+    // perquè el contingut pot contenir cometes dobles que trencarien l'atribut.
+    let searchData = post.dataset.searchCache;
+    if (searchData === undefined) {
+      const dataEl = post.querySelector('.post-search-data');
+      searchData = dataEl ? JSON.parse(dataEl.textContent) : '';
+      post.dataset.searchCache = searchData;
+    }
+    const matches = searchData.includes(searchTerm);
+
     if (matches || searchTerm === '') {
       post.style.display = 'block';
       visibleCount++;
@@ -55,7 +57,6 @@ function performSearch(query) {
     if (!document.querySelector('.no-results-message')) {
       const message = document.createElement('li');
       message.className = 'no-results-message';
-      message.style.cssText = 'text-align: center; color: #999; padding: 2rem; font-style: italic;';
       message.textContent = `No s'han trobat posts amb "${searchTerm}"`;
       postsList.appendChild(message);
     }
