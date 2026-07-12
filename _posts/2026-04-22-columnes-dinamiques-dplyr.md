@@ -32,7 +32,7 @@ agrupar_per <- function(dades, columna) {
 
 ## Les tres eines bàsiques
 
-### 1. `{{ }}` (embrace)
+### `{{ }}` (embrace)
 
 L'operador `{{ }}` és la manera més senzilla de "reenviar" un argument d'una funció cap a dins d'una funció de `dplyr`. Funciona quan l'usuari et passa el **nom de la columna sense cometes** (com a símbol):
 
@@ -48,7 +48,7 @@ agrupar_per(vendes_diaries, botiga)
 
 Aquí `columna` arriba com una expressió no avaluada (gràcies a la *tidy evaluation*), i `{{ }}` li diu a `dplyr`: "avalua això en el context de les dades, no com un literal".
 
-### 2. `.data[[ ]]` per a strings
+### `.data[[ ]]` per a strings
 
 Si el que reps és un `string` (per exemple, ve d'un paràmetre de configuració, d'un fitxer JSON o d'un `purrr::map` sobre un vector de noms), `{{ }}` no serveix. Aquí fem servir `.data[[ ]]`, del paquet `rlang`, que permet indexar columnes per nom textual:
 
@@ -64,7 +64,7 @@ agrupar_per_text(vendes_diaries, "botiga")
 
 Regla pràctica: **`{{ }}` per a símbols (noms sense cometes), `.data[[ ]]` per a strings**.
 
-### 3. `across()` per a vàries columnes
+### `across()` per a vàries columnes
 
 Quan el que volem parametritzar és un conjunt de columnes (per exemple, totes les mètriques que s'han de resumir alhora), la solució és `across()`:
 
@@ -115,7 +115,7 @@ El símbol `!!` (*bang-bang*) "desempaqueta" un valor avaluat (com un string) pe
 
 Les mateixes regles que hem vist fins ara s'apliquen a la majoria de verbs de `dplyr`, perquè tots comparteixen el mateix motor de *tidy evaluation*. La manera més pràctica d'organitzar-ho no és verb per verb, sinó per **grups de comportament**:
 
-### 1. Verbs que llegeixen
+### Verbs que llegeixen
 
 `select()`, `arrange()`, `count()`, `distinct()`, `pull()` i `relocate()` funcionen exactament igual que `group_by()`: reben una referència a una columna (símbol o string) i no en creen cap de nova. Si ja domines `{{ }}` i `.data[[ ]]` per a `group_by()`, els tens tots resolts:
 
@@ -133,7 +133,7 @@ ordenar_per <- function(dades, columna) {
 
 Amb strings, el patró és sempre `.data[[columna]]`, i per seleccionar diverses columnes a la vegada, `select(all_of(vector_de_noms))`.
 
-### 2. Verbs amb expressió
+### Verbs amb expressió
 
 `filter()` és el cas més habitual d'aquest grup: no rep només el nom d'una columna, sinó una condició completa que la fa servir. La columna es parametritza igual (`{{ }}` o `.data[[ ]]`), però normalment hi acompanya un altre paràmetre amb el valor de comparació:
 
@@ -145,7 +145,7 @@ filtrar_per <- function(dades, columna, valor) {
 
 `case_when()` dins d'un `mutate()` es comporta igual: la columna dinàmica simplement apareix dins d'una condició (`.data[[columna]] > 10 ~ "alt"`), sense cap regla nova respecte al que ja coneixem.
 
-### 3. Verbs que creen columna
+### Verbs que creen columna
 
 Aquí hi entren `mutate()` i `summarise()` (ja vistos), i també `rename()`, amb la particularitat que el nom nou hi va explícitament a l'esquerra:
 
@@ -157,7 +157,7 @@ renombrar <- function(dades, nom_nou, columna_vella) {
 
 La regla és la mateixa que ja hem aplicat: si el nom nou arriba com a string, `"{nom}" :=`; si arriba com a símbol que vols capturar literalment, `{{ nom }}` al costat esquerre de `:=`.
 
-### 4. L'excepció dels `joins`
+### L'excepció dels `joins`
 
 `left_join()`, `inner_join()` i companyia **no accepten `{{ }}`** a l'argument `by`. Aquest argument espera directament un string o un vector amb nom, no una expressió no avaluada, així que la sintaxi és diferent de tota la resta:
 
