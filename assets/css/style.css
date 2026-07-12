@@ -344,13 +344,10 @@ ul {
 .post-content h3::before {
   content: "";
   display: inline-block;
-  position: relative;
-  top: -2px;
-  width: 5.5px;
-  height: 5.5px;
-  margin-right: 10px;
-  margin-left: 10px;
-  background-color: var(--text);
+  width: 8px;
+  height: 8px;
+  margin-right: 8px;
+  background-color: var(--accent);
 }
 
 .post-tags-row {
