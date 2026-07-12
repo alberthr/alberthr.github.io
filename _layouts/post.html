@@ -11,6 +11,21 @@
 
       <div class="post-article-col">
 
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          "headline": {{ page.title | jsonify }},
+          "datePublished": "{{ page.date | date_to_xmlschema }}",
+          "dateModified": "{{ page.last_modified_at | default: page.date | date_to_xmlschema }}",
+          "author": {
+            "@type": "Person",
+            "name": "Albert"
+          },
+          "url": {{ page.url | absolute_url | jsonify }}
+        }
+        </script>
+
         <article class="post-content">
           <h1>{{ page.title }}</h1>
 
