@@ -14,7 +14,7 @@ Si el model no entén com interactuen les palanques bàsiques del negoci (el pre
 En aquest article vull abordar els tres grans dilemes inicials que definiran el rumb d'un MMM: l'estructura de la baseline, el modelatge de l'efecte de la publicitat en el temps (Ad-Stock) i la captura de l'estacionalitat.
 
 
-## Baseline Aditiva vs. Baseline Multiplicativa: Com interactua el teu negoci?
+## Baseline Aditiva vs. Baseline Multiplicativa
 
 La **baseline** representa les vendes orgàniques de la marca, és a dir, tot allò que es vendria sense fer publicitat. La decisió de com interconectem els seus components (preu, distribució, estacionalitat...) canvia radicalment el comportament del model.
 
@@ -37,12 +37,12 @@ $$\text{Vendes Base}_t = \beta_0 \cdot (\text{Preu}_t)^{\beta_1} \cdot (\text{Di
 En resum, els models aditius, son més facils d'explicar, interpretar i implementar a l'hora d'asignar pesos a cada variable de la Baseline. Els models Multiplicatius son mes treballats i a la vegada mes correctes a l'hora d'entendre la lógica de com funciona la realitat. Si només ens importa el resultat final i un cop calculat el model només volem explicar el passat i no volem simular el futur, no sol haver-hi gaire diferencies entre les 2 metodologies. 
 
 
-## Modelar el retard de la publicitat (Ad-Stock): Decay vs. Funció Gamma
+## Decay vs. Funció Gamma
 
 Un anunci vist avui pot generar una venda demà o la setmana vinent. Aquesta memòria de marca es coneix com **Ad-Stock**. El dilema aquí és triar quina funció matemàtica descriu millor la pèrdua de record del consumidor segons el canal.
 
 
-### Decay (Caiguda geomètrica d'1 paràmetre)
+### Decay
 Assumeix que l'impacte màxim de la publicitat es produeix **immediatament** (en el mateix moment de l'exposició) i decreix de manera exponencial al llarg del temps segons un factor de caiguda $\alpha$ (entre 0 i 1).
 
 $$Adstock_t = \alpha \cdot X_t + (1 - \alpha) \cdot Adstock_{t-1}$$
@@ -51,7 +51,7 @@ $$Adstock_t = \alpha \cdot X_t + (1 - \alpha) \cdot Adstock_{t-1}$$
 * **Característiques:** És ràpida de calcular i només requereix optimitzar un únic paràmetre.
 * **Quan triar-la?** Per a canals digitals i d'acció immediata (*Paid Search*, *Performance Marketing*, *Emailing*), on l'usuari fa clic i compra al moment, i el record s'esvaeix ràpidament si no es torna a impactar. 
 
-### Funció Gamma (2 paràmetres: Forma i Escala)
+### Funció Gamma
 La funció Gamma és molt més sofisticada. Permet modelar un **efecte retardat (*lagged effect*)**. L'impacte màxim de l'anunci no té lloc el primer dia, sinó que pot assolir el seu pic uns dies o setmanes més tard, caient després de forma asimètrica.
 
 * **Característiques:** Afegeix molta flexibilitat a la corba de record, però requereix fixar o optimitzar dos hiperparàmetres (forma i escala), incrementant la complexitat i el temps de computació del model.
@@ -60,16 +60,16 @@ La funció Gamma és molt més sofisticada. Permet modelar un **efecte retardat 
 Per experiencia, encara que els mitjans tradicionals no siguin inmediats, també funciona be fer servir el Decay si estem mesurant l'efecte de la publicitat al curt plaç i estem analitzant l'efecte en Ventes en productes de gran consum (FMCG) on les bases de dades i els models es solen analitzar amb dades agrupades de manera setmanal. En productes on la decisió de compra es molt més pensada (productes financers, automovils...) pot ser més convenient fer servir una Funció Gamma.
 
 
-## Com capturar l'Estacionalitat: 4 maneres senzilles
+## Com capturar l'Estacionalitat
 
 Si el teu producte es ven més a l'hivern, has d'aïllar aquest patró perquè el model no atribueixi erròniament aquestes vendes orgàniques a les campanyes publicitàries que fas per Nadal. L'objectiu és sempre el mateix: separar les vendes "normals" de les vendes que genera realment la publicitat. Aquí tens quatre maneres d'aconseguir-ho, de la més bàsica a la més refinada.
 
-### Variables Dummy (per mes o setmana)
+### Variables Dummy
 La més directa: una variable binària (0/1) per cada mes o setmana de l'any.
 * **Avantatge:** fàcil d'entendre i d'explicar a qualsevol, no cal cap càlcul previ.
 * **Inconvenient:** si treballes amb dades setmanals, afegir 52 variables fictícies consumeix massa graus de llibertat del model, augmentant el risc de sobreajust (*overfitting*).
 
-### Descomposició clàssica de sèries temporals
+### Descomposició de sèries temporals
 Algorismes com `decompose()` separen automàticament la sèrie en tres trossos —tendència, estacionalitat i soroll— normalment fent servir mitjanes mòbils.
 * **Avantatge:** ràpid d'aplicar, et dona un índex estacional net que pots utilitzar com a *input* fix del model.
 * **Inconvenient:** assumeix un patró estacional força rígid, igual any rere any.
@@ -79,21 +79,21 @@ Algorismes com `decompose()` separen automàticament la sèrie en tres trossos �
 * **Avantatge:** s'adapta millor si l'estacionalitat canvia lleugerament d'un any a l'altre, o si la tendència no segueix una línia recta.
 * **Quan triar-la sobre la clàssica?** Quan tens prou anys d'històric i sospites que el patró estacional "respira" una mica d'un any a l'altre.
 
-### Mirar la categoria total (o els competidors sense palanques) — el truc del FMCG
+### Observar el total categoria
 En lloc de calcular l'estacionalitat amb matemàtiques, la treus directament del mercat: si tens dades de panell, mires com es mou la categoria sencera, o específicament aquelles marques que no fan publicitat ni promocions. Si aquestes marques "passives" pugen un 30% a l'estiu, aquest 30% és estacionalitat pura de mercat, no un artefacte estadístic.
 * **Avantatge:** és la més "real": no surt d'un model, surt directament del comportament del consumidor.
 * **Inconvenient:** necessites dades de categoria o panell, i has de verificar bé que aquests competidors "sense palanques" realment no facin res (ni distribució agressiva, ni moviments de preu).
 
-### Quina triar?
+### Quina triar
 Les quatre opcions són independents del tipus de baseline que facis servir, però hi ha una afinitat natural que val la pena tenir present: les **dummies** sumen unitats fixes, així que casen millor amb una **baseline aditiva**; en canvi, la **descomposició clàssica**, l'**STL** i el mètode de la **categoria** et donen, de manera natural, un índex (un multiplicador), que s'integra més bé en una **baseline multiplicativa**. No és una regla estricta, però sí el camí de menys resistència.
 
 La tria final depèn sobretot de les dades que tinguis: si només comptes amb la teva pròpia sèrie, vas amb dummies o descomposició/STL; si tens accés a dades de mercat, l'opció 4 sol ser la més robusta perquè no depèn de cap supòsit matemàtic.
 
 
-
-## Implementació en Python: Regressió Aditiva vs. Multiplicativa
-
+## Exemple de Regressió Aditiva vs. Multiplicativa
 Vegem amb un exemple senzill com canvia la regressió segons triem una baseline aditiva (OLS clàssica) o multiplicativa (log-log, on els coeficients passen a ser elasticitats):
+
+### Implementació en Python
 
 ```python
 import numpy as np
@@ -139,7 +139,7 @@ print(model_mult.params)
 
 En el model aditiu, cada coeficient s'interpreta en unitats de venda (ex: "cada euro de pujada de preu resta X unitats"). En el model multiplicatiu, com que treballem amb logaritmes, els coeficients s'interpreten com a **elasticitats**: el coeficient del preu (al voltant de -0.5) vol dir que un 1% de pujada de preu redueix les vendes un 0.5%, independentment del nivell de vendes actual.
 
-## Implementació en R
+### Implementació en R
 
 ```r
 set.seed(42)
