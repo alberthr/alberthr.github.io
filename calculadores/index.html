@@ -1,9 +1,6 @@
----
----
 <!DOCTYPE html>
 <html lang="ca">
 <head>
-
 	<script async src="https://www.googletagmanager.com/gtag/js?id=G-24FW05JLVP"></script>
 	<script>
 	  window.dataLayer = window.dataLayer || [];
@@ -13,11 +10,16 @@
 	  gtag('config', 'G-24FW05JLVP');
 	</script>
 
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadores - Estadística i Publicitat</title>
-    <meta name="description" content="Calculadores gratuïtes d'estadística, publicitat i marketing mix modeling.">
+    <title>Índex de Calculadores</title>
+    <meta name="description" content="Índex d'eines dinàmiques de simulació i anàlisi.">
     <style>
+
+        html {
+            scrollbar-gutter: stable;
+        }
+
         :root {
             --cc-primary: #3b82f6;
             --cc-primary-hover: #2563eb;
@@ -29,32 +31,25 @@
             --cc-border: #e2e8f0;
             --cc-border-strong: #cbd5e1;
             --cc-radius: 6px;
-            --cc-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            --cc-space-1: 4px;
-            --cc-space-2: 8px;
             --cc-space-3: 12px;
             --cc-space-4: 16px;
             --cc-space-5: 24px;
             --cc-space-6: 32px;
-            --cc-bg-soft: #f8fafc;
-        }
-
-        html {
-            scrollbar-gutter: stable;
+            --cc-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
             font-family: var(--cc-font);
             margin: 2rem auto;
-            background-color: var(--cc-bg-soft);
+            background-color: #f8fafc;
             color: var(--cc-text);
-            font-size: 12px;
+            font-size: 13.5px;
             line-height: 1.5;
             padding: 0 20px;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 1000px;
             margin: 0 auto;
             background: var(--cc-card-bg);
             border: 1px solid var(--cc-border);
@@ -63,7 +58,7 @@
             border-radius: var(--cc-radius);
         }
 
-        .ccob-title {
+        .idx-title {
             font-size: 14px;
             font-weight: 600;
             color: var(--cc-dark);
@@ -71,115 +66,119 @@
             letter-spacing: 0.5px;
             border-bottom: 1px solid var(--cc-border);
             padding-bottom: 6px;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
         }
 
-        .ccob-subtitle {
-            margin: 0 0 24px 0;
-            color: var(--cc-text-light);
+        .idx-subtitle {
             font-size: 13px;
-            font-weight: normal;
+            color: var(--cc-text-light);
+            margin-bottom: var(--cc-space-6);
         }
 
-        section {
-            background: var(--cc-bg-soft);
-            border: 1px solid var(--cc-border);
-            padding: var(--cc-space-4) var(--cc-space-5);
-            border-radius: var(--cc-radius);
-            margin-bottom: var(--cc-space-5);
+        .idx-section + .idx-section {
+            margin-top: var(--cc-space-6);
         }
 
-        h2 {
-            font-size: 12.5px;
+        .idx-section-title {
+            font-size: 12px;
             font-weight: 600;
-            color: var(--cc-dark);
+            color: var(--cc-text-light);
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-top: 0;
-            margin-bottom: var(--cc-space-3);
-            padding-bottom: var(--cc-space-1);
-            border-bottom: 1px dashed var(--cc-border-strong);
+            margin-bottom: var(--cc-space-4);
         }
 
-        ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
+        .idx-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--cc-space-4);
+        }
+        @media (max-width: 640px) {
+            .idx-grid { grid-template-columns: 1fr; }
         }
 
-        li {
-            margin: var(--cc-space-2) 0;
-            padding-left: var(--cc-space-3);
-            position: relative;
-        }
-
-        li::before {
-            content: "•";
-            color: var(--cc-primary);
-            font-weight: bold;
-            position: absolute;
-            left: 0;
-            top: -1px;
-        }
-
-        a {
+        .idx-card {
+            display: block;
+            padding: var(--cc-space-4) var(--cc-space-5);
+            border: 1px solid var(--cc-border);
+            border-radius: var(--cc-radius);
+            background: #fff;
             text-decoration: none;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+        .idx-card:hover {
+            border-color: var(--cc-primary);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+
+        .idx-card-name {
+            font-size: 13.5px;
+            font-weight: 600;
             color: var(--cc-dark);
-            /*font-weight: 500;*/
-			text-transform: uppercase;
-            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
-
-        a:hover {
-            color: var(--cc-primary-hover);
-            text-decoration: underline;
-        }
-
-        .methodology-footer {
-            margin-top: var(--cc-space-6);
-            border-top: 1px dashed var(--cc-border);
-            padding-top: var(--cc-space-4);
-            font-size: 11.5px;
+        .idx-card-name::after {
+            content: "↗";
+            font-size: 12px;
+            font-weight: 400;
             color: var(--cc-text-light);
-            text-align: center;
         }
+
+        .idx-card-desc {
+            font-size: 12.5px;
+            color: var(--cc-text-light);
+            margin-top: 4px;
+        }
+
     </style>
 </head>
 <body>
+    <div class="container">
+        <div class="idx-title">Índex de calculadores</div>
+        <div class="idx-subtitle">Índex d'eines dinàmiques de simulació i anàlisi.</div>
 
-<div class="container">
-    <h1 class="ccob-title">Calculadores Personals</h1>
-    <h3 class="ccob-subtitle">Índex d'eines dinàmiques de simulació i anàlisi</h3>
+        <div class="idx-section">
+            <div class="idx-section-title">Estadística</div>
+            <div class="idx-grid">
+                <a class="idx-card" href="binomial.html" target="_blank" rel="noopener">
+                    <div class="idx-card-name">Calculadora de p-valor — Test Binomial</div>
+                    <div class="idx-card-desc">Comprova si una proporció observada difereix significativament d'un valor esperat.</div>
+                </a>
+                <a class="idx-card" href="mostra.html" target="_blank" rel="noopener">
+                    <div class="idx-card-name">Calculadora de mida de mostra</div>
+                    <div class="idx-card-desc">Dissenya estudis amb el nivell de confiança i marge d'error desitjats.</div>
+                </a>
+            </div>
+        </div>
 
-    <section>
-        <h2>Estadística</h2>
-        <ul>
-            <li><a href="https://alberthr.github.io/calculadores/mostra.html" target="_blank">Configuració de Mostra d'Estudi</a></li>
-            <li><a href="https://alberthr.github.io/calculadores/binomial.html" target="_blank">Test Binomial</a></li>
-        </ul>
-    </section>
+        <div class="idx-section">
+            <div class="idx-section-title">Mitjans i publicitat</div>
+            <div class="idx-grid">
+                <a class="idx-card" href="ad_recall.html" target="_blank" rel="noopener">
+                    <div class="idx-card-name">Calculadora d'Ad Recall</div>
+                    <div class="idx-card-desc">Estima el record publicitari a partir de la inversió publicitària.</div>
+                </a>
+                <a class="idx-card" href="optimitzador_cobertura.html" target="_blank" rel="noopener">
+                    <div class="idx-card-name">Optimitzador de Mix de Mitjans</div>
+                    <div class="idx-card-desc">Distribueix el pressupost entre canals per maximitzar la cobertura.</div>
+                </a>
+                <a class="idx-card" href="simulador_mmm.html" target="_blank" rel="noopener">
+                    <div class="idx-card-name">Simulador de Marketing Mix Modeling</div>
+                    <div class="idx-card-desc">Analitza l'efecte de la inversió publicitària sobre KPIs de negoci.</div>
+                </a>
+                <a class="idx-card" href="suma_cobertura.html" target="_blank" rel="noopener">
+                    <div class="idx-card-name">Calculadora de Cobertures Multimèdia</div>
+                    <div class="idx-card-desc">Suma i combina la cobertura de diversos canals publicitaris.</div>
+                </a>
+                <a class="idx-card" href="reach_frequency.html" target="_blank" rel="noopener">
+                    <div class="idx-card-name">Calculadora de Cobertura n+</div>
+                    <div class="idx-card-desc">Estima quin percentatge d'audiència ha estat exposat un mínim de vegades.</div>
+                </a>
+            </div>
+        </div>
 
-    <section>
-        <h2>Publicitat</h2>
-        <ul>
-            <li><a href="https://alberthr.github.io/calculadores/reach_frequency.html" target="_blank">Estimació de Corba R&F a partir de GRPs i Reach</a></li>
-            <li><a href="https://alberthr.github.io/calculadores/suma_cobertura.html" target="_blank">Suma de Cobertures Multimedia (Fins a 6 Mitjans)</a></li>
-            <li><a href="https://alberthr.github.io/calculadores/optimitzador_cobertura.html" target="_blank">Optimitzador de Cobertura de pla de Mitjans</a></li>
-			<li><a href="https://alberthr.github.io/calculadores/ad_recall.html" target="_blank">Calculadora Avançada d'Ad-Recall segons nivell de GRPs</a></li>
-        </ul>
-    </section>
-
-    <section>
-        <h2>Altres</h2>
-        <ul>
-            <li><a href="https://alberthr.github.io/calculadores/simulador_mmm.html" target="_blank">Simulador de Marketing Mix Modelling (MMM)</a></li>
-        </ul>
-    </section>
-
-    <div class="methodology-footer">
-        <p>© 2026 · Calculadores d'anàlisi i de models publicitaris</p>
     </div>
-</div>
-
 </body>
 </html>
