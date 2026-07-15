@@ -89,22 +89,22 @@
             gap: var(--cc-space-1);
         }
 
-		.tab-btn {
-			font-family: inherit;     
-			padding: var(--cc-space-3) var(--cc-space-5);
-			font-size: 13px;
-			font-weight: 600;
-			color: var(--cc-text-light);
-			background: none;
-			border: none;
-			border-bottom: 2px solid transparent;
-			cursor: pointer;
-			transition: all 0.2s ease;
-			margin-bottom: -2px;
-			text-transform: uppercase;
-			width: auto;              
-			border-radius: 0;         
-		}
+        .tab-btn {
+            font-family: revert;
+            padding: var(--cc-space-3) var(--cc-space-5);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--cc-text-light);
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+			border-radius: 0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: -2px;
+            text-transform: uppercase;
+            width: auto;
+        }
 
         .tab-btn:hover { color: var(--cc-primary); }
         .tab-btn.active {
@@ -189,11 +189,6 @@
             background: white;
             width: 100%;
         }
-		
-		.tabs-container button {
-			width: auto;
-		}		
-		
         select { height: 28px; line-height: 1; }
 
         input[type="number"]:disabled, select:disabled {
