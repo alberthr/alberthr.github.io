@@ -11,7 +11,7 @@ En el desplegament de models de **Media Mix Modeling (MMM)** o en el disseny d'a
 
 
 
-## L'Equació de Hill i l'efecte de massa crítica
+## L'Equació de Hill
 
 Originalment formulada per descriure fenòmens bioquímics, l'Equació de Hill s'ha consolidat en l'anàlisi de màrqueting per la seva capacitat de capturar efectes de llindar complexos.
 
@@ -23,7 +23,7 @@ $$y = E_{max} \cdot \frac{x^n}{EC_{50}^n + x^n}$$
 * **$n$ (Exponent de Hill):** Regula la curvatura. Quan $n > 1$, la funció descriu una forma sigmoide (en "S") molt estricta, ideal per a fenòmens on es requereix acumulació d'impactes abans d'observar una reacció significativa.
 
 
-## La Funció Logística de Nelder Modificada
+## Logística de Nelder Modificada
 
 La variant coneguda habitualment en entorns corporatius com a "Logística Modificada" és una adaptació del **Model Logístic de Nelder** de tres paràmetres, alterada algebraicament perquè la intercepció es produeixi estrictament en l'origen $(0,0)$. En una corba logística estàndard, un pressupost de zero genera un resultat positiu ($y > 0$); aquesta modificació aplica una penalització exponencial al numerador per resoldre aquesta incoherència conceptual.
 
@@ -35,7 +35,7 @@ $$y = K \cdot \frac{1 - e^{-\frac{x}{\beta}}}{1 + \theta \cdot e^{-\frac{x}{\bet
 * **$\theta$ (Factor d'Asimetria de Nelder):** Controla la natura del tram inicial. Si $\theta > 0$, es genera una lleugera forma en "S" progressiva. Si $\theta = 0$, la funció col·lapsa exactament en un model clàssic de rendiments decreixents exponencials pur ($y = K(1-e^{-x/\beta})$), eliminant qualsevol inèrcia inicial.
 
 
-## Criteris de selecció segons el KPI: Vendes vs. Cobertura
+## Criteris de selecció segons el KPI
 
 L'elecció entre ambdós models s'ha de basar en la natura física del fenomen que es pretén descriure:
 
@@ -152,6 +152,6 @@ document.addEventListener("DOMContentLoaded", function() {
 2. **Convergència en la saturació:** Superats els 600-700 GRPs, ambdós models tornen a aproximar-se i descriuen pràcticament el mateix fenomen físic d'esgotament d'audiència o saturació del mercat potencial, on la inversió addicional es destina gairebé en la seva totalitat a duplicar impactes (freqüència inútil), aplanant el creixement marginal cap a zero.
 
 
-## Conclusions i paradoxa en l'entorn corporatiu
+## Conclusions
 
 L'anàlisi purament matemàtica suggereix l'ús de Hill per a vendes i de Nelder per a cobertura. Malgrat això, s'observa sovint una paradoxa en la pràctica corporativa: molts departaments financers tendeixen a rebutjar l'efecte llindar de Hill en els models de vendes, donat que assumir la corba en "S" implica conceptualitzar que els primers trams d'inversió no ofereixen cap retorn tangible. S'acaba optant, per criteris de prudència pressupostària, per la funció de Nelder, assumint que cada unitat monetària invertida ha de mobilitzar el KPI des del primer instant. De fet, quan, com en l'exemple anterior, l'ajust estadístic d'ambdós models és pràcticament indistingible, l'elecció final esdevé encara més una qüestió de criteri conceptual que no pas de bondat d'ajust pur.
