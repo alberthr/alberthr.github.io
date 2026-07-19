@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Anàlisi d'Associació i Minat de Transaccions amb l'Algoritme Apriori"
+title: "Basket Analysis amb l'Algoritme Apriori"
 tags:
   - estadistica
   - minat-de-dades
