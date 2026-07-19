@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Fonaments i Principals Anàlisis de l'Estadística No Paramètrica"
+title: "Principals Anàlisis de l'Estadística No Paramètrica"
 tags:
   - estadistica
   - python
