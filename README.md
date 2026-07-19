@@ -9,19 +9,19 @@ Blog personal sobre estadística, modelització, MMM (Marketing Mix Modeling) i 
 ├── _posts/                 # Articles del blog en Markdown
 ├── _layouts/
 │   ├── default.html        # Esquelet base (head, favicon, header, footer)
-│   ├── page.html            # Pàgines estàtiques
-│   └── post.html             # Entrades del blog
-├── _includes/               # Capçalera i peu
+│   ├── page.html           # Pàgines estàtiques
+│   └── post.html           # Entrades del blog
+├── _includes/              # Capçalera i peu
 ├── assets/
-│   ├── css/                 # Estils
-│   ├── js/                   # Scripts (cerca, TOC, etc.)
-│   └── images/               # Imatges del site (incl. imatge OG per defecte)
-├── eines/                   # Simuladors i calculadores en HTML/JS autònom
-├── cv/                       # Pàgina de currículum (HTML autònom)
-├── _config.yml               # Configuració del blog
-├── index.html                 # Pàgina principal
-├── 404.html                    # Pàgina d'error
-└── robots.txt                  # SEO
+│   ├── css/                # Estils
+│   ├── js/                 # Scripts (cerca, TOC, etc.)
+│   └── images/             # Imatges del site (incl. imatge OG per defecte)
+├── eines/                  # Simuladors i calculadores en HTML/JS autònom
+├── cv/                     # Pàgina de currículum (HTML autònom)
+├── _config.yml             # Configuració del blog
+├── index.html              # Pàgina principal
+├── 404.html                # Pàgina d'error
+└── robots.txt              # SEO
 ```
 
 > ⚠️ **Nota:** `eines/` i `cv/` són HTML pur i no passen pel sistema de plantilles de Jekyll. Elements comuns del site (favicon, Google Analytics) s'han de mantenir manualment a cada fitxer d'aquestes carpetes.
@@ -57,9 +57,6 @@ Blog personal sobre estadística, modelització, MMM (Marketing Mix Modeling) i 
 
 ### 📐 **Fórmules matemàtiques**
 - Suport per MathJax per a notació matemàtica dins dels posts
-
-### 🌓 **Mode fosc**
-- El blog suporta tema clar i fosc
 
 ## 🎨 Disseny Visual
 
