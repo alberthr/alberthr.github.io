@@ -684,6 +684,41 @@ mjx-container {
   transition: color var(--transition-fast);
 }
 
+.share-section {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}
+.share-links {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-bottom: 6px;
+  padding-top: 22px;
+}
+.share-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  color: var(--ink-soft);
+  background: transparent;
+  border: var(--border);
+  cursor: pointer;
+  transition: color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+}
+.share-link:hover {
+  color: var(--accent-hover);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+.share-link.copied {
+  color: #16a34a;
+  border-color: #16a34a;
+}
+
 .post-footer {
   padding: 22px 0;
   border-top: var(--border);
