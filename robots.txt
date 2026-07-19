@@ -1,4 +1,7 @@
+---
+permalink: /robots.txt
+---
 User-agent: *
 Allow: /
 
-Sitemap: https://alberthr.github.io/sitemap.xml
+Sitemap: {{ site.url }}{{ site.baseurl }}/sitemap.xml

@@ -1,10 +1,10 @@
 ---
 layout: post
 title: "Ad Recall Global: El vincle entre el R&F i l'eficiència creativa"
-tags: 
+tags:
+  - modelitzacio
   - publicitat
-  - matematiques
-excerpt: "Anàlisi de la doble transició metodològica en l'Ad Recall. Des de com estimar el record global a partir de la probabilitat individual i les corbes d'abast (R&F), fins a l'exercici invers: aïllar la 'p' intrínseca de l'anunci per avaluar i classificar l'eficàcia creativa de manera objectiva."
+excerpt: "Anàlisi matemátic de l'Ad Recall. Des de com estimar el record global d'una campanya a partir de la probabilitat individual i les corbes de R&F, fins a l'exercici invers: aïllar la 'p' de l'anunci per avaluar l'eficàcia creativa de manera objectiva."
 ---
 
 En la planificació de mitjans publicitaris, l'avaluació de l'èxit d'una campanya sovint es limita a mètriques de pressió i abast, com ara els GRPs (*Gross Rating Points*) o la Cobertura (*Reach*). No obstant això, aquests indicadors només mesuren l'exposició potencial, no l'impacte real en la memòria del consumidor. Per avaluar aquest impacte, el mercat recorre habitualment a l'**Ad Recall o Record Suggerit (Aided Ad Recall)** mitjançant estudis de post-test.

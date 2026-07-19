@@ -1,10 +1,10 @@
 ---
 layout: post
-title: "Marketing Mix Modelling (MMM): Decisions a prendre abans de començar"
+title: "Decisions a prendre abans de començar un MMM"
 tags:
   - modelitzacio
   - publicitat
-excerpt: "Abans de començar un Marketing Mix Model cal resoldre alguns dilemes clau: baseline aditiva o multiplicativa, com modelar l'Ad-Stock (Decay vs. funció Gamma) o com capturar l'estacionalitat. Una anàlisi de les decisions estructurals que condicionaran tot el model."
+excerpt: "Abans de començar un MMM (Marketing Mix Modeling) cal resoldre alguns dilemes clau: baseline aditiva o multiplicativa, com modelar l'Ad-Stock (Decay vs. funció Gamma) o com capturar l'estacionalitat."
 ---
 
 Abans de llançar la primera línia de codi d'un projecte de **Marketing Mix Modeling (MMM)**, tot *analista* s'enfronta a un full en blanc amb alguns dilemes estructurals. Un model MMM no és una simple regressió que es pugui automatitzar a cegues; és la traducció matemàtica de la realitat comercial d'un producte o empresa. 

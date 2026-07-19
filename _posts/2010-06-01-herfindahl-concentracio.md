@@ -2,7 +2,8 @@
 layout: post
 title: "L'index de Herfindahl (o de Concentracio)"
 tags:
-  - matematiques
+  - estadistica
+  - publicitat
 excerpt: "L'índex d'Herfindahl mesura el grau de concentració d'un mercat sumant els quadrats de les quotes de cada empresa. Una eina d'economia i dret de la competència que també es pot aplicar en altre àmbits."
 ---
 

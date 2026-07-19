@@ -1,16 +1,13 @@
-<header class="site-header-card">
-  <div class="site-header-row">
-    <a href="{{ '/' | relative_url }}" class="site-brand">
-      <span class="site-logo-mark">&Sigma;</span>
-      <span class="site-title">{{ site.title }}</span>
+<header class="site-header">
+  <div class="site-header-inner">
+    <a class="brand" href="{{ '/' | relative_url }}">
+      <span class="brand-mark">QPA</span>
+      <span class="brand-title">Quadern personal d<em>'</em>anàlisi</span>
     </a>
-
     <nav class="site-nav">
-      <span>Links: </span>
-      <a class="site-nav-link" href="{{ '/calculadores/' | relative_url }}" target="_blank">Calculadores</a>
-      <a class="site-nav-link" href="{{ '/cv/' | relative_url }}" target="_blank">CV</a>
+      <a href="{{ '/' | relative_url }}" {% if page.url == '/' %}class="active"{% endif %}>Inici</a>
+      <a href="{{ '/eines/' | relative_url }}" {% if page.url contains '/eines' %}class="active"{% endif %}>Eines</a>
+      <a href="{{ '/cv/' | relative_url }}" {% if page.url contains '/cv' %}class="active"{% endif %}>CV</a>
     </nav>
   </div>
-
-  <span class="site-tagline">{{ site.description }}</span>
 </header>

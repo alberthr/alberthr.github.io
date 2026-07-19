@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Nivell de confiança i marge d'error: Diferències i relació matemàtica"
+title: "Nivell de confiança i marge d'error: Diferències i relació"
 tags:
   - estadistica
 excerpt: "Anàlisi de la diferència entre el nivell de confiança i el marge d'error en l'estadística inferencial, avaluant-ne la dependència mútua i l'impacte en la mida de la mostra."

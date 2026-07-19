@@ -1,21 +1,46 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ca">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-24FW05JLVP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-24FW05JLVP');
+  </script>
 
-{% include head.html %}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% if page.title %}{{ page.title }} · {% endif %}{{ site.title }}</title>
+  <meta name="description" content="{{ page.excerpt | default: site.description | strip_html | strip_newlines | truncate: 160 }}">
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231e293b'/%3E%3Cline x1='15' y1='47' x2='48' y2='17' stroke='%233b82f6' stroke-width='3' stroke-linecap='round' opacity='0.45'/%3E%3Ccircle cx='19' cy='41' r='4.5' fill='%2360a5fa'/%3E%3Ccircle cx='30' cy='33' r='4.5' fill='%233b82f6'/%3E%3Ccircle cx='41' cy='25' r='4.5' fill='%2393c5fd'/%3E%3Ccircle cx='47' cy='18' r='4.5' fill='%232563eb'/%3E%3C/svg%3E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
+  <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ '/feed.xml' | relative_url }}">
+
+  {% seo %}
+</head>
 <body>
 
-  <div class="site-container">
+  {% include header.html %}
 
-    {% include header.html %}
+  <main>
+    {{ content }}
+  </main>
 
-    <div class="page-shell">
-      {{ content }}
-    </div>
+  {% include footer.html %}
 
-    {% include footer.html %}
-
-  </div>
-
-  <script src="{{ '/assets/js/search.js' | relative_url }}"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] }
+    };
+  </script>
 </body>
 </html>

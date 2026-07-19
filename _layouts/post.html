@@ -1,177 +1,100 @@
-<!DOCTYPE html>
-<html lang="ca">
-{% include head.html %}
-<body>
-
-  <div class="site-container">
-
-    {% include header.html %}
-
-    <div class="post-shell">
-
-      <div class="post-article-col">
-
-        <script type="application/ld+json">
-        {
-          "@context": "https://schema.org",
-          "@type": "BlogPosting",
-          "headline": {{ page.title | jsonify }},
-          "datePublished": "{{ page.date | date_to_xmlschema }}",
-          "dateModified": "{{ page.last_modified_at | default: page.date | date_to_xmlschema }}",
-          "author": {
-            "@type": "Person",
-            "name": "Albert"
-          },
-          "url": {{ page.url | absolute_url | jsonify }}
-        }
-        </script>
-
-        <article class="post-content">
-          <h1>{{ page.title }}</h1>
-
-          {% if page.tags.size > 0 %}
-          <div class="post-tags-row">
-            {% for tag in page.tags %}
-              <span class="tag-sm">{{ tag }}</span>
-            {% endfor %}
-          </div>
-          {% endif %}
-
-          <details class="mobile-toc">
-            <summary>Contingut</summary>
-            <nav class="toc-list" id="toc-list-mobile"></nav>
-          </details>
-
-          {{ content }}
-        </article>
-
-        {% assign current_post_tags = page.tags %}
-        {% assign related_posts = "" | split: "" %}
-        {% assign max_related = 3 %}
-
-        {% for post in site.posts %}
-          {% if post.url != page.url %}
-            {% assign match_count = 0 %}
-            {% for post_tag in post.tags %}
-              {% if current_post_tags contains post_tag %}
-                {% assign match_count = match_count | plus: 1 %}
-              {% endif %}
-            {% endfor %}
-            {% if match_count > 0 %}
-              {% assign related_posts = related_posts | push: post %}
-            {% endif %}
-          {% endif %}
-        {% endfor %}
-
-        {% if related_posts.size > 0 %}
-          <section class="related-posts">
-            <h2 class="related-posts-title">Posts Relacionats</h2>
-            <ul class="related-posts-list">
-              {% for post in related_posts limit: max_related %}
-                <li><a href="{{ post.url | relative_url }}">{{ post.title }}</a></li>
-              {% endfor %}
-            </ul>
-          </section>
-        {% endif %}
-
-        <p class="back-to-posts">
-          <a href="{{ '/' | relative_url }}" class="btn-back">&larr; Tornar a tots els posts</a>
-        </p>
-
-        <section class="comments-section">
-          <script src="https://giscus.app/client.js"
-                  data-repo="alberthr/alberthr.github.io"
-                  data-repo-id="R_kgDOS1HLmA"
-                  data-category="Announcements"
-                  data-category-id="DIC_kwDOS1HLmM4C_AGq"
-                  data-mapping="title"
-                  data-strict="0"
-                  data-reactions-enabled="0"
-                  data-emit-metadata="0"
-                  data-input-position="bottom"
-                  data-theme="preferred_color_scheme"
-                  data-lang="ca"
-                  crossorigin="anonymous"
-                  async>
-          </script>
-        </section>
-
-      </div>
-
-      <aside class="post-margin">
-        <div class="margin-block">
-          <h3 class="margin-title">Contingut</h3>
-          <nav class="toc-list" id="toc-list"></nav>
-        </div>
-      </aside>
-
+---
+layout: default
+---
+<article>
+  <div class="wrap-post post-header">
+    {% if page.tags %}
+    <div class="card-tags">
+      {% for tag in page.tags %}<span class="card-tag">{{ tag }}</span>{% endfor %}
     </div>
-
-    {% include footer.html %}
-
+    {% endif %}
+    <h1>{{ page.title }}</h1>
+    {% assign words = content | strip_html | number_of_words %}
+    {% assign reading_time = words | divided_by: 200 | plus: 1 %}
+    <p class="post-meta"><span class="reading-time">{{ reading_time }} min de lectura</span></p>
+    {% if page.excerpt %}
+    <p class="post-excerpt">{{ page.excerpt | strip_html | strip_newlines }}</p>
+    {% endif %}
   </div>
 
-  <script src="{{ '/assets/js/search.js' | relative_url }}"></script>
+  <div class="wrap-post post-layout">
+    <div class="post-main">
+      <div class="post-content" id="post-content">
+        {{ content }}
+      </div>
 
-  <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    var article = document.querySelector('.post-content');
-    var tocList = document.getElementById('toc-list');
-    var tocListMobile = document.getElementById('toc-list-mobile');
-    if (!article) return;
+      {% assign related = "" | split: "" %}
+      {% assign related_scores = "" | split: "" %}
+      {% for p in site.posts %}
+        {% if p.url != page.url %}
+          {% assign common = p.tags | intersect: page.tags %}
+          {% if common.size > 0 %}
+            {% assign related = related | push: p %}
+            {% assign related_scores = related_scores | push: common.size %}
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+      {% assign related_sorted = "" | split: "" %}
+      {% for p in related %}
+        {% assign idx = forloop.index0 %}
+        {% assign score = related_scores[idx] %}
+        {% assign entry = score | append: "|" | append: idx %}
+        {% assign related_sorted = related_sorted | push: entry %}
+      {% endfor %}
+      {% assign related_sorted = related_sorted | sort | reverse %}
+      {% assign related_final = "" | split: "" %}
+      {% for entry in related_sorted limit:3 %}
+        {% assign parts = entry | split: "|" %}
+        {% assign idx = parts[1] | plus: 0 %}
+        {% assign related_final = related_final | push: related[idx] %}
+      {% endfor %}
+      {% assign related = related_final %}
+      {% if related.size > 0 %}
+      <div class="related-posts">
+        <p class="related-title">Posts relacionats</p>
+        <div class="related-list">
+          {% for p in related %}
+          <a class="related-item" href="{{ p.url | relative_url }}">
+            <h3>{{ p.title }}</h3>
+            {% if p.tags %}
+            <div class="card-tags related-item-tags">
+              {% for tag in p.tags %}<span class="card-tag">{{ tag }}</span>{% endfor %}
+            </div>
+            {% endif %}
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
 
-    var headings = article.querySelectorAll('h2, h3');
+      <div class="post-footer">
+        <a class="back-link" href="{{ '/' | relative_url }}">&larr; Totes les entrades</a>
+      </div>
 
-    function buildToc(target) {
-      if (!target) return;
-      if (headings.length === 0) {
-        target.innerHTML = '<span class="sidebar-meta">Sense seccions</span>';
-        return;
-      }
-      headings.forEach(function (heading, i) {
-        if (!heading.id) { heading.id = 'seccio-' + i; }
-        var link = document.createElement('a');
-        link.href = '#' + heading.id;
-        link.textContent = heading.textContent;
-        link.classList.add('toc-level-' + heading.tagName.charAt(1));
-        target.appendChild(link);
-      });
-    }
+      <section class="comments-section">
+        <script src="https://giscus.app/client.js"
+                data-repo="alberthr/alberthr.github.io"
+                data-repo-id="R_kgDOS1HLmA"
+                data-category="Announcements"
+                data-category-id="DIC_kwDOS1HLmM4C_AGq"
+                data-mapping="title"
+                data-strict="0"
+                data-reactions-enabled="0"
+                data-emit-metadata="0"
+                data-input-position="bottom"
+                data-theme="light"
+                data-lang="ca"
+                crossorigin="anonymous"
+                async>
+        </script>
+      </section>
+    </div>
 
-    buildToc(tocList);
-    buildToc(tocListMobile);
+    <aside class="post-toc" aria-label="Taula de continguts">
+      <p class="post-toc-title">Contingut</p>
+      <nav id="toc-nav"></nav>
+    </aside>
+  </div>
+</article>
 
-    var readingTimeEl = document.getElementById('reading-time');
-    if (readingTimeEl) {
-      var words = article.textContent.trim().split(/\s+/).length;
-      var minutes = Math.max(1, Math.round(words / 200));
-      readingTimeEl.textContent = minutes + ' min de lectura';
-    }
-
-    if (tocList) {
-      var tocLinks = tocList.querySelectorAll('a');
-      if (tocLinks.length > 0) {
-        tocLinks[0].classList.add('active');
-      }
-      if (tocLinks.length > 0 && 'IntersectionObserver' in window) {
-        var linkByHref = {};
-        tocLinks.forEach(function (link) { linkByHref[link.getAttribute('href')] = link; });
-
-        var observer = new IntersectionObserver(function (entries) {
-          entries.forEach(function (entry) {
-            var link = linkByHref['#' + entry.target.id];
-            if (!link) return;
-            if (entry.isIntersecting) {
-              tocLinks.forEach(function (l) { l.classList.remove('active'); });
-              link.classList.add('active');
-            }
-          });
-        }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
-
-        headings.forEach(function (heading) { observer.observe(heading); });
-      }
-    }
-  });
-  </script>
-</body>
-</html>
+<script src="{{ '/assets/js/main.js' | relative_url }}" defer></script>

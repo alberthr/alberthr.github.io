@@ -1,21 +1,39 @@
-title: "Quadern d'Anàlisis Personal"
-description: "Notes personals sobre data analysis, i altres temes d'interès."
+title: "Quadern personal d'anàlisi"
+description: "Notes tècniques sobre estadística, modelització i anàlisi de dades."
+lang: ca
+url: "https://alberthr.github.io" # URL final del site
 baseurl: ""
-url: "https://alberthr.github.io"
 
-remote_theme: pages-themes/minimal@v0.2.0
+markdown: kramdown
+kramdown:
+  input: GFM
+  math_engine: mathjax
+  syntax_highlighter: rouge
+
+permalink: /entrades/:title/
+
+collections:
+  posts:
+    output: true
+
+defaults:
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "page"
+
 plugins:
-  - jekyll-remote-theme
   - jekyll-feed
   - jekyll-sitemap
+  - jekyll-seo-tag
 
-# Configuració de Google Analytics
-google_analytics: "G-24FW05JLVP"
-
-permalink: /:title/
-markdown: kramdown
-theme: null
-
-kramdown:
-  syntax_highlighter: rouge
-  math_engine: mathjax
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
