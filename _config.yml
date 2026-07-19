@@ -1,8 +1,13 @@
 title: "Quadern personal d'anàlisi"
-description: "Notes tècniques sobre estadística, modelització i anàlisi de dades."
+description: "Notes tècniques d'anàlisi de dades: estadística aplicada, modelització publicitària i programació amb R, Python, SQL i Power BI, escrites per no oblidar-les."
 lang: ca
 url: "https://alberthr.github.io" # URL final del site
 baseurl: ""
+
+image: /assets/images/og-default.png
+
+twitter:
+  card: summary_large_image
 
 markdown: kramdown
 kramdown:
