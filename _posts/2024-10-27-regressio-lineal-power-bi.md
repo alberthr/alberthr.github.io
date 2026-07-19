@@ -175,4 +175,4 @@ En obrir el resultat de `LINESTX` (per exemple amb una taula calculada o `EVALUA
 
 ## Per aprofundir-hi
 
-Els articles de SQLBI sobre `LINEST`/`LINESTX` i la documentació oficial de Microsoft Learn són la referència més sòlida per entendre els detalls dels paràmetres opcionals i el comportament en context de filtre. Per a un altre cas d'ús habitual de DAX que no depèn de relacions físiques del model, vegeu també el post sobre [TREATAS]({% post_url 2026-07-19-treatas-power-bi %}).
+Els articles de SQLBI sobre `LINEST`/`LINESTX` i la documentació oficial de Microsoft Learn són la referència més sòlida per entendre els detalls dels paràmetres opcionals i el comportament en context de filtre. Per a un altre cas d'ús habitual de DAX que no depèn de relacions físiques del model, vegeu també el post sobre [TREATAS]({% post_url 2021-02-14-treatas-powerbi %}).
