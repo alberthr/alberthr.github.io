@@ -8,15 +8,13 @@ Blog personal sobre estadística, modelització, MMM (Marketing Mix Modeling) i 
 .
 ├── _posts/                    # Articles del blog en Markdown
 ├── _layouts/
-│   ├── default.html           # Esquelet base (head, favicon, header, footer)
-│   ├── page.html               # Pàgines estàtiques (eines, cv...)
-│   └── post.html                # Entrades del blog (capçalera, tags, TOC, relacionats)
+│   ├── default.html           # Esquelet base
+│   ├── page.html              # Pàgines estàtiques
+│   └── post.html              # Entrades del blog
 ├── _includes/                 # Capçalera i peu
 ├── assets/
-│   ├── css/main.css           # Estils (tema clar/fosc, tipografia Fraunces/Source Serif 4)
-│   └── js/
-│       ├── filter.js           # Cerca i filtre per etiquetes (client-side)
-│       └── toc.js               # Scrollspy de l'índex de continguts
+│   ├── css/main.css           # Estils
+│   └── js/                    # Funcions en Javascript
 ├── eines/                     # Simuladors i calculadores en HTML/JS autònom
 ├── cv/                        # Pàgina de currículum (HTML autònom)
 ├── _config.yml                # Configuració del blog
@@ -55,8 +53,6 @@ Blog personal sobre estadística, modelització, MMM (Marketing Mix Modeling) i 
 ### 📐 **Fórmules matemàtiques**
 - Suport per MathJax per a notació matemàtica dins dels posts
 
-### 🌓 **Mode fosc**
-- El blog suporta tema clar i fosc
 
 ## 🎨 Disseny Visual
 
