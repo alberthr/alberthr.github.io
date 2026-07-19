@@ -31,7 +31,7 @@ Aquesta transformació elimina l'efecte de la magnitud dels *outliers* i permet 
 
 ## Els Quatre Anàlisis Principals i Equivalències
 
-La taula següent detalla la correspondència exacta entre els tests paramètrics tradicionals i les seves alternatives no paramètriques per a cadascun dels quatre dissenys d'estudi fonamentals:
+La taula següent detalla la correspondència entre els tests paramètrics tradicionals i les seves alternatives no paramètriques per a cadascun dels quatre dissenys d'estudi fonamentals:
 
 | Disseny de l'Estudi | Test Paramètric | Test No Paramètric | Objectiu de l'Anàlisi |
 | :--- | :--- | :--- | :--- |
