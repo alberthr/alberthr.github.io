@@ -5,7 +5,7 @@ tags:
   - estadistica
   - python
   - r
-excerpt: "Quan una regressió lineal és massa rígida i unir punts genera soroll caòtic, LOESS ofereix un suavitzat local i flexible per detectar tendències reals en sèries temporals."
+excerpt: "Quan una regressió lineal és massa rígida i unir punts genera soroll caòtic, o si volem trobar tendencies, un suavitzat polinómic (o LOESS) ofereix un suavitzat local i flexible per detectar tendències reals en sèries temporals."
 ---
 
 En sèries temporals o gràfics de dispersió, sovint apareix una gran quantitat de soroll que dificulta veure la direcció real de les dades. Una línia recta de regressió lineal clàssica sol ser massa rígida, mentre que unir els punts directament genera un traç caòtic.
