@@ -42,6 +42,7 @@ El gràfic següent il·lustra aquest contrast sobre una sèrie simulada (una on
   <canvas id="graficLoess" width="800" height="450"></canvas>
 </div>
 
+{% raw %}
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     // Dades simulades il·lustratives: ona sinusoïdal amb soroll,
@@ -135,6 +136,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 </script>
+{% endraw %}
 
 ## Implementació pràctica
 
