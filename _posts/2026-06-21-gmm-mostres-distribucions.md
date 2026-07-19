@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Mostres bimodals: Troba la frontera amb GMM"
+title: "Detecció de Grups en Mostres Bimodals amb GMM"
 tags:
   - estadistica
   - python
@@ -8,15 +8,13 @@ tags:
 excerpt: "Quan una variable sembla tenir més d'una 'campana' (bimodal, trimodal...), un Gaussian Mixture Model permet estimar quants grups hi ha, a quin pertany cada observació i on és exactament el punt de tall entre grups."
 ---
 
+Es considera una mostra d'una sola variable contínua: temps de resposta, despesa per client, alçada d'una població, una mètrica de vendes... Quan l'histograma no mostra una única campana de Gauss, sinó dues, tres, o una forma estranya, és probable que en realitat hi hagi **diversos grups barrejats dins la mateixa columna de dades**.
 
+El problema típic és el següent:
 
-Imagina que tens una mostra d'una sola variable contínua: temps de resposta, despesa per client, alçada d'una població, una mètrica de vendes... Quan en fas l'histograma no veus una única campana de Gauss, sinó dues, tres, o una forma estranya que fa sospitar que en realitat hi ha **diversos grups barrejats dins la mateixa columna de dades**.
-
-El problema típic és:
-
-- Saps (o sospites) que hi ha 2 o més subpoblacions diferents barrejades.
-- No tens una etiqueta que digui a quin grup pertany cada observació.
-- Vols saber **a partir de quin valor una observació deixa de pertànyer al grup A i passa a pertànyer al grup B**.
+- Se sospita que hi ha 2 o més subpoblacions diferents barrejades.
+- No hi ha una etiqueta que digui a quin grup pertany cada observació.
+- Interessa determinar **a partir de quin valor una observació deixa de pertànyer al grup A i passa a pertànyer al grup B**.
 
 Aquest és exactament el cas d'ús per a un **Gaussian Mixture Model (GMM)**.
 
@@ -28,12 +26,12 @@ $$
 p(x) = \sum_{k=1}^{K} \pi_k \cdot \mathcal{N}(x \mid \mu_k, \sigma_k^2)
 $$
 
-Un algoritme estima aquests paràmetres sense conèixer prèviament a quin grup pertany cada punt. El resultat no és una etiqueta dura, sinó una **probabilitat de pertinença a cada grup per a cada observació** (soft clustering). A partir d'aquesta probabilitat, sí que pots assignar una etiqueta dura si et convé.
+Un algoritme estima aquests paràmetres sense conèixer prèviament a quin grup pertany cada punt. El resultat no és una etiqueta dura, sinó una **probabilitat de pertinença a cada grup per a cada observació** (*soft clustering*). A partir d'aquesta probabilitat, es pot assignar una etiqueta dura si convé.
 
 
 ## Per què serveix exactament
 
-- **Detectar quants grups hi ha realment** dins una variable que sembla multimodal (criteris com BIC/AIC et diuen si 2, 3 o 4 components ajusten millor).
+- **Detectar quants grups hi ha realment** dins una variable que sembla multimodal (criteris com BIC/AIC indiquen si 2, 3 o 4 components ajusten millor).
 - **Assignar cada observació a un grup**, amb una probabilitat associada (no només un sí/no).
 - **Trobar el punt de tall** (threshold) entre dos grups: el valor de x on la probabilitat de pertànyer al grup A s'iguala a la del grup B.
 - **Modelar la incertesa** a la zona de solapament entre distribucions, en lloc de forçar una frontera rígida com fa K-means.
@@ -46,8 +44,8 @@ Un algoritme estima aquests paràmetres sense conèixer prèviament a quin grup 
 - **Control de qualitat / processos industrials**: una mesura que hauria de ser unimodal però mostra dues campanes indica dos lots, dues màquines o dos torns amb comportament diferent.
 - **Bioestadística**: alçades, pesos o biomarcadors que combinen subpoblacions (per exemple, sexe biològic no registrat però que genera bimodalitat).
 - **Detecció d'anomalies**: el component amb pes (π) molt baix i mitjana allunyada pot identificar-se com a grup d'outliers.
-- **Finances**: rendiments d'un actiu que alternen entre un règim de baixa volatilitat i un règim de alta volatilitat (dos components gaussians amb σ molt diferent).
-- **A/B testing post-hoc**: quan sospites que dins del grup de "tractament" hi ha en realitat responedors i no-responedors barrejats.
+- **Finances**: rendiments d'un actiu que alternen entre un règim de baixa volatilitat i un règim d'alta volatilitat (dos components gaussians amb σ molt diferent).
+- **A/B testing post-hoc**: quan es sospita que dins del grup de "tractament" hi ha en realitat dos subgrups barrejats, amb comportament diferent davant del tractament.
 
 
 ## Com es troba el "punt de tall" entre dos grups
@@ -58,11 +56,11 @@ $$
 \pi_1 \cdot \mathcal{N}(x \mid \mu_1, \sigma_1^2) = \pi_2 \cdot \mathcal{N}(x \mid \mu_2, \sigma_2^2)
 $$
 
-És a dir, on la probabilitat *a posteriori* de pertànyer a un grup o l'altre val exactament 0,5. A la pràctica, no cal resoldre l'equació a mà: es calcula la probabilitat posterior per a un vector fi de valors de x i es localitza on creua el 0,5. Als exemples de codi de sota ho fem així.
+És a dir, on la probabilitat *a posteriori* de pertànyer a un grup o l'altre val exactament 0,5. A la pràctica, no cal resoldre l'equació a mà: es calcula la probabilitat posterior per a un vector fi de valors de x i es localitza on creua el 0,5, tal com es mostra als exemples de codi més avall.
 
 ## Com trobar el nombre òptim de grups (K)
 
-Fins ara hem assumit que ja sabíem que hi havia 2 grups. Però sovint la pregunta real és: **quants grups té realment la mostra?** Potser semblen 2 a l'histograma però en realitat n'hi ha 3 solapats, o el que sembla un sol grup amaga'n dos amb mitjanes molt properes.
+Fins ara s'ha assumit que ja se sabia que hi havia 2 grups. Sovint, però, la pregunta real és: **quants grups té realment la mostra?** Poden semblar 2 a l'histograma quan en realitat n'hi ha 3 de solapats, o el que sembla un sol grup pot amagar-ne dos amb mitjanes molt properes.
 
 La forma correcta de respondre-ho no és "mirar l'histograma i decidir a ull", sinó ajustar el GMM amb K = 1, 2, 3, 4... i comparar com de bé s'ajusta cada model, penalitzant els models amb més paràmetres (perquè un model amb més grups gairebé sempre ajustarà "millor" les dades, encara que sigui sobreajustament). Per a això es fan servir el **BIC** i l'**AIC**.
 
@@ -96,7 +94,11 @@ La diferència pràctica entre tots dos:
 A la pràctica: s'ajusta el model per a un rang de K (per exemple 1 a 6), es grafica BIC i AIC en funció de K, i es tria el mínim. Als exemples de codi de sota ja s'inclou aquest pas.
 
 
-## Implementació en Python
+## Implementació pràctica
+
+A continuació es simula una mostra bimodal (dos grups amb mitjanes i desviacions diferents), s'ajusta un GMM de 2 components, es localitza el punt de tall entre grups i es compara BIC/AIC per a un rang de K, tant en Python com en R.
+
+### Implementació en Python
 
 ```python
 import numpy as np
@@ -170,7 +172,7 @@ Punts clau d'aquest codi:
 - `predict_proba()` dona la probabilitat de pertànyer a cada component — útil per identificar observacions "ambigües" a la zona de solapament.
 - `model.bic(dades)` i `model.aic(dades)` calculen directament els dos criteris; no cal programar les fórmules a mà. Es repeteix per a diversos K i es tria el mínim, en lloc de decidir el nombre de grups a ull a partir de l'histograma.
 
-## Implementació en R
+### Implementació en R
 
 ```r
 library(mclust)
@@ -236,8 +238,8 @@ plot(model, what = "classification")
 | Base estadística | Heurística (distàncies) | Probabilística (versemblança) |
 | Selecció del nombre de grups | Mètode del colze, silueta | BIC/AIC, amb base estadística més formal |
 
-Per al cas concret que ens ocupa —saber a partir de quina observació es passa d'un grup a l'altre dins d'una variable contínua amb solapament—, el GMM és preferible perquè dona directament la **probabilitat de pertinença**, en lloc d'una frontera arbitrària basada només en la distància al centre del clúster.
+Per al cas d'una variable contínua amb solapament, on interessa saber a partir de quina observació es passa d'un grup a l'altre, el GMM és preferible perquè dona directament la **probabilitat de pertinença**, en lloc d'una frontera arbitrària basada només en la distància al centre del clúster.
 
 ## Resum
 
-Un GMM és l'eina adequada quan sospites (o detectes amb un histograma) que una mostra prové de la barreja de diverses distribucions normals, i vols anar més enllà de "sembla que hi ha dos grups": vols quantificar quants grups hi ha, amb quina probabilitat pertany cada dada a cadascun, i on és exactament la frontera entre ells. La implementació és directa tant en Python (`sklearn.mixture.GaussianMixture`) com en R (`mclust`), i en ambdós casos el criteri BIC permet decidir objectivament el nombre de components.
+Un GMM és l'eina adequada quan es sospita (o es detecta amb un histograma) que una mostra prové de la barreja de diverses distribucions normals, i interessa anar més enllà de "sembla que hi ha dos grups": quantificar quants grups hi ha, amb quina probabilitat pertany cada dada a cadascun, i on és exactament la frontera entre ells. La implementació és directa tant en Python (`sklearn.mixture.GaussianMixture`) com en R (`mclust`), i en ambdós casos el criteri BIC permet decidir objectivament el nombre de components.
