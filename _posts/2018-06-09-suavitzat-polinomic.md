@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Suavitzat LOESS per Extreure Tendències en Sèries Temporals"
+title: "Suavitzat Polinómic per Extreure Tendències en Sèries Temporals"
 tags:
   - estadistica
   - python
