@@ -4,18 +4,18 @@ title: "Regressió lineal a Power BI amb DAX: LINEST i LINESTX"
 tags:
   - powerbi
   - estadistica
-excerpt: "DAX incorpora les funcions LINEST i LINESTX per fer regressió lineal directament dins de Power BI. Repasso la sintaxi i com extreure els principals indicadors estadístics que cal vigilar per interpretar el model, en un cas pràctic."
+excerpt: "DAX incorpora les funcions LINEST i LINESTX per fer regressió lineal directament dins de Power BI. Sintaxi, com extreure els principals indicadors estadístics per interpretar el model, i un cas pràctic complet."
 ---
 
-Fins fa relativament poc, fer una regressió lineal dins de Power BI obligava a recórrer a trucs amb `SUMX`, fórmules estadístiques manuals (suma de quadrats, covariàncies...) o a sortir del model cap a Python/R. Des de 2023, DAX incorpora dues funcions natives pensades exactament per això: **`LINEST`** i **`LINESTX`**. En aquest post repassem com funcionen, com escriure'n el codi i com interpretar els indicadors que retornen.
+Fins fa relativament poc, fer una regressió lineal dins de Power BI obligava a recórrer a trucs amb `SUMX`, fórmules estadístiques manuals (suma de quadrats, covariàncies...) o a sortir del model cap a Python/R. Des de 2023, DAX incorpora dues funcions natives pensades exactament per això: **`LINEST`** i **`LINESTX`**. Aquest post repassa com funcionen, com escriure'n el codi i com interpretar els indicadors que retornen.
 
 ## Per què fer regressió dins del mateix model
 
-Treballant amb dades de vendes (el meu cas habitual a ALDI), és molt útil poder respondre preguntes com:
+En l'anàlisi de dades de vendes és molt útil poder respondre preguntes com:
 
-- Quina relació hi ha entre la inversió en promocions i les vendes resultants?
-- Quin és el pes (slope) de cada variable quan hi ha més d'un factor explicatiu?
-- Quina part de la variabilitat de les vendes queda explicada pel model (R²)?
+- La relació entre la inversió en promocions i les vendes resultants.
+- El pes (*slope*) de cada variable quan hi ha més d'un factor explicatiu.
+- Quina part de la variabilitat de les vendes queda explicada pel model (R²).
 
 Fer-ho amb DAX té l'avantatge que el càlcul respon dinàmicament als filtres, segmentadors i al context del visual, sense haver d'exportar dades.
 
@@ -45,9 +45,9 @@ Totes dues retornen una **taula d'una sola fila** amb columnes com:
 - `StandardError`, `StandardErrorSlope1`, `StandardErrorIntercept` → errors estàndard
 - `FStatistic`, `DegreesOfFreedom`, `RegressionSumOfSquares`, `ResidualSumOfSquares` → estadístics del contrast de significació
 
-## Exemple pràctic: vendes en funció de la inversió en promoció
+## Implementació pràctica: vendes en funció de la inversió en promoció
 
-Imaginem una taula `Vendes` amb una fila per botiga i setmana, amb columnes `Vendes[Import]` i `Vendes[InversioPromocio]`.
+Es considera una taula `Vendes` amb una fila per botiga i setmana, amb columnes `Vendes[Import]` i `Vendes[InversioPromocio]`.
 
 ### Mesura de regressió simple
 
@@ -100,7 +100,7 @@ RETURN
 
 ### Predicció (estimació) a partir del model
 
-Un cop tenim pendent i intercepció, la predicció és senzilla:
+Un cop es tenen el pendent i la intercepció, la predicció és senzilla:
 
 ```dax
 VendaEstimada =
@@ -116,11 +116,11 @@ RETURN
     Interceptor + Pendent * [InversioPromocioSeleccionada]
 ```
 
-`[InversioPromocioSeleccionada]` pot ser una mesura lligada a una taula de paràmetres (*what-if parameter*), de manera que des d'un slicer es pugui simular "si invertim X € en promoció, quina venda esperem?".
+`[InversioPromocioSeleccionada]` pot ser una mesura lligada a una taula de paràmetres (*what-if parameter*), de manera que des d'un segmentador es pugui simular "si s'inverteixen X € en promoció, quina venda s'espera?".
 
 ### Regressió múltiple
 
-Si volem afegir més variables explicatives, per exemple el nombre de cares (*facings*) de producte a botiga:
+Si cal afegir més variables explicatives, per exemple el nombre de cares (*facings*) de producte a botiga:
 
 ```dax
 RegressioMultiple =
@@ -158,7 +158,7 @@ Aquest patró és el que recomana SQLBI: combinar `SUMMARIZECOLUMNS` per constru
 
 ## Principals indicadors a vigilar
 
-Quan obris el resultat de `LINESTX` (per exemple amb una taula calculada o `EVALUATE` des de DAX Studio), aquests són els camps que val la pena interpretar:
+En obrir el resultat de `LINESTX` (per exemple amb una taula calculada o `EVALUATE` des de DAX Studio), aquests són els camps que val la pena interpretar:
 
 - **`Slope1...N`**: quant varia la Y per cada unitat que varia cada X. És el coeficient clau del model.
 - **`Intercept`**: el valor de Y quan totes les X són zero. Útil per a la interpretació, però sovint sense sentit pràctic directe (per exemple, "vendes amb zero inversió").
@@ -173,6 +173,6 @@ Quan obris el resultat de `LINESTX` (per exemple amb una taula calculada o `EVAL
 - Com que el resultat és una taula, cal **emmagatzemar-lo en una variable** abans d'extreure'n columnes amb `SELECTCOLUMNS`; si no, DAX podria recalcular la regressió diverses vegades dins de la mateixa mesura.
 - Aquestes funcions fan regressió **lineal** (i lineal en els paràmetres). Per a relacions no lineals cal transformar prèviament les variables (logaritmes, polinomis) o sortir del DAX cap a un llenguatge estadístic.
 
-## Per saber-ne més
+## Per aprofundir-hi
 
-Si vols aprofundir-hi, els articles de SQLBI sobre `LINEST`/`LINESTX` i la documentació oficial de Microsoft Learn són la referència més sòlida per entendre els detalls dels paràmetres opcionals i el comportament en context de filtre.
+Els articles de SQLBI sobre `LINEST`/`LINESTX` i la documentació oficial de Microsoft Learn són la referència més sòlida per entendre els detalls dels paràmetres opcionals i el comportament en context de filtre. Per a un altre cas d'ús habitual de DAX que no depèn de relacions físiques del model, vegeu també el post sobre [TREATAS]({% post_url 2026-07-19-treatas-power-bi %}).

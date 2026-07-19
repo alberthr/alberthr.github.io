@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Extreure tendències en sèries temporals. Suavitzat Polinómic"
+title: "Suavitzat LOESS per Extreure Tendències en Sèries Temporals"
 tags:
   - estadistica
   - python
@@ -8,38 +8,139 @@ tags:
 excerpt: "Quan una regressió lineal és massa rígida i unir punts genera soroll caòtic, LOESS ofereix un suavitzat local i flexible per detectar tendències reals en sèries temporals."
 ---
 
-Quan treballem amb sèries temporals o gràfics de dispersió, sovint ens trobem amb una gran quantitat de soroll que dificulta veure la direcció real de les dades. Una línia recta de regressió lineal clàssica sol ser massa rígida, mentre que unir els punts directament genera un traç caòtic. 
+En sèries temporals o gràfics de dispersió, sovint apareix una gran quantitat de soroll que dificulta veure la direcció real de les dades. Una línia recta de regressió lineal clàssica sol ser massa rígida, mentre que unir els punts directament genera un traç caòtic.
 
 Existeix un mètode matemàtic ideal per solucionar això: la **Regressió Local** o **LOESS**.
 
 ## Què és exactament LOESS?
 
-**LOESS** (o la seva variant original **LOWESS**) significa *Locally Estimated Scatterplot Smoothing* (Suavitzat de Gràfics de Dispersió Estimat Localment). És un mètode **no paramètric**, la qual cosa significa que no assumeix que les teves dades han de seguir una forma fixa (com una línia recta o una paràbola). En lloc d'això, deixa que les pròpies dades defineixin la forma de la corba de manera totalment flexible.
+**LOESS** (o la seva variant original **LOWESS**) significa *Locally Estimated Scatterplot Smoothing* (Suavitzat de Gràfics de Dispersió Estimat Localment). És un mètode **no paramètric**, la qual cosa significa que no assumeix que les dades han de seguir una forma fixa (com una línia recta o una paràbola). En lloc d'això, deixa que les pròpies dades defineixin la forma de la corba de manera totalment flexible.
 
 A diferència d'una regressió clàssica que intenta ajustar una única fórmula a *totes* les dades alhora, LOESS construeix la línia de tendència a base de calcular múltiples regressions en petits grups de dades agrupades.
 
 ## Com funciona "per dins"?
 
-Imagina que l'algorisme ha de dibuixar la línia de tendència d'esquerra a dreta. Per determinar l'alçada de la corba en un punt específic del gràfic (anomenem-lo punt $X$), LOESS segueix aquests quatre passos:
+L'algoritme dibuixa la línia de tendència d'esquerra a dreta. Per determinar l'alçada de la corba en un punt específic del gràfic (anomenat punt $X$), LOESS segueix aquests quatre passos:
 
-1. **Defineix el "veïnat" (controlat pel paràmetre `span`):** L'algorisme mira als costats del punt $X$ i selecciona un percentatge de les dades més properes. Si configurem un `span = 0.2`, LOESS agafarà només el 20% de les dades totals (les més properes). Si posem `span = 0.8`, farà servir el 80% de totes les dades del gràfic.
-2. **Aplica un sistema de pes (Ponderació):** No tots els punts del veïnat importen igual. LOESS aplica una funció matemàtica (normalment la funció *tricúbica*) per donar **més pes als punts que estan tocant a $X$** i menys pes als que estan allunyats, als límits del veïnat.
-3. **Calcula una regressió local:** Amb aquest petit grup de dades ponderades, calcula una regressió lineal o quadràtica. Com que els punts propers tenen més pes, la línia es veu fortament atreta cap a ells.
-4. **Connecta els punts:** L'algorisme repeteix aquest procés per a cada posició al llarg de tot l'eix. Finalment, uneix tots els petits resultats locals per formar una corba suau i contínua.
+1. **Defineix el "veïnat" (controlat pel paràmetre `span`):** l'algoritme mira als costats del punt $X$ i selecciona un percentatge de les dades més properes. Amb un `span = 0.2`, LOESS agafa només el 20% de les dades totals (les més properes). Amb `span = 0.8`, fa servir el 80% de totes les dades del gràfic.
+2. **Aplica un sistema de pes (Ponderació):** no tots els punts del veïnat importen igual. LOESS aplica una funció matemàtica (normalment la funció *tricúbica*) per donar **més pes als punts que estan tocant a $X$** i menys pes als que estan allunyats, als límits del veïnat.
+3. **Calcula una regressió local:** amb aquest petit grup de dades ponderades, calcula una regressió lineal o quadràtica. Com que els punts propers tenen més pes, la línia es veu fortament atreta cap a ells.
+4. **Connecta els punts:** l'algoritme repeteix aquest procés per a cada posició al llarg de tot l'eix. Finalment, uneix tots els petits resultats locals per formar una corba suau i contínua.
 
 ### El paràmetre clau: `span` (o l'efecte "Alpha")
 
-El paràmetre que controla com es comporta aquesta línia s'anomena formalment **`span`** (en algunes llibreries o conceptes es recorda com un factor de suavitzat o *alpha*):
+El paràmetre que controla com es comporta aquesta línia s'anomena formalment **`span`** (en algunes llibreries o conceptes es coneix com un factor de suavitzat o *alpha*):
 
-* **Un `span` proper a 0:** Utilitza veïnats molt petits. La línia s'ajustarà moltíssim a les dades reals, capturant tot el soroll i els pics (sobreajust o *overfitting*). **Ajust total = 100% al soroll.**
-* **Un `span` proper a 1 (o superior):** Utilitza pràcticament totes les dades alhora per a cada punt. El resultat és una línia molt suau que s'aproxima a una línia recta o una corba molt tènue. **Tendència general neta.**
+* **Un `span` proper a 0:** utilitza veïnats molt petits. La línia s'ajusta moltíssim a les dades reals, capturant tot el soroll i els pics (sobreajust o *overfitting*). **Ajust total = 100% al soroll.**
+* **Un `span` proper a 1 (o superior):** utilitza pràcticament totes les dades alhora per a cada punt. El resultat és una línia molt suau que s'aproxima a una línia recta o una corba molt tènue. **Tendència general neta.**
 
+El gràfic següent il·lustra aquest contrast sobre una sèrie simulada (una ona sinusoïdal amb soroll): la línia vermella (`span` baix) segueix pràcticament cada oscil·lació de les dades, mentre que la línia blava (`span` alt) es queda amb la tendència de fons, ignorant el soroll puntual.
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div style="width: 100%; max-width: 750px; margin: 30px auto; padding: 15px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+  <canvas id="graficLoess" width="800" height="450"></canvas>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Dades simulades il·lustratives: ona sinusoïdal amb soroll,
+    // aproximant l'efecte de LOESS amb mitjanes mòbils de finestra diferent
+    function seedRandom(seed) {
+        let s = seed;
+        return function() {
+            s = (s * 9301 + 49297) % 233280;
+            return s / 233280;
+        };
+    }
+    const rand = seedRandom(123);
+
+    const temps = [];
+    const valors = [];
+    for (let t = 1; t <= 100; t += 1) {
+        const soroll = (rand() - 0.5) * 1.0;
+        temps.push(t);
+        valors.push(Math.sin(t / 10) + soroll);
+    }
+
+    function mitjanaMobil(dades, finestra) {
+        const resultat = [];
+        const mig = Math.floor(finestra / 2);
+        for (let i = 0; i < dades.length; i += 1) {
+            const inici = Math.max(0, i - mig);
+            const fi = Math.min(dades.length, i + mig + 1);
+            const tros = dades.slice(inici, fi);
+            const mitjana = tros.reduce((a, b) => a + b, 0) / tros.length;
+            resultat.push(mitjana);
+        }
+        return resultat;
+    }
+
+    const spanBaix = mitjanaMobil(valors, 5);   // Aproxima un 'span' baix (s'ajusta al soroll)
+    const spanAlt = mitjanaMobil(valors, 41);   // Aproxima un 'span' alt (tendència neta)
+
+    const ctx = document.getElementById('graficLoess').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: temps,
+            datasets: [
+                {
+                    label: 'Dades originals (amb soroll)',
+                    data: valors,
+                    borderColor: '#cbd5e1',
+                    backgroundColor: '#cbd5e1',
+                    borderWidth: 1,
+                    pointRadius: 0,
+                    fill: false,
+                    tension: 0
+                },
+                {
+                    label: 'span baix (s\'ajusta al soroll)',
+                    data: spanBaix,
+                    borderColor: '#ef4444',
+                    borderWidth: 2.5,
+                    pointRadius: 0,
+                    fill: false,
+                    tension: 0.2
+                },
+                {
+                    label: 'span alt (tendència neta)',
+                    data: spanAlt,
+                    borderColor: '#3b82f6',
+                    borderWidth: 2.5,
+                    pointRadius: 0,
+                    fill: false,
+                    tension: 0.2
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { boxWidth: 12, font: { size: 12 } }
+                }
+            },
+            scales: {
+                x: {
+                    title: { display: true, text: 'Temps', font: { weight: 'bold' } }
+                },
+                y: {
+                    title: { display: true, text: 'Valor', font: { weight: 'bold' } }
+                }
+            }
+        }
+    });
+});
+</script>
 
 ## Implementació pràctica
 
-A continuació veurem com aplicar LOESS a una sèrie temporal simulada amb soroll utilitzant els dos llenguatges estàndard de la ciència de dades. En els dos casos comparem un `span` baix (ajust total) amb un `span` alt (línia de tendència).
+A continuació es mostra com aplicar LOESS a una sèrie temporal simulada amb soroll utilitzant els dos llenguatges estàndard de la ciència de dades. En els dos casos es compara un `span` baix (ajust total) amb un `span` alt (línia de tendència).
 
-### Exemple en R
+### Implementació en R
 
 A R, la funció està integrada de forma nativa mitjançant `loess()`.
 
@@ -67,10 +168,9 @@ legend("topright", legend=c("Dades", "span = 0.1 (Ajust)", "span = 0.75 (Línia)
        col=c("gray", "red", "blue"), lwd=2)
 ```
 
+### Implementació en Python
 
-### Exemple en Python
-
-A Python, podem utilitzar la llibreria statsmodels que inclou la funció lowess dins del seu mòdul de models no paramètrics.
+A Python, es pot utilitzar la llibreria statsmodels, que inclou la funció lowess dins del seu mòdul de models no paramètrics.
 
 ```python
 import numpy as np
