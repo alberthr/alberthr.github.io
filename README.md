@@ -14,7 +14,7 @@ Blog personal sobre estadística, modelització, MMM (Marketing Mix Modeling) i 
 ├── _includes/                 # Capçalera i peu
 ├── assets/
 │   ├── css/main.css           # Estils
-│   └── js/                    # Funcions en Javascript
+│   └── js/main.js             # Funcions en Javascript
 ├── eines/                     # Simuladors i calculadores en HTML/JS autònom
 ├── cv/                        # Pàgina de currículum (HTML autònom)
 ├── _config.yml                # Configuració del blog
@@ -152,7 +152,7 @@ I obre `http://localhost:4000`.
 
 ## 📄 Llicència
 
-Copyright © 2026 Albert Hinojosa Rovira. Tots els drets reservats.
+Copyright © 2026. Tots els drets reservats.
 
 ---
 
