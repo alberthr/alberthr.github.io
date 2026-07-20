@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Comparacio de distribucions amb Kolmogorov-Smirnov"
+title: "Comparació de Distribucions amb Kolmogorov-Smirnov"
 tags:
   - estadistica
   - python
@@ -17,7 +17,7 @@ El test de Kolmogorov-Smirnov és una prova estadística no paramètrica que s'u
 
 Es basa en la **Funció de Distribució Acumulada** (CDF, per les seves sigles en anglès). L'estadístic del test, anomenat $D$, representa la **distància màxima vertical** entre les dues funcions acumulades que es comparen.
 
-A la següent gràfica es mostra de manera visual com l'estadístic $D$ localitza el punt on les dues corbes presenten la separació més gran:
+El gràfic següent mostra de manera visual com l'estadístic $D$ localitza el punt on les dues corbes presenten la separació més gran:
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -141,25 +141,24 @@ document.addEventListener("DOMContentLoaded", function() {
 
 Hi ha dues variants principals d'aquest test:
 
-1. **Test K-S d'una mostra:** Compara la distribució de les dades de la mostra amb una distribució teòrica coneguda (sol ser una distribució normal, pero pot ser exponencial, uniforme, etc.).
-2. **Test K-S de dues mostres:** Compara si dues mostres independents procedeixen de la mateixa distribució subjacent.
+1. **Test K-S d'una mostra:** compara la distribució de les dades de la mostra amb una distribució teòrica coneguda (sol ser una distribució normal, però pot ser exponencial, uniforme, etc.).
+2. **Test K-S de dues mostres:** compara si dues mostres independents procedeixen de la mateixa distribució subjacent.
 
 
 ## Aplicacions pràctiques
 
-* **Validació de models:** Comprovació de si els residus d'un model de regressió segueixen una distribució normal.
-* **Proves A/B (A/B Testing):** Determinació de si le temps de permanència a la web o la despesa econòmica varien significativament entre el grup de control i el de tractament.
-* **Detecció de *Data Drift*:** En entorns de producció d'aprenentatge automàtic (Machine Learning), s'utilitza per analitzar si les dades d'entrada actuals mantenen la mateixa distribució que les dades d'entrenament originals.
+* **Validació de models:** comprovació de si els residus d'un model de regressió segueixen una distribució normal.
+* **Proves A/B (A/B Testing):** determinació de si el temps de permanència a una web o la despesa econòmica varien significativament entre el grup de control i el de tractament.
+* **Detecció de *Data Drift*:** en entorns de producció d'aprenentatge automàtic (Machine Learning), s'utilitza per analitzar si les dades d'entrada actuals mantenen la mateixa distribució que les dades d'entrenament originals.
 
 
+## Implementació pràctica
 
-## Exemples pràctics
-
-Anem a veure com aplicar el test de dues mostres utilitzant codi. Imaginem que volem comparar si el temps de càrrega de la nostra web amb un servidor nou (Grup B) és diferent del servidor antic (Grup A).
+A continuació es mostra com aplicar el test de dues mostres. Es considera el cas de comparar si el temps de càrrega d'una web amb un servidor nou (Grup B) és diferent del servidor antic (Grup A), tant en Python com en R.
 
 ### Implementació en Python
 
-Farem servir la llibreria `scipy.stats`. Generarem dades aleatòries on el Grup B és lleugerament més ràpid.
+Fent servir la llibreria `scipy.stats`, es generen dades aleatòries on el Grup B és lleugerament més ràpid.
 
 ```python
 import numpy as np
@@ -186,7 +185,7 @@ else:
     print("No podem rebutjar l'hipòtesi nul·la: No hi ha evidència que les distribucions siguin diferents.")
 ```
 
-### Implementacio en R
+### Implementació en R
 
 ```r
 # Fixem la llavor
@@ -214,3 +213,7 @@ if (resultat$p.value < 0.05) {
   cat("Resultat: No hi ha diferències significatives.\n")
 }
 ```
+
+## Conclusió
+
+El test K-S ofereix una alternativa objectiva i quantificable als mètodes visuals (histogrames, Q-Q plots) per comparar distribucions, tant contra una referència teòrica com entre dues mostres independents. La seva naturalesa no paramètrica el fa aplicable a qualsevol variable contínua, sense necessitat d'assumir cap forma concreta per a les dades.

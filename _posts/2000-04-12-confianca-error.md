@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Nivell de confiança i marge d'error: Diferències i relació"
+title: "Nivell de Confiança i Marge d'Error en Estadística"
 tags:
   - estadistica
 excerpt: "Anàlisi de la diferència entre el nivell de confiança i el marge d'error en l'estadística inferencial, avaluant-ne la dependència mútua i l'impacte en la mida de la mostra."
@@ -33,7 +33,7 @@ El percentatge (per exemple, el 95%) fa referència a la **fiabilitat del mètod
 * **95 de cada 100 intervals generats contindrien el paràmetre real** de la població.
 * 5 d'aquests intervals fallarien i quedarien fora del valor real.
 
-El nivell de confiança mesura la **seguretat estadística de l'algorisme o mètode** emprat per acotar la incertesa.
+El nivell de confiança mesura la **seguretat estadística de l'algoritme o mètode** emprat per acotar la incertesa.
 
 
 ## Relació matemàtica i dependència

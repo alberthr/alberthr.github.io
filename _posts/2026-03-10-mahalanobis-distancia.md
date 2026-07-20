@@ -8,30 +8,30 @@ tags:
 excerpt: "Quan cada variable per separat sembla normal però la seva combinació és impossible, els outliers univariants no serveixen. Descobreix com la Distància de Mahalanobis detecta anomalies multivariants tenint en compte escales i correlacions."
 ---
 
-Quan busquem valors atípics (*outliers*) en un conjunt de dades, el primer impuls sol ser analitzar cada columna per separat (anàlisi univariant). Per exemple, busquem si algú té una edat inusualment alta o uns ingressos desorbitats. 
+En la cerca de valors atípics (*outliers*) en un conjunt de dades, el primer impuls sol ser analitzar cada columna per separat (anàlisi univariant): per exemple, detectar si algú té una edat inusualment alta o uns ingressos desorbitats.
 
-Però, què passa quan el valor de cada variable per separat sembla completament normal, però **la seva combinació és impossible o molt estranya**? Aquí és on entren els *outliers* multivariants, i la millor eina per detectar-los és la **Distància de Mahalanobis**.
+El problema apareix quan el valor de cada variable per separat sembla completament normal, però **la seva combinació és impossible o molt estranya**. Aquí és on entren els *outliers* multivariants, i la millor eina per detectar-los és la **Distància de Mahalanobis**.
 
 ## El problema de la distància tradicional (Euclidiana)
 
-Si tenim variables en diferents escales (per exemple, el pes en tones, el preu en milers d'euros i la potència en cavalls), no podem mesurar la distància en línia recta de forma tradicional. Una distància de "10" en la columna de preus no significa el mateix que un "10" en la columna de pes.
+Amb variables en diferents escales (per exemple, el pes en tones, el preu en milers d'euros i la potència en cavalls), no es pot mesurar la distància en línia recta de forma tradicional. Una distància de "10" en la columna de preus no significa el mateix que un "10" en la columna de pes.
 
 A més, les variables solen estar correlacionades. Si una persona fa 2 metres d'alçada, és normal que pesi més que la mitjana. Un pes de 100 kg per a algú de 2 metres és normal; el mateix pes per a algú d'1,50 metres és un *outlier*. La distància euclidiana ignora aquesta relació.
 
 ## Què fa la Distància de Mahalanobis?
 
 La distància de Mahalanobis resol aquests dos problemes d'un sol cop:
-1. **Normalitza les escales:** Transforma totes les variables perquè les diferències de magnitud no distorsionin el càlcul.
-2. **Té en compte la covariància (correlació):** Avalua la distància d'un punt respecte al "centre de gravetat" de les dades (el vector de mitjanes), però tenint en compte la direcció en què es distribueixen els punts.
+1. **Normalitza les escales:** transforma totes les variables perquè les diferències de magnitud no distorsionin el càlcul.
+2. **Té en compte la covariància (correlació):** avalua la distància d'un punt respecte al "centre de gravetat" de les dades (el vector de mitjanes), però tenint en compte la direcció en què es distribueixen els punts.
 
-Estadísticament, la distància de Mahalanobis al quadrat segueix una distribució **Chi-quadrat ($\chi^2$)**. Això ens permet establir un llindar matemàtic objectiu (per exemple, amb un nivell de significació del 5%) per dir: *"Qualsevol punt que superi aquesta distància té menys d'un 5% de probabilitats de pertànyer a aquest grup; per tant, és un outlier"*.
+Estadísticament, la distància de Mahalanobis al quadrat segueix una distribució **Chi-quadrat ($\chi^2$)**. Això permet establir un llindar matemàtic objectiu (per exemple, amb un nivell de significació del 5%) per dir: *"Qualsevol punt que superi aquesta distància té menys d'un 5% de probabilitats de pertànyer a aquest grup; per tant, és un outlier"*.
 
 
 ## Implementació pràctica
 
-Per als següents exemples utilitzarem el dataset clàssic `mtcars`. Analitzarem 4 columnes amb escales totalment diferents: consum (`mpg`), cavalls de potència (`hp`), pes en tones (`wt`) i cilindrada (`disp`).
+Els exemples següents utilitzen el dataset clàssic `mtcars`, amb 4 columnes d'escales totalment diferents: consum (`mpg`), cavalls de potència (`hp`), pes en tones (`wt`) i cilindrada (`disp`).
 
-### Exemple en R
+### Implementació en R
 
 A R, el càlcul està integrat de forma nativa gràcies a la funció `mahalanobis()`.
 
@@ -61,9 +61,9 @@ print("Top Outliers detectats a R:")
 print(head(dades_ordenades, 5))
 ```
 
-### Exemple en Python
+### Implementació en Python
 
-A Python podem replicar exactament el mateix comportament utilitzant `pandas` per gestionar les dades i `scipy` per a la distribució estadística i el càlcul de la matriu inversa de covariància.
+A Python es pot replicar exactament el mateix comportament utilitzant `pandas` per gestionar les dades i `scipy` per a la distribució estadística i el càlcul de la matriu inversa de covariància.
 
 ```python
 import pandas as pd
@@ -103,6 +103,6 @@ print("Top Outliers detectats a Python:")
 print(dades_ordenades.head(5))
 ```
 
-## Conclusio
+## Conclusió
 
-La distància de Mahalanobis és una eina elegant i robusta. Ens permet netejar conjunts de dades complexos abans d'entrenar models de Machine Learning, garantint que cap observació "anòmala en combinació" esbiaixi els nostres resultats, fins i tot si els seus valors individuals semblen completament innocents.
+La distància de Mahalanobis és una eina elegant i robusta. Permet netejar conjunts de dades complexos abans d'entrenar models de Machine Learning, garantint que cap observació "anòmala en combinació" esbiaixi els resultats, fins i tot si els seus valors individuals semblen completament innocents.

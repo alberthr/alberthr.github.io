@@ -2,8 +2,7 @@
 layout: post
 title: "TREATAS a Power BI: Comparar Dues Seleccions d'un Mateix Filtre"
 tags:
-  - power-bi
-  - dax
+  - powerbi
 excerpt: "Un mateix filtre de botiga només permet una selecció alhora, però un gràfic pot necessitar comparar-ne dues. TREATAS permet transportar un context de filtre a una altra taula sense relació física ni duplicar dades."
 ---
 

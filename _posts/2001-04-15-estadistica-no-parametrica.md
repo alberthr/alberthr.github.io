@@ -1,155 +1,185 @@
 ---
 layout: post
-title: "Principals Anàlisis de l'Estadística No Paramètrica"
+title: "Principals Mètodes d'Estadística No Paramètrica"
 tags:
   - estadistica
-  - python
-  - r
-excerpt: "Quan les dades incompleixen les assumpcions de normalitat o homoscedasticitat, els tests no paramètrics basats en rangs ofereixen una alternativa robusta per realitzar inferències estadístiques sense biaixos."
+excerpt: "Quan les dades no compleixen els supòsits d'un test clàssic (normalitat, mostra gran, escala d'interval), l'estadística no paramètrica ofereix alternatives robustes. Panoràmica dels mètodes principals i de quan fer-los servir."
 ---
 
-L'estadística paramètrica se sosté sobre la premissa que les dades observades segueixen una distribució de probabilitat determinada, generalment la distribució normal, la qual es defineix mitjançant paràmetres concrets com la mitjana i la variància. No obstant això, en l'anàlisi de dades reals és freqüent identificar escenaris on aquestes assumpcions es violen de forma sistemàtica. 
+Els tests estadístics clàssics (test t, ANOVA, regressió lineal per mínims quadrats...) s'anomenen **paramètrics** perquè assumeixen que les dades segueixen una distribució coneguda, normalment la normal, definida per un nombre reduït de paràmetres (mitjana i variància). Quan aquest supòsit no es compleix —mostres petites, distribucions esbiaixades, outliers, dades ordinals en lloc de numèriques—, els resultats d'aquests tests deixen de ser fiables.
 
-L'estadística no paramètrica agrupa un conjunt de tècniques d'inferència que no requereixen que la població d'origen estigui determinada per una distribució de probabilitat específica. Per aquest motiu, reben el nom de tests lliures de distribució.
+L'**estadística no paramètrica** agrupa el conjunt de mètodes que no depenen de cap forma de distribució concreta. En lloc de treballar amb la mitjana i la variància, sovint es basen en l'ordre (rangs) de les dades, en freqüències, o en tècniques de remostreig. Aquest article en repassa els mètodes principals, agrupats pel tipus de pregunta que responen.
 
-## Criteris d'Aplicació
 
-L'ús de proves no paramètriques és metodològicament necessari davant d'aquestes quatre situacions de les dades:
+## Quan fer servir un mètode no paramètric
 
-*   **Dades ordinals:** Variables on els valors expressen un ordre o jerarquia (com les escales Likert o els nivells de satisfacció), però on la distància numèrica entre intervals no és constant ni directament quantificable.
-*   **Mostres petites:** Grups amb un nombre d'observacions reduït (típicament $n < 30$) on l'aplicació del Teorema del Límit Central no permet garantir la normalitat de la distribució mostral de la mitjana.
-*   **Presència d'outliers:** Valors atípics extrems que distorsionen severament el càlcul d'estadístics paramètrics com la mitjana i la variància, invalidant la potència i validesa dels tests clàssics.
-*   **Asimetria extrema:** Distribucions de dades clarament esbiaixades a la dreta o a l'esquerra (com el temps de reacció, salaris o taxes de fallada) que no s'ajusten a la simetria de la campana de Gauss.
+Abans d'entrar en cada mètode, val la pena fixar el criteri de quan preferir-los davant d'un test clàssic:
 
-## Fonament Estadístic: El Mecanisme de Rangs
+- **Mostra petita** (habitualment $n < 30$), on no es pot invocar el Teorema del Límit Central per assumir normalitat.
+- **Distribució clarament esbiaixada** o amb outliers importants (temps de resposta, ingressos, temps d'espera...).
+- **Dades ordinals** (valoracions d'1 a 5, rànquings) en lloc de numèriques contínues, on la mitjana no té sentit ple.
+- **Variància molt diferent entre grups** (heterocedasticitat), que trenca un supòsit clau de l'ANOVA o el test t.
+- **Manca de coneixement previ** sobre la forma de la distribució subjacent.
 
-La majoria de tests no paramètrics transformen els valors absoluts de la mostra en **rangs ordinals**. El procés consisteix a ordenar totes les observacions combinades de menor a major i assignar-los una posició numèrica entera (1, 2, 3... $N$). 
+El cost d'aquesta robustesa és, generalment, una **pèrdua de potència estadística**: si les dades sí que compleixen els supòsits d'un test paramètric, el test no paramètric equivalent necessita més mostra per detectar el mateix efecte. Per això la recomanació habitual és fer servir el test paramètric quan els seus supòsits es compleixen raonablement, i reservar el no paramètric per quan no és així.
 
-Si s'analitzen grups procedents de la mateixa població (sota la hipòtesi nul·la), l'esperança matemàtica és que la suma d'aquests rangs es distribueixi de manera equitativa entre els grups. Si un grup concentra de forma estadística els rangs més alts o més baixos, es procedeix a rebutjar la hipòtesi nul·la d'igualtat de distribucions.
 
-Aquesta transformació elimina l'efecte de la magnitud dels *outliers* i permet el tractament numèric de dades ordinals, ja que l'anàlisi se centra exclusivament en la posició relativa de cada dada.
+## Comparació de dos grups
 
-## Els Quatre Anàlisis Principals i Equivalències
+### Test de Mann-Whitney U (o Wilcoxon rank-sum)
 
-La taula següent detalla la correspondència entre els tests paramètrics tradicionals i les seves alternatives no paramètriques per a cadascun dels quatre dissenys d'estudi fonamentals:
+Alternativa no paramètrica al test t per a mostres independents. En lloc de comparar mitjanes, ordena totes les observacions dels dos grups conjuntament i compara la suma de rangs de cada grup: si els dos grups provenen de la mateixa distribució, els rangs haurien d'estar barrejats de manera similar entre tots dos.
 
-| Disseny de l'Estudi | Test Paramètric | Test No Paramètric | Objectiu de l'Anàlisi |
-| :--- | :--- | :--- | :--- |
-| **2 Mostres Independents** | t de Student independents | **U de Mann-Whitney** (Wilcoxon rank-sum) | Determinar si dues distribucions independents tenen la mateixa posició central. |
-| **2 Mostres Aparellades** | t de Student dependents | **Test de Wilcoxon de rangs amb signe** | Avaluar diferències en un mateix grup abans i després d'un tractament o intervenció. |
-| **K Mostres Independents** | ANOVA d'un factor | **Test de Kruskal-Wallis** | Comparar la posició central de tres o més grups independents. |
-| **K Mostres Aparellades** | ANOVA de mesures repetides | **Test de Friedman** | Comparar tres o més mesures preses de forma seqüencial sobre els mateixos subjectes. |
+- **Quan fer-lo servir:** comparar dos grups independents (per exemple, temps de conversió entre dues versions d'una pàgina) quan les dades no són normals o la mostra és petita.
+- **Hipòtesi que contrasta:** que les dues distribucions són idèntiques, no només que tinguin la mateixa mitjana; és més precís dir que contrasta si un grup tendeix a tenir valors més alts que l'altre.
 
-## Implementació Pràctica
+### Test de Wilcoxon (dades aparellades)
 
-A continuació es detalla l'execució d'aquests quatre anàlisis no paramètrics fonamentals utilitzant vectors de dades que incompleixen les condicions de normalitat.
+Versió per a mostres **aparellades** (el mateix individu mesurat abans i després, o dues mesures relacionades), anàloga al test t aparellat. Es calculen les diferències entre cada parella, se n'ordenen els valors absoluts i es compara la suma de rangs positius amb la de rangs negatius.
 
-### Execució en Python
+- **Quan fer-lo servir:** avaluar l'efecte d'una intervenció (abans/després) quan les diferències no segueixen una distribució normal.
 
-S'utilitza el mòdul `scipy.stats` per dur a terme el càlcul analític de cadascun dels quatre tests descrits.
+### Test de Kolmogorov-Smirnov (K-S)
+
+Ja tractat en detall en un [post anterior]({% post_url 2022-08-02-kolmogorov-smirnov %}): compara les funcions de distribució acumulada de dues mostres (o d'una mostra contra una distribució teòrica) i n'obté la distància màxima entre totes dues corbes. A diferència de Mann-Whitney, que es fixa en si un grup tendeix a tenir valors més alts que l'altre, el K-S detecta **qualsevol** diferència de forma entre les dues distribucions (mitjana, variància, asimetria...), no només un desplaçament.
+
+- **Quan fer-lo servir:** comparar si dues mostres provenen de la mateixa distribució en sentit ampli, o comprovar si una variable (per exemple, els residus d'un model) segueix una distribució teòrica coneguda, com la normal.
+
+
+## Comparació de més de dos grups
+
+### Test de Kruskal-Wallis
+
+Extensió del Mann-Whitney a més de dos grups; és l'alternativa no paramètrica a l'ANOVA d'un factor. Compara els rangs entre tots els grups per determinar si almenys un difereix significativament de la resta.
+
+- **Quan fer-lo servir:** comparar 3 o més grups independents (per exemple, la despesa mitjana en 4 segments de client) quan no es compleixen els supòsits de l'ANOVA.
+- **Seguiment:** si el resultat és significatiu, cal un test *post-hoc* (com el de Dunn) per identificar quins grups concrets difereixen entre si, de manera anàloga a com es fa després d'una ANOVA significativa.
+
+### Test de Friedman
+
+Equivalent no paramètric d'una ANOVA de mesures repetides. S'utilitza quan els mateixos subjectes es mesuren sota diverses condicions (per exemple, la satisfacció d'un mateix grup d'usuaris amb 3 dissenys diferents de producte).
+
+- **Quan fer-lo servir:** dades aparellades amb més de dues condicions, i variables ordinals o no normals.
+
+
+## Associació i correlació
+
+### Correlació de Spearman
+
+Mesura la relació **monòtona** (no necessàriament lineal) entre dues variables, calculant la correlació de Pearson sobre els rangs de les dades en lloc dels valors originals.
+
+- **Quan fer-la servir:** quan la relació entre dues variables no és lineal però sí consistentment creixent o decreixent, quan hi ha outliers que distorsionarien una correlació de Pearson, o amb variables ordinals.
+- **Interpretació:** igual que Pearson, va de -1 a 1, però mesura si "quan una variable puja, l'altra tendeix a pujar (o baixar)", sense assumir que ho faci a un ritme constant.
+
+### Correlació de Kendall (Tau)
+
+Alternativa a Spearman, basada en el nombre de parells d'observacions **concordants** i **discordants** (si el rànquing d'una variable coincideix amb el de l'altra per a cada parella de punts). Sol preferir-se amb mostres petites o quan hi ha molts valors empatats.
+
+### Chi-quadrat d'independència
+
+Encara que sovint es classifica a part, és el mètode no paramètric per excel·lència per a **variables categòriques**: contrasta si dues variables qualitatives (per exemple, gènere i preferència de producte) són independents, comparant les freqüències observades en una taula de contingència amb les freqüències que s'esperarien si no hi hagués relació.
+
+- **Quan fer-lo servir:** dues variables categòriques (no numèriques), amb prou observacions per cel·la (habitualment, com a mínim 5 per casella esperada).
+
+
+## Estimació i remostreig
+
+### Bootstrapping
+
+Ja tractat en detall en un [post anterior]({% post_url 2020-11-11-intervals-bootstrapping %}): en lloc d'assumir una distribució teòrica, genera milers de rèpliques de la mostra original (amb reposició) per aproximar la distribució d'un estadístic qualsevol —mitjana, mediana, correlació, un coeficient de regressió— sense necessitat de fórmula analítica.
+
+- **Quan fer-lo servir:** calcular intervals de confiança per a estadístics sense fórmula teòrica senzilla, o quan les dades no compleixen els supòsits necessaris per a la fórmula clàssica.
+
+### Tests de permutació
+
+Tècnica de remostreig relacionada amb el bootstrap: en lloc de mostrejar amb reposició, es **redistribueixen aleatòriament les etiquetes de grup** entre les observacions, es recalcula l'estadístic d'interès milers de vegades, i es compara el valor observat original amb aquesta distribució simulada sota la hipòtesi nul·la.
+
+- **Quan fer-los servir:** com a alternativa molt flexible i intuïtiva al test t o a l'ANOVA, especialment amb mostres petites, ja que no depenen de cap supòsit distribucional i es poden aplicar a pràcticament qualsevol estadístic.
+
+
+## Regressió no paramètrica
+
+### Regressió de rangs i regressió LOESS
+
+Quan la relació entre variables no és lineal i no es vol assumir cap forma funcional concreta, les tècniques de suavitzat local com **LOESS** (ja tractada en un [altre post]({% post_url 2018-06-09-suavitzat-polinomic %})) permeten estimar la tendència directament de les dades, sense ajustar una única equació global.
+
+- **Quan fer-la servir:** explorar visualment una relació abans de decidir quina forma funcional té sentit, o quan la relació canvia de comportament al llarg del rang de la variable explicativa.
+
+
+## Implementació pràctica
+
+A continuació es mostren exemples breus dels mètodes més habituals —Mann-Whitney U, Kruskal-Wallis, correlació de Spearman i Chi-quadrat— aplicats a dades senzilles, tant en R com en Python.
+
+### Implementació en R
+
+```r
+# Mann-Whitney U: comparar 2 grups independents
+grup_A <- c(4.1, 3.8, 5.2, 4.5, 3.9, 4.7)
+grup_B <- c(5.5, 6.1, 5.8, 6.4, 5.9, 6.0)
+wilcox.test(grup_A, grup_B)
+
+# Kruskal-Wallis: comparar 3+ grups independents
+valors <- c(4.1, 3.8, 5.2, 5.5, 6.1, 5.8, 7.2, 6.9, 7.5)
+grups  <- factor(rep(c("A", "B", "C"), each = 3))
+kruskal.test(valors ~ grups)
+
+# Correlació de Spearman
+antiguitat <- c(1, 2, 3, 4, 5, 6, 7, 8)
+satisfaccio <- c(3, 4, 4, 6, 5, 7, 8, 9)
+cor.test(antiguitat, satisfaccio, method = "spearman")
+
+# Chi-quadrat d'independència
+taula <- matrix(c(30, 20, 15, 35), nrow = 2,
+                 dimnames = list(Genere = c("H", "D"), Prefereix = c("A", "B")))
+chisq.test(taula)
+```
+
+### Implementació en Python
 
 ```python
 import numpy as np
-import scipy.stats as stats
+from scipy import stats
 
-# Fixar llavor per garantir la reproductibilitat de les simulacions
-np.random.seed(42)
+# Mann-Whitney U: comparar 2 grups independents
+grup_A = [4.1, 3.8, 5.2, 4.5, 3.9, 4.7]
+grup_B = [5.5, 6.1, 5.8, 6.4, 5.9, 6.0]
+print(stats.mannwhitneyu(grup_A, grup_B))
 
-# =====================================================================
-# 1. GENERACIÓ DE DADES NO NORMALS (Distribucions exponencials i log-normals)
-# =====================================================================
-# Dades per a 2 Mostres Independents (U de Mann-Whitney)
-indep_A = np.random.exponential(scale=2, size=25)
-indep_B = np.random.exponential(scale=3.5, size=22)
+# Kruskal-Wallis: comparar 3+ grups independents
+grup_A = [4.1, 3.8, 5.2]
+grup_B = [5.5, 6.1, 5.8]
+grup_C = [7.2, 6.9, 7.5]
+print(stats.kruskal(grup_A, grup_B, grup_C))
 
-# Dades per a 2 Mostres Aparellades (Wilcoxon de rangs amb signe)
-# Es simula una mesura d'un mateix grup abans i després d'una acció
-abans_2g = np.random.lognormal(mean=1, sigma=0.5, size=25)
-despres_2g = abans_2g + np.random.normal(loc=0.5, scale=0.2, size=25)
+# Correlació de Spearman
+antiguitat = [1, 2, 3, 4, 5, 6, 7, 8]
+satisfaccio = [3, 4, 4, 6, 5, 7, 8, 9]
+print(stats.spearmanr(antiguitat, satisfaccio))
 
-# Dades per a K Mostres Independents (Kruskal-Wallis)
-k_ind_1 = np.random.lognormal(mean=0, sigma=1, size=20)
-k_ind_2 = np.random.lognormal(mean=0.5, sigma=1, size=20)
-k_ind_3 = np.random.lognormal(mean=0.1, sigma=1, size=20)
-
-# Dades per a K Mostres Aparellades (Test de Friedman)
-# Es simulen 3 mesures temporals (T1, T2, T3) sobre un grup de 15 subjectes
-t1_kg = np.random.exponential(scale=10, size=15)
-t2_kg = t1_kg * 1.2 + np.random.normal(0, 1, size=15)
-t3_kg = t1_kg * 1.5 + np.random.normal(0, 1, size=15)
-
-# =====================================================================
-# 2. EXECUCIÓ DELS QUATRE TESTS NO PARAMÈTRICS
-# =====================================================================
-print("--- RESULTATS DE L'ANÀLISI NO PARAMÈTRIC (Python) ---")
-
-# Test 1: U de Mann-Whitney (2 mostres independents)
-u_stat, p_u = stats.mannwhitneyu(indep_A, indep_B, alternative='two-sided')
-print(f"1. U de Mann-Whitney  -> Estadístic U: {u_stat:.4f} | p-valor: {p_u:.4f}")
-
-# Test 2: Wilcoxon signed-rank (2 mostres aparellades)
-w_stat, p_w = stats.wilcoxon(abans_2g, despres_2g)
-print(f"2. Rangs amb signe de Wilcoxon -> Estadístic W: {w_stat:.4f} | p-valor: {p_w:.4f}")
-
-# Test 3: Kruskal-Wallis (K mostres independents)
-kw_stat, p_kw = stats.kruskal(k_ind_1, k_ind_2, k_ind_3)
-print(f"3. Kruskal-Wallis     -> Estadístic H: {kw_stat:.4f} | p-valor: {p_kw:.4f}")
-
-# Test 4: Friedman (K mostres aparellades)
-fr_stat, p_fr = stats.friedmanchisquare(t1_kg, t2_kg, t3_kg)
-print(f"4. Test de Friedman   -> Estadístic Q: {fr_stat:.4f} | p-valor: {p_fr:.4f}")
+# Chi-quadrat d'independència
+taula = np.array([[30, 20], [15, 35]])  # files: Genere H/D, columnes: Prefereix A/B
+print(stats.chi2_contingency(taula))
 ```
 
-### Execució en R
-A l'entorn R, aquests quatre mètodes es troben integrats de manera nativa dins del paquet base `stats`.
+En els quatre casos, la sortida principal a interpretar és el **p-valor**: per sota del llindar habitual (0,05), s'interpreta com a evidència que els grups difereixen (Mann-Whitney, Kruskal-Wallis), que la correlació és significativa (Spearman), o que les variables no són independents (Chi-quadrat).
 
-```r
-# Fixar llavor per garantir la reproductibilitat de les simulacions
-set.seed(42)
 
-# =====================================================================
-# 1. GENERACIÓ DE DADES NO NORMALS
-# =====================================================================
-# Dades per a 2 Mostres Independents (Wilcoxon-Mann-Whitney)
-indep_A <- rexp(25, rate = 1/2)
-indep_B <- rexp(22, rate = 1/3.5)
+## Resum: quin mètode triar
 
-# Dades per a 2 Mostres Aparellades (Wilcoxon de rangs amb signe)
-abans_2g <- rlnorm(25, meanlog = 1, sdlog = 0.5)
-despres_2g <- abans_2g + rnorm(25, mean = 0.5, sd = 0.2)
+| Pregunta | Test paramètric equivalent | Alternativa no paramètrica |
+|---|---|---|
+| Comparar 2 grups independents | Test t | Mann-Whitney U |
+| Comparar 2 mesures aparellades | Test t aparellat | Wilcoxon |
+| Comparar la forma completa de 2 distribucions | — | Kolmogorov-Smirnov |
+| Comparar 3+ grups independents | ANOVA | Kruskal-Wallis |
+| Comparar 3+ mesures aparellades | ANOVA de mesures repetides | Friedman |
+| Correlació entre 2 variables numèriques | Pearson | Spearman / Kendall |
+| Associació entre 2 variables categòriques | — | Chi-quadrat |
+| Interval de confiança d'un estadístic | Fórmula analítica (Teorema del Límit Central) | Bootstrapping |
+| Contrastar una diferència entre grups | Test t / ANOVA | Test de permutació |
+| Relació no lineal entre variables | Regressió polinòmica | LOESS |
 
-# Dades per a K Mostres Independents (Kruskal-Wallis)
-k_ind_1 <- rlnorm(20, meanlog = 0, sdlog = 1)
-k_ind_2 <- rlnorm(20, meanlog = 0.5, sdlog = 1)
-k_ind_3 <- rlnorm(20, meanlog = 0.1, sdlog = 1)
 
-# Dades per a K Mostres Aparellades (Test de Friedman)
-t1_kg <- rexp(15, rate = 1/10)
-t2_kg <- t1_kg * 1.2 + rnorm(15, mean = 0, sd = 1)
-t3_kg <- t1_kg * 1.5 + rnorm(15, mean = 0, sd = 1)
+## Conclusió
 
-# =====================================================================
-# 2. EXECUCIÓ DELS QUATRE TESTS NO PARAMÈTRICS
-# =====================================================================
-cat("--- RESULTATS DE L'ANÀLISI NO PARAMÈTRIC (R) ---\n")
-
-# Test 1: Wilcoxon-Mann-Whitney (2 mostres independents)
-t1 <- wilcox.test(indep_A, indep_B, alternative = "two.sided")
-cat(sprintf("1. Wilcoxon-Mann-Whitney -> Estadístic W: %.4f | p-valor: %.4f\n", t1$statistic, t1$p.value))
-
-# Test 2: Wilcoxon signed-rank (2 mostres aparellades)
-t2 <- wilcox.test(abans_2g, despres_2g, paired = TRUE)
-cat(sprintf("2. Rangs amb signe de Wilcoxon -> Estadístic V: %.4f | p-valor: %.4f\n", t2$statistic, t2$p.value))
-
-# Test 3: Kruskal-Wallis (K mostres independents)
-dades_kw <- c(k_ind_1, k_ind_2, k_ind_3)
-grups_kw <- factor(rep(c("G1", "G2", "G3"), each = 20))
-t3 <- kruskal.test(dades_kw ~ grups_kw)
-cat(sprintf("3. Kruskal-Wallis     -> Estadístic Chi-sq: %.4f | p-valor: %.4f\n", t3$statistic, t3$p.value))
-
-# Test 4: Test de Friedman (K mostres aparellades)
-# Requereix una estructura de matriu on les columnes són els temps i les files els subjectes
-matriu_friedman <- matrix(c(t1_kg, t2_kg, t3_kg), ncol = 3)
-t4 <- friedman.test(matriu_friedman)
-cat(sprintf("4. Test de Friedman   -> Estadístic Chi-sq: %.4f | p-valor: %.4f\n", t4$statistic, t4$p.value))
-```
+L'estadística no paramètrica no és un "segon plat" per quan les dades no compleixen els requisits dels tests clàssics; és una família de mètodes amb el seu propi criteri d'ús, especialment valuosa amb mostres petites, dades esbiaixades o variables ordinals i categòriques. El criteri pràctic més senzill és comprovar primer els supòsits del test paramètric equivalent (normalitat, homogeneïtat de variàncies, mida de mostra) i, si no es compleixen amb prou garantia, recórrer a l'alternativa no paramètrica corresponent d'aquesta llista.
