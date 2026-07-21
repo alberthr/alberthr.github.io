@@ -120,30 +120,6 @@ UNPIVOT (vendes FOR mes IN (Gener, Febrer, Marc));
 
 La diferència principal és que Databricks no exigeix l'`AS` per assignar l'alias (agafa directament el literal o el nom de columna), cosa que fa la sintaxi una mica més curta. Si es fa servir PySpark en lloc de SQL, el DataFrame té a més el mètode natiu `.unpivot()`.
 
-### Alternativa sense PIVOT/UNPIVOT natiu (PostgreSQL, MySQL...)
-
-Per a motors sense aquestes clàusules, el `PIVOT` es fa amb agregació condicional:
-
-```sql
-SELECT botiga,
-       SUM(CASE WHEN mes = 'Gener' THEN vendes END) AS Gener,
-       SUM(CASE WHEN mes = 'Febrer' THEN vendes END) AS Febrer,
-       SUM(CASE WHEN mes = 'Març' THEN vendes END) AS Marc
-FROM vendes_llarg
-GROUP BY botiga;
-```
-
-I l'`UNPIVOT` amb una unió de seleccions (`UNION ALL`), una per cada columna original:
-
-```sql
-SELECT botiga, 'Gener' AS mes, Gener AS vendes FROM vendes_ample
-UNION ALL
-SELECT botiga, 'Febrer', Febrer FROM vendes_ample
-UNION ALL
-SELECT botiga, 'Març', Marc FROM vendes_ample;
-```
-
-
 ## R (amb `tidyr`)
 
 Des de fa uns anys, `tidyr` ha unificat el vocabulari al voltant de "llarg" i "ample" amb `pivot_wider()` i `pivot_longer()` (substituint les antigues `spread()` i `gather()`).
