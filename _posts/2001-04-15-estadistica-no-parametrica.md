@@ -71,7 +71,7 @@ Un p-valor per sota de 0,05 indica que la millora general de vendes després de 
 5. Un W molt baix (allunyat del que s'esperaria si les diferències fossin a l'atzar positives i negatives per igual) indica una millora sistemàtica, no atzar.
 
 
-## Kolmogorov-Smirnov
+## Comparar la forma de 2 distribucions
 
 Ja tractat en detall (fórmula, gràfic i codi complet en R i Python) en un [post anterior]({% post_url 2022-08-02-kolmogorov-smirnov %}). A diferència de Mann-Whitney, que només mira si un grup tendeix a tenir valors més alts que l'altre, el K-S detecta **qualsevol** diferència de forma entre dues distribucions (mitjana, dispersió, asimetria...), no només un desplaçament.
 
