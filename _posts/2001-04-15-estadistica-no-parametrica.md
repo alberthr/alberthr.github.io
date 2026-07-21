@@ -73,7 +73,7 @@ Un p-valor per sota de 0,05 indica que la millora general de vendes després de 
 
 ## Comparar la forma de dues distribucions: K-S
 
-Ja tractat en detall (fórmula, gràfic i codi complet en R i Python) en un [post anterior]({% post_url 2022-08-02-kolmogorov-smirnov %}). A diferència de Mann-Whitney, que només mira si un grup tendeix a tenir valors més alts que l'altre, el K-S detecta **qualsevol** diferència de forma entre dues distribucions (mitjana, dispersió, asimetria...), no només un desplaçament.
+Ja tractat en detall (fórmula, gràfic i codi complet en R i Python) en un [altre post]({% post_url 2022-08-02-kolmogorov-smirnov %}). A diferència de Mann-Whitney, que només mira si un grup tendeix a tenir valors més alts que l'altre, el K-S detecta **qualsevol** diferència de forma entre dues distribucions (mitjana, dispersió, asimetria...), no només un desplaçament.
 
 **Exemple real:** una empresa de telecomunicacions vol saber si el temps de trucada dels clients del pla nou segueix el mateix patró general que el del pla antic (no només si la mitjana és diferent, sinó si tota la forma de la distribució ha canviat: potser ara hi ha més trucades molt curtes i també més de molt llargues).
 
@@ -177,7 +177,7 @@ Per a Home-A: $\frac{(30-22,5)^2}{22,5} = 2,5$. Sumant les 4 cel·les s'obté un
 
 ### Bootstrapping
 
-Ja tractat en detall en un [post anterior]({% post_url 2020-11-11-intervals-bootstrapping %}): en lloc d'assumir una distribució teòrica, genera milers de rèpliques de la mostra original (amb reposició) per aproximar la distribució d'un estadístic qualsevol —mitjana, mediana, correlació, un coeficient de regressió— sense necessitat de fórmula analítica.
+Ja tractat en detall en un [altre post]({% post_url 2020-11-11-intervals-bootstrapping %}): en lloc d'assumir una distribució teòrica, genera milers de rèpliques de la mostra original (amb reposició) per aproximar la distribució d'un estadístic qualsevol —mitjana, mediana, correlació, un coeficient de regressió— sense necessitat de fórmula analítica.
 
 - **Quan fer-lo servir:** calcular intervals de confiança per a estadístics sense fórmula teòrica senzilla, o quan les dades no compleixen els supòsits necessaris per a la fórmula clàssica.
 - **Càlcul manual:** no aplicable — és, per definició, un mètode de simulació amb milers d'iteracions per ordinador, no un procediment que es faci a mà.
