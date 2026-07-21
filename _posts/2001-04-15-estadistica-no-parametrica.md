@@ -24,7 +24,7 @@ Abans d'entrar en cada mètode, val la pena fixar el criteri de quan preferir-lo
 El cost d'aquesta robustesa és, generalment, una **pèrdua de potència estadística**: si les dades sí que compleixen els supòsits d'un test paramètric, el test no paramètric equivalent necessita més mostra per detectar el mateix efecte. Per això la recomanació habitual és fer servir el test paramètric quan els seus supòsits es compleixen raonablement, i reservar el no paramètric per quan no és així.
 
 
-## Comparar dos grups: Mann-Whitney U i Wilcoxon
+## Comparar dos grups
 
 Aquests dos tests responen la mateixa pregunta —"aquests dos grups de dades són realment diferents, o la diferència que es veu pot ser deguda a l'atzar?"— però per a dues situacions diferents: quan els dos grups són **independents** (persones diferents a cada grup) o quan són **el mateix grup mesurat dues vegades** (abans i després).
 
@@ -71,7 +71,7 @@ Un p-valor per sota de 0,05 indica que la millora general de vendes després de 
 5. Un W molt baix (allunyat del que s'esperaria si les diferències fossin a l'atzar positives i negatives per igual) indica una millora sistemàtica, no atzar.
 
 
-## Kolmogorov-Smirnov: comparar la forma completa de dues distribucions
+## Kolmogorov-Smirnov
 
 Ja tractat en detall (fórmula, gràfic i codi complet en R i Python) en un [post anterior]({% post_url 2022-08-02-kolmogorov-smirnov %}). A diferència de Mann-Whitney, que només mira si un grup tendeix a tenir valors més alts que l'altre, el K-S detecta **qualsevol** diferència de forma entre dues distribucions (mitjana, dispersió, asimetria...), no només un desplaçament.
 
@@ -80,7 +80,7 @@ Ja tractat en detall (fórmula, gràfic i codi complet en R i Python) en un [pos
 **Càlcul manual (idea general):** s'ordenen totes les dades de cada mostra i es calcula, per a cada valor possible, quin percentatge de cada mostra queda per sota d'aquest valor (la funció de distribució acumulada empírica). Es resta aquest percentatge entre les dues mostres a cada punt, i l'estadístic $D$ és la diferència més gran trobada en tot el recorregut. El post enllaçat mostra aquest procés pas a pas amb un gràfic.
 
 
-## Comparar més de dos grups: Kruskal-Wallis i Friedman
+## Comparar més de dos grups
 
 ### Kruskal-Wallis
 
@@ -198,7 +198,9 @@ Quan la relació entre variables no és lineal i no es vol assumir cap forma fun
 - **Càlcul manual:** no és pràctic a mà (implica desenes de regressions locals ponderades), però el post enllaçat n'explica la lògica pas a pas.
 
 
-## Resum: quin mètode triar
+## Resum
+
+L'estadística no paramètrica no és un "segon plat" per quan les dades no compleixen els requisits dels tests clàssics; és una família de mètodes amb el seu propi criteri d'ús, especialment valuosa amb mostres petites, dades esbiaixades o variables ordinals i categòriques. El criteri pràctic més senzill és comprovar primer els supòsits del test paramètric equivalent (normalitat, homogeneïtat de variàncies, mida de mostra) i, si no es compleixen amb prou garantia, recórrer a l'alternativa no paramètrica corresponent d'aquesta llista.
 
 | Pregunta | Test paramètric equivalent | Alternativa no paramètrica |
 |---|---|---|
@@ -212,8 +214,3 @@ Quan la relació entre variables no és lineal i no es vol assumir cap forma fun
 | Interval de confiança d'un estadístic | Fórmula analítica (Teorema del Límit Central) | Bootstrapping |
 | Contrastar una diferència entre grups | Test t / ANOVA | Test de permutació |
 | Relació no lineal entre variables | Regressió polinòmica | LOESS |
-
-
-## Conclusió
-
-L'estadística no paramètrica no és un "segon plat" per quan les dades no compleixen els requisits dels tests clàssics; és una família de mètodes amb el seu propi criteri d'ús, especialment valuosa amb mostres petites, dades esbiaixades o variables ordinals i categòriques. El criteri pràctic més senzill és comprovar primer els supòsits del test paramètric equivalent (normalitat, homogeneïtat de variàncies, mida de mostra) i, si no es compleixen amb prou garantia, recórrer a l'alternativa no paramètrica corresponent d'aquesta llista.
