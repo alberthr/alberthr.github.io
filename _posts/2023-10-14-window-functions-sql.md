@@ -1,9 +1,9 @@
 ---
 layout: post
-title: "Totes les Funcions de Finestra a SQL"
+title: "Resum ràpid de les Funcions de Finestra a SQL"
 tags:
   - sql
-excerpt: "Panoràmica completa de les funcions de finestra (window functions) en SQL: rànquing, agregació, desplaçament i valors de posició, amb la sintaxi PARTITION BY, ORDER BY i la definició del frame amb ROWS/RANGE."
+excerpt: "Panoràmica completa de les funcions de finestra (window functions) en SQL: rànquing, agregació, desplaçament i valors de posició, amb la sintaxi PARTITION BY, ORDER BY, la definició del frame amb ROWS/RANGE i molt més."
 ---
 
 Les **funcions de finestra** (*window functions*) permeten calcular un valor que depèn d'un grup de files relacionades (una "finestra"), sense col·lapsar el resultat en una sola fila per grup com faria un `GROUP BY`. Cada fila original es manté, i s'hi afegeix una columna calculada a partir del seu grup. Aquest article en fa un repàs complet, organitzat per família de funcions.
