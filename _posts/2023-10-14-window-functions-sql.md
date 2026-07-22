@@ -60,27 +60,6 @@ WINDOW w AS (PARTITION BY botiga ORDER BY mes);
 No està disponible a tots els motors (Oracle, per exemple, no la suporta; Databricks/Spark SQL sí), però quan hi és, evita repetir la mateixa definició tres o quatre vegades a la mateixa consulta.
 
 
-## Funcions de rànquing
-
-Assignen una posició numèrica a cada fila dins de la seva finestra, segons l'`ORDER BY` indicat.
-
-- **`ROW_NUMBER()`**: numera les files de manera consecutiva i única (1, 2, 3, 4...), fins i tot si hi ha valors empatats a l'`ORDER BY` (en cas d'empat, l'ordre entre elles és arbitrari a menys que s'afegeixi un criteri de desempat).
-- **`RANK()`**: numera igual que `ROW_NUMBER()`, però els valors empatats reben el mateix número, i el número següent **salta** tantes posicions com files empatades hi ha hagut (1, 2, 2, 4).
-- **`DENSE_RANK()`**: igual que `RANK()`, però sense saltar cap número després d'un empat (1, 2, 2, 3).
-- **`NTILE(n)`**: reparteix les files de la finestra en `n` grups del mateix mida (o gairebé, si el nombre de files no és divisible exactament entre `n`), numerats de l'1 a `n`. Útil per crear quartils, decils, o qualsevol altra divisió en blocs iguals.
-
-```sql
-SELECT botiga, venedor, vendes,
-       ROW_NUMBER() OVER (PARTITION BY botiga ORDER BY vendes DESC) AS num_fila,
-       RANK()       OVER (PARTITION BY botiga ORDER BY vendes DESC) AS rank,
-       DENSE_RANK() OVER (PARTITION BY botiga ORDER BY vendes DESC) AS dense_rank,
-       NTILE(4)     OVER (PARTITION BY botiga ORDER BY vendes DESC) AS quartil
-FROM vendes_venedors;
-```
-
-`ROW_NUMBER()` és, amb diferència, la més utilitzada a la pràctica: quedar-se amb el primer registre de cada grup (`WHERE num_fila = 1`, en una subconsulta) és un dels usos més habituals de totes les funcions de finestra.
-
-
 ## Funcions d'agregació com a finestra
 
 Les funcions d'agregació clàssiques (`SUM`, `AVG`, `COUNT`, `MIN`, `MAX`) també es poden fer servir amb `OVER (...)` en lloc de `GROUP BY`, amb l'avantatge que el resultat es manté a nivell de fila, no de grup.
@@ -100,6 +79,27 @@ FROM vendes_mensuals;
 ```
 
 Aquest patró és molt habitual per calcular, en la mateixa fila, tant el valor individual com una referència del seu grup (el total, la mitjana, el màxim), per exemple per calcular directament el percentatge que cada fila representa sobre el total del seu grup (`vendes / total_botiga`).
+
+
+## Funcions de rànquing
+
+Assignen una posició numèrica a cada fila dins de la seva finestra, segons l'`ORDER BY` indicat.
+
+- **`ROW_NUMBER()`**: numera les files de manera consecutiva i única (1, 2, 3, 4...), fins i tot si hi ha valors empatats a l'`ORDER BY` (en cas d'empat, l'ordre entre elles és arbitrari a menys que s'afegeixi un criteri de desempat).
+- **`RANK()`**: numera igual que `ROW_NUMBER()`, però els valors empatats reben el mateix número, i el número següent **salta** tantes posicions com files empatades hi ha hagut (1, 2, 2, 4).
+- **`DENSE_RANK()`**: igual que `RANK()`, però sense saltar cap número després d'un empat (1, 2, 2, 3).
+- **`NTILE(n)`**: reparteix les files de la finestra en `n` grups del mateix mida (o gairebé, si el nombre de files no és divisible exactament entre `n`), numerats de l'1 a `n`. Útil per crear quartils, decils, o qualsevol altra divisió en blocs iguals.
+
+```sql
+SELECT botiga, venedor, vendes,
+       ROW_NUMBER() OVER (PARTITION BY botiga ORDER BY vendes DESC) AS num_fila,
+       RANK()       OVER (PARTITION BY botiga ORDER BY vendes DESC) AS rank,
+       DENSE_RANK() OVER (PARTITION BY botiga ORDER BY vendes DESC) AS dense_rank,
+       NTILE(4)     OVER (PARTITION BY botiga ORDER BY vendes DESC) AS quartil
+FROM vendes_venedors;
+```
+
+`ROW_NUMBER()` és molt utilitzada. Quedar-se amb el primer registre de cada grup (`WHERE num_fila = 1`, en una subconsulta) és un dels usos més habituals de totes les funcions de finestra.
 
 
 ## Funcions de desplaçament (`LAG` i `LEAD`)
@@ -182,28 +182,23 @@ Es combinen sempre dos d'aquests punts, un com a inici i un com a final, i el pu
 ```sql
 SELECT botiga, mes, vendes,
        -- Total acumulat (des del principi fins a la fila actual)
-       SUM(vendes) OVER (
-           PARTITION BY botiga ORDER BY mes
+       SUM(vendes) OVER (PARTITION BY botiga ORDER BY mes
            ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
        ) AS total_acumulat,
        -- Mitjana mòbil de les 3 files anteriors + l'actual (finestra de mida fixa, 3 enrere)
-       AVG(vendes) OVER (
-           PARTITION BY botiga ORDER BY mes
+       AVG(vendes) OVER (PARTITION BY botiga ORDER BY mes
            ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
        ) AS mitjana_movil_3,
        -- Mitjana centrada: 1 mes abans, el mes actual, i 1 mes després
-       AVG(vendes) OVER (
-           PARTITION BY botiga ORDER BY mes
+       AVG(vendes) OVER (PARTITION BY botiga ORDER BY mes
            ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING
        ) AS mitjana_centrada,
        -- Total de tota la finestra, sense importar la fila actual (el mateix valor a totes les files del grup)
-       SUM(vendes) OVER (
-           PARTITION BY botiga
+       SUM(vendes) OVER (PARTITION BY botiga
            ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
        ) AS total_grup,
        -- Quant falta per vendre des d'aquest mes fins al final de la finestra
-       SUM(vendes) OVER (
-           PARTITION BY botiga ORDER BY mes
+       SUM(vendes) OVER (PARTITION BY botiga ORDER BY mes
            ROWS BETWEEN CURRENT ROW AND UNBOUNDED FOLLOWING
        ) AS total_restant
 FROM vendes_mensuals;
