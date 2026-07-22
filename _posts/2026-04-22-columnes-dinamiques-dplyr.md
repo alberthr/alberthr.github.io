@@ -44,173 +44,24 @@ Aquí, `columna` no s'interpreta com el valor que se li ha passat (per exemple `
 
 La manera més senzilla d'evitar-ho és una regla única: **quan una funció rep un nom de columna com a paràmetre, sempre es passa com a text, entre cometes** (`"botiga"`, no `botiga`). Fet això, només calen dues eines de `dplyr` per fer-hi qualsevol cosa:
 
-- **`.data[[ ... ]]`** per **llegir** una columna existent a partir del seu nom en text.
+- **`.data[[ ... ]]`** per **llegir** una columna existent a partir del seu nom en texte.
 - **`"{ ... }" :=`** per **crear** una columna nova amb un nom que ve en text.
+- **`all_of( ... )`** per **llegir** diverses columnes amb el seu nom en texte.
 
-### Llegir una columna existent: `.data[[ ]]`
+### Llegir una columna existent
 
 ```r
-agrupar_per <- function(dades, columna) {
+filtrar_agrupar <- function(dades, columna_grup, columna_filtre, valor) {
   dades %>%
-    group_by(.data[[columna]]) %>%
+    filter(.data[[columna_filtre]] > valor) %>%
+    group_by(.data[[columna_grup]]) %>%
     summarise(total = sum(vendes), .groups = "drop")
 }
 
-agrupar_per(vendes_diaries, "botiga")
-```
-
-Resultat:
-
-```
-# A tibble: 2 × 2
-  botiga total
-  <chr>  <dbl>
-1 A        270
-2 B        140
+filtrar_agrupar(vendes_diaries, "botiga", "vendes", 70)
 ```
 
 `.data[[columna]]` li diu a `dplyr`: "busca la columna el nom de la qual és el text que hi ha dins de la variable `columna`". Funciona exactament igual dins de `select()`, `filter()`, `arrange()`, `mutate()` o qualsevol altre verb:
-
-```r
-filtrar_per <- function(dades, columna, valor) {
-  dades %>% filter(.data[[columna]] == valor)
-}
-
-filtrar_per(vendes_diaries, "botiga", "A")
-```
-
-Resultat:
-
-```
-# A tibble: 2 × 3
-  botiga vendes unitats
-  <chr>   <dbl>   <dbl>
-1 A         120      10
-2 A         150      12
-```
-
-### Crear una columna nova amb nom dinàmic: `"{ }" :=`
-
-```r
-crear_columna <- function(dades, nom_nova, columna_origen, factor) {
-  dades %>%
-    mutate("{nom_nova}" := .data[[columna_origen]] * factor)
-}
-
-crear_columna(vendes_diaries, "vendes_doble", "vendes", 2)
-```
-
-Resultat:
-
-```
-# A tibble: 4 × 4
-  botiga vendes unitats vendes_doble
-  <chr>   <dbl>   <dbl>        <dbl>
-1 A         120      10          240
-2 A         150      12          300
-3 B          80       8          160
-4 B          60       5          120
-```
-
-Es llegeix així: "crea una columna anomenada com el text de `nom_nova`, amb el valor de la columna anomenada com el text de `columna_origen`, multiplicat per `factor`".
-
-### Diverses columnes alhora: `all_of()`, amb o sense `across()`
-
-`all_of(columnes)` és la peça que li diu a `dplyr` "aquest vector de text són noms de columnes existents". Com s'ha de combinar amb la resta depèn del verb:
-
-**Amb verbs que ja "seleccionen columnes" (`select()`, `rename()`, `arrange()`, `pull()`...), `all_of()` funciona sol, sense `across()`:**
-
-```r
-seleccionar <- function(dades, columnes) {
-  dades %>% select(all_of(columnes))
-}
-
-seleccionar(vendes_diaries, c("botiga", "vendes"))
-```
-
-Resultat:
-
-```
-# A tibble: 4 × 2
-  botiga vendes
-  <chr>   <dbl>
-1 A         120
-2 A         150
-3 B          80
-4 B          60
-```
-
-**Amb verbs que "calculen un valor" per columna (`summarise()`, `mutate()` amb una funció com `sum()` o `mean()`), `all_of()` sol no és suficient:**
-
-```r
-# Això FALLA
-resumir_mal <- function(dades, columnes) {
-  dades %>%
-    summarise(total = sum(all_of(columnes)))
-}
-
-resumir_mal(vendes_diaries, c("vendes", "unitats"))
-```
-
-```
-Error in `summarise()`:
-Caused by error:
-! Can't select columns inside `sum()`.
-```
-
-`all_of()` només diu "quines columnes triar"; `sum()` espera un vector de números, no una selecció, i no sap "repetir-se" per cada columna. Aquí cal `across()`, que és qui aplica la funció a cada columna seleccionada, una per una, i retorna un resultat per cadascuna:
-
-```r
-resumir_be <- function(dades, columnes) {
-  dades %>%
-    summarise(across(all_of(columnes), sum))
-}
-
-resumir_be(vendes_diaries, c("vendes", "unitats"))
-```
-
-Resultat:
-
-```
-# A tibble: 1 × 2
-  vendes unitats
-   <dbl>   <dbl>
-1    410      35
-```
-
-**Resum de quan cal cadascun:**
-
-| Verb | `all_of()` sol | Cal `across()` |
-|---|---|---|
-| `select()`, `rename()`, `arrange()`, `pull()`, `relocate()` | Sí | No |
-| `summarise()` o `mutate()` amb una funció (`sum`, `mean`, `round`...) | No (dona error) | Sí, sempre |
-| `group_by()` amb diverses columnes | Sí (`group_by(across(all_of(columnes)))` només cal si també es vol transformar-les; per agrupar-hi tal qual, `all_of()` sol ja funciona) | Només si a més es transforma cada columna |
-
-## La mateixa regla per a tota la resta de verbs
-
-Aquesta única regla —**text sempre, `.data[[ ]]` per llegir, `"{ }" :=` per crear, `all_of()` per a diverses columnes**— s'aplica igual a qualsevol verb de `dplyr`.
-
-```r
-renombrar <- function(dades, nom_nou, columna_vella) {
-  dades %>% rename("{nom_nou}" := .data[[columna_vella]])
-}
-
-renombrar(vendes_diaries, "tenda", "botiga")
-```
-
-Resultat:
-
-```
-# A tibble: 4 × 3
-  tenda vendes unitats
-  <chr>  <dbl>   <dbl>
-1 A        120      10
-2 A        150      12
-3 B         80       8
-4 B         60       5
-```
-
-## Alternativa: `{{ }}`, quan es passa el nom sense cometes
 
 Existeix una altra manera de fer exactament el mateix, vàlida només per a columnes: `{{ }}` (*embrace*). A diferència de `.data[[ ]]`, que rep el nom com a **text**, `{{ }}` rep el nom **sense cometes**, escrit directament a la crida com si fos una variable normal:
 
@@ -224,17 +75,59 @@ agrupar_per_embrace <- function(dades, columna) {
 agrupar_per_embrace(vendes_diaries, botiga)   # sense cometes
 ```
 
-Resultat (idèntic a l'exemple de `.data[[ ]]` d'abans):
 
-```
-# A tibble: 2 × 2
-  botiga total
-  <chr>  <dbl>
-1 A        270
-2 B        140
+### Crear una columna nova
+
+```r
+crear_columna <- function(dades, nom_nova, columna_origen, factor) {
+  dades %>%
+    mutate("{nom_nova}" := .data[[columna_origen]] * factor)
+}
+
+crear_columna(vendes_diaries, "vendes_doble", "vendes", 2)
 ```
 
-La diferència és només a la crida: `agrupar_per(vendes_diaries, "botiga")` (amb `.data[[ ]]`, text) davant de `agrupar_per_embrace(vendes_diaries, botiga)` (amb `{{ }}`, sense cometes). Per a columnes, totes dues formes són vàlides i fan el mateix; aquest post es queda amb `.data[[ ]]` perquè, treballant sempre amb text, no cal decidir cada vegada quina de les dues eines toca fer servir.
+
+Es llegeix així: "crea una columna anomenada com el text de `nom_nova`, amb el valor de la columna anomenada com el text de `columna_origen`, multiplicat per `factor`".
+
+
+### Diverses columnes alhora
+
+`all_of(columnes)` és la peça que li diu a `dplyr` "aquest vector de text són noms de columnes existents". Com s'ha de combinar amb la resta depèn del verb:
+
+**Amb verbs que ja "seleccionen columnes" (`select()`, `rename()`, `arrange()`, `pull()`...), `all_of()` funciona sol, sense `across()`:**
+
+```r
+seleccionar <- function(dades, columnes) {
+  dades %>% select(all_of(columnes))
+}
+
+seleccionar(vendes_diaries, c("botiga", "vendes"))
+```
+
+
+**Amb verbs que "calculen un valor" per columna (`summarise()`, `mutate()` amb una funció com `sum()` o `mean()`), `all_of()` sol no és suficient:**
+
+Aquí cal `across()`, que és qui aplica la funció a cada columna seleccionada, una per una, i retorna un resultat per cadascuna:
+
+```r
+resumir_be <- function(dades, columnes) {
+  dades %>%
+    summarise(across(all_of(columnes), sum))
+}
+
+resumir_be(vendes_diaries, c("vendes", "unitats"))
+```
+
+
+**Resum de quan cal cadascun:**
+
+| Verb | `all_of()` sol | Cal `across()` |
+|---|---|---|
+| `select()`, `rename()`, `arrange()`, `pull()`, `relocate()` | Sí | No |
+| `summarise()` o `mutate()` amb una funció (`sum`, `mean`, `round`...) | No (dona error) | Sí, sempre |
+| `group_by()` amb diverses columnes | Sí (`group_by(across(all_of(columnes)))` només cal si també es vol transformar-les; per agrupar-hi tal qual, `all_of()` sol ja funciona) | Només si a més es transforma cada columna |
+
 
 ## Implementació pràctica
 
