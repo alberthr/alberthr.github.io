@@ -58,7 +58,7 @@ filtrar_agrupar <- function(dades, columna_grup, columna_filtre, valor) {
     summarise(total = sum(vendes), .groups = "drop")
 }
 
-filtrar_agrupar(vendes_diaries, "botiga", "vendes", 70)
+filtrar_agrupar(vendes_diaries, "botiga", "unitats", 6)
 ```
 
 `.data[[columna]]` li diu a `dplyr`: "busca la columna el nom de la qual és el text que hi ha dins de la variable `columna`". Funciona exactament igual dins de `select()`, `filter()`, `arrange()`, `mutate()` o qualsevol altre verb:
@@ -118,15 +118,6 @@ resumir_be <- function(dades, columnes) {
 
 resumir_be(vendes_diaries, c("vendes", "unitats"))
 ```
-
-
-**Resum de quan cal cadascun:**
-
-| Verb | `all_of()` sol | Cal `across()` |
-|---|---|---|
-| `select()`, `rename()`, `arrange()`, `pull()`, `relocate()` | Sí | No |
-| `summarise()` o `mutate()` amb una funció (`sum`, `mean`, `round`...) | No (dona error) | Sí, sempre |
-| `group_by()` amb diverses columnes | Sí (`group_by(across(all_of(columnes)))` només cal si també es vol transformar-les; per agrupar-hi tal qual, `all_of()` sol ja funciona) | Només si a més es transforma cada columna |
 
 
 ## Implementació pràctica
