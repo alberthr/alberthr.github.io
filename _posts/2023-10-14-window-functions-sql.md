@@ -247,14 +247,14 @@ L'exemple del `z_score` (quantes desviacions estàndard s'allunya cada fila de l
 
 | Funció | Família | Què fa |
 |---|---|---|
-| `ROW_NUMBER()` | Rànquing | Numera sense empats (1,2,3,4) |
-| `RANK()` | Rànquing | Numera amb empats i salts (1,2,2,4) |
-| `DENSE_RANK()` | Rànquing | Numera amb empats sense salts (1,2,2,3) |
-| `NTILE(n)` | Rànquing | Reparteix en `n` grups iguals |
 | `SUM() OVER` | Agregació | Suma (total o acumulada segons el frame) |
 | `AVG() OVER` | Agregació | Mitjana |
 | `COUNT() OVER` | Agregació | Recompte de files |
 | `MIN()` / `MAX() OVER` | Agregació | Valor mínim/màxim de la finestra |
+| `ROW_NUMBER()` | Rànquing | Numera sense empats (1,2,3,4) |
+| `RANK()` | Rànquing | Numera amb empats i salts (1,2,2,4) |
+| `DENSE_RANK()` | Rànquing | Numera amb empats sense salts (1,2,2,3) |
+| `NTILE(n)` | Rànquing | Reparteix en `n` grups iguals |
 | `LAG()` | Desplaçament | Valor d'una fila anterior |
 | `LEAD()` | Desplaçament | Valor d'una fila posterior |
 | `FIRST_VALUE()` | Posició | Valor de la primera fila |
