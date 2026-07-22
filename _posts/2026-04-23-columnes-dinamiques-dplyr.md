@@ -3,8 +3,6 @@ layout: post
 title: "Programació Dinàmica a dplyr: Selecció i Maneig de Columnes"
 tags:
   - r
-  - dplyr
-  - programacio
 excerpt: "Guia tècnica sobre la selecció i modificació dinàmica de columnes a dplyr: ús de l'operador embrace {{ }}, .data[[columna]], all_of(), across() i l'operador d'assignació :=."
 ---
 
