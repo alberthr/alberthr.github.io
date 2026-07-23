@@ -3,8 +3,6 @@ layout: post
 title: "Comparació de Distribucions amb Kolmogorov-Smirnov"
 tags:
   - estadistica
-  - python
-  - r
 excerpt: "Determinar si dues mostres provenen de la mateixa distribució o si els residus segueixen una Normal. El test de Kolmogorov-Smirnov compara funcions de distribució acumulades i ofereix un p-valor objectiu."
 ---
 
