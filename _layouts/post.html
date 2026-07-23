@@ -47,8 +47,19 @@ layout: default
       {% assign related_scores = "" | split: "" %}
       {% for p in site.posts %}
         {% if p.url != page.url %}
-          {% assign common = p.tags | intersect: page.tags %}
-          {% if common.size > 0 %}
+          {% comment %}
+            Calculem la intersecció de tags a mà (el filtre "intersect" no és
+            un filtre estàndard de Liquid i Jekyll/GitHub Pages l'ignora
+            silenciosament, cosa que feia que "common" acabés sent tots els
+            tags del post candidat en lloc dels tags compartits de veritat).
+          {% endcomment %}
+          {% assign common_count = 0 %}
+          {% for tag in page.tags %}
+            {% if p.tags contains tag %}
+              {% assign common_count = common_count | plus: 1 %}
+            {% endif %}
+          {% endfor %}
+          {% if common_count > 0 %}
             {% comment %}
               Puntuació = nombre de tags compartits, sense pesos. Un post que
               comparteix un tag amb el post actual sempre entra a la llista de
@@ -56,7 +67,7 @@ layout: default
               comparteixi més o menys.
             {% endcomment %}
             {% assign related = related | push: p %}
-            {% assign related_scores = related_scores | push: common.size %}
+            {% assign related_scores = related_scores | push: common_count %}
           {% endif %}
         {% endif %}
       {% endfor %}
@@ -65,32 +76,92 @@ layout: default
         {% assign idx = forloop.index0 %}
         {% assign score = related_scores[idx] %}
         {% comment %}
-          Clau d'ordenació: puntuació (amb zero-padding perquè l'ordenació de
-          strings sigui correcta), data del post com a desempat determinista, i
-          l'índex al final només per poder recuperar el post.
+          Desempat secundari: quantes vegades els tags d'aquest candidat p
+          apareixen també als altres posts candidats (no al post actual, sinó
+          entre ells). Un candidat que "encaixa" més amb la resta de la llista
+          de relacionats puja per davant d'un que només coincideix amb el post
+          actual per casualitat.
         {% endcomment %}
-        {% assign score_padded = score | plus: 100000 %}
+        {% assign secondary = 0 %}
+        {% for tag in p.tags %}
+          {% for q in related %}
+            {% assign q_idx = forloop.index0 %}
+            {% if q_idx != idx and q.tags contains tag %}
+              {% assign secondary = secondary | plus: 1 %}
+            {% endif %}
+          {% endfor %}
+        {% endfor %}
+        {% comment %}
+          Clau d'ordenació: puntuació principal, desempat secundari (tots dos
+          amb zero-padding perquè l'ordenació de strings sigui correcta), data
+          del post com a últim desempat (determinista, ja que cada post té una
+          data única), i l'índex al final només per recuperar el post.
+        {% endcomment %}
+        {% assign score_padded = score | plus: 1000 %}
+        {% assign secondary_padded = secondary | plus: 1000 %}
         {% assign date_key = p.date | date: "%s" %}
-        {% assign entry = score_padded | append: "-" | append: date_key | append: "-" | append: idx %}
+        {% assign entry = score_padded | append: "-" | append: secondary_padded | append: "-" | append: date_key | append: "-" | append: idx %}
         {% assign related_sorted = related_sorted | push: entry %}
       {% endfor %}
       {% assign related_sorted = related_sorted | sort | reverse %}
       {% assign related_final = "" | split: "" %}
-      {% assign added = 0 %}
-      {% assign last_score = "" %}
-      {% for entry in related_sorted %}
+      {% for entry in related_sorted limit:3 %}
         {% assign parts = entry | split: "-" %}
-        {% assign this_score = parts[0] %}
-        {% if added < 3 or this_score == last_score %}
-          {% assign idx = parts[2] | plus: 0 %}
-          {% assign related_final = related_final | push: related[idx] %}
-          {% assign added = added | plus: 1 %}
-          {% assign last_score = this_score %}
-        {% else %}
-          {% break %}
-        {% endif %}
+        {% assign idx = parts[3] | plus: 0 %}
+        {% assign related_final = related_final | push: related[idx] %}
       {% endfor %}
       {% assign related = related_final %}
+      {% if related.size < 3 %}
+        {% comment %}
+          Si no arribem a 3 posts amb tags directament compartits amb el post
+          actual, omplim les places que falten amb posts relacionats amb els
+          que ja hem trobat (relació de "segon grau"), per evitar mostrar
+          menys de 3 quan sigui possible completar-los amb sentit.
+        {% endcomment %}
+        {% assign needed = 3 | minus: related.size %}
+        {% assign second_degree = "" | split: "" %}
+        {% assign second_degree_scores = "" | split: "" %}
+        {% for cand in site.posts %}
+          {% assign is_excluded = false %}
+          {% if cand.url == page.url %}
+            {% assign is_excluded = true %}
+          {% endif %}
+          {% for r in related %}
+            {% if cand.url == r.url %}
+              {% assign is_excluded = true %}
+            {% endif %}
+          {% endfor %}
+          {% unless is_excluded %}
+            {% assign sd_score = 0 %}
+            {% for r in related %}
+              {% for tag in r.tags %}
+                {% if cand.tags contains tag %}
+                  {% assign sd_score = sd_score | plus: 1 %}
+                {% endif %}
+              {% endfor %}
+            {% endfor %}
+            {% if sd_score > 0 %}
+              {% assign second_degree = second_degree | push: cand %}
+              {% assign second_degree_scores = second_degree_scores | push: sd_score %}
+            {% endif %}
+          {% endunless %}
+        {% endfor %}
+        {% assign sd_sorted = "" | split: "" %}
+        {% for cand in second_degree %}
+          {% assign sidx = forloop.index0 %}
+          {% assign sscore = second_degree_scores[sidx] %}
+          {% assign sscore_padded = sscore | plus: 1000 %}
+          {% assign sdate_key = cand.date | date: "%s" %}
+          {% assign sentry = sscore_padded | append: "-" | append: sdate_key | append: "-" | append: sidx %}
+          {% assign sd_sorted = sd_sorted | push: sentry %}
+        {% endfor %}
+        {% assign sd_sorted = sd_sorted | sort | reverse %}
+        {% for sentry in sd_sorted limit: needed %}
+          {% assign sparts = sentry | split: "-" %}
+          {% assign sidx = sparts[2] | plus: 0 %}
+          {% assign related = related | push: second_degree[sidx] %}
+        {% endfor %}
+      {% endif %}
       {% if related.size > 0 %}
       <div class="related-posts">
         <p class="related-title">Posts relacionats</p>
