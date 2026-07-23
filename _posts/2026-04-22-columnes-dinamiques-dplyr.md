@@ -29,7 +29,7 @@ vendes_diaries <- tibble(
 
 ## El problema
 
-`dplyr` interpreta els noms de columna de manera literal: quan s'escriu `group_by(botiga)`, `dplyr` busca una columna que es digui `botiga`, sense mirar si existeix cap variable amb aquest nom a l'entorn. Això és pràctic per escriure codi ràpid, però trenca dins d'una funció:
+Les funcions de `dplyr` interpreten els noms de columna de manera literal: quan s'escriu `group_by(botiga)`, `dplyr` busca una columna que es digui `botiga`, sense mirar si existeix cap variable amb aquest nom a l'entorn. Això és pràctic per escriure codi ràpid, però trenca dins d'una funció:
 
 ```r
 agrupar_per <- function(dades, columna) {
