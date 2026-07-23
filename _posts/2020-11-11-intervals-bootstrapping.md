@@ -3,6 +3,7 @@ layout: post
 title: "Calcular Intervals de Confiança amb Bootstrapping"
 tags:
   - estadistica
+  - machine-learning
 excerpt: "Quan es desconeix la distribució de les dades o cal l'interval de confiança d'un estadístic sense fórmula teòrica (com la mediana), el Bootstrapping permet generar-lo a partir de la pròpia mostra."
 ---
 
