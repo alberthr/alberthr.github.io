@@ -6,6 +6,7 @@ tags:
   - sql
   - r
   - python
+  - excel
 excerpt: "Convertir taules de format llarg a ample (pivotar) o d'ample a llarg (despivotar) és una de les transformacions més habituals en analítica de dades. Com fer-ho a Power Query, SQL, R i Python amb el mateix exemple."
 ---
 
