@@ -2,9 +2,7 @@
 layout: post
 title: "Algoritme Hongarès: Optimització d'Assignacions"
 tags:
-  - optimitzacio
-  - python
-  - r
+  - algoritmes
 excerpt: "Com trobar, entre 20 botigues de control, les 5 més similars a un grup de botigues amb tractament per a un test A/B sense biaixos? L'Algoritme Hongarès resol aquest problema d'assignació òptima minimitzant la diferència total."
 ---
 
