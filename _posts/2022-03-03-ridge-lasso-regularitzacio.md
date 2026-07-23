@@ -4,8 +4,7 @@ title: "Com Funcionen Ridge i Lasso en Regressió Lineal"
 tags:
   - estadistica
   - machine-learning
-  - python
-  - r
+  - modelitzacio
 excerpt: "Quan una regressió lineal té massa variables o multicol·linealitat, els coeficients es tornen inestables. Ridge i Lasso afegeixen una penalització que els redueix, amb un efecte diferent segons el mètode triat."
 ---
 
