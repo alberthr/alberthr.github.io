@@ -45,9 +45,9 @@ Aquí, `columna` no s'interpreta com el valor que se li ha passat (per exemple `
 
 La manera més senzilla d'evitar-ho és una regla única: quan una funció rep un nom de columna com a paràmetre, sempre es passa com a text, entre cometes (`"botiga"`, no `botiga`). Fet això, només calen tres eines de `dplyr` per fer-hi qualsevol cosa:
 
-- **`.data[[ ... ]]`** per **llegir** una columna existent a partir del seu nom en texte.
-- **`"{ ... }" :=`** per **crear** una columna nova amb un nom que ve en texte.
-- **`all_of( ... )`** per **llegir** diverses columnes amb el seu nom en texte.
+- **`.data[[ ... ]]`** per **llegir** una columna existent a partir del seu nom en text.
+- **`"{ ... }" :=`** per **crear** una columna nova amb un nom que ve en text.
+- **`all_of( ... )`** per **llegir** diverses columnes amb el seu nom en text.
 
 ### Llegir una columna existent
 
@@ -61,9 +61,9 @@ agrupar <- function(dades, columna_grup) {
 agrupar(vendes_diaries, "dia")
 ```
 
-`.data[[columna]]` li diu a `dplyr`: "busca la columna el nom de la qual és el texte que hi ha dins de la variable `columna`". Funciona exactament igual dins de `select()`, `filter()`, `arrange()`, `mutate()` o qualsevol altre verb:
+`.data[[columna]]` li diu a `dplyr`: "busca la columna el nom de la qual és el text que hi ha dins de la variable `columna`". Funciona exactament igual dins de `select()`, `filter()`, `arrange()`, `mutate()` o qualsevol altre verb:
 
-Existeix una altra manera de fer el mateix: `{{ }}` (*embrace*). A diferència de `.data[[ ]]`, que rep el nom com a **texte**, `{{ }}` rep el nom **sense cometes**, escrit directament a la crida com si fos una variable normal. La principala diferencia entre metodes es que `{{ }}` permet passar no només noms de columnes sinó també altres expressions a la funció (per exemple: `mean(x)` o `a + b`):
+Existeix una altra manera de fer el mateix: `{{ }}` (*embrace*). A diferència de `.data[[ ]]`, que rep el nom com a **text**, `{{ }}` rep el nom **sense cometes**, escrit directament a la crida com si fos una variable normal. La principala diferencia entre metodes es que `{{ }}` permet passar no només noms de columnes sinó també altres expressions a la funció (per exemple: `mean(x)` o `a + b`):
 
 
 ### Crear una columna nova
