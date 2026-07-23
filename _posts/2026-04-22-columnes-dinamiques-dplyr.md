@@ -63,7 +63,7 @@ agrupar(vendes_diaries, "dia")
 
 `.data[[columna]]` li diu a `dplyr`: "busca la columna el nom de la qual és el text que hi ha dins de la variable `columna`". Funciona exactament igual dins de `select()`, `filter()`, `arrange()`, `mutate()` o qualsevol altre verb:
 
-Existeix una altra manera de fer el mateix: `{{ }}` (*embrace*). A diferència de `.data[[ ]]`, que rep el nom com a **text**, `{{ }}` rep el nom **sense cometes**, escrit directament a la crida com si fos una variable normal. La principala diferencia entre metodes es que `{{ }}` permet passar no només noms de columnes sinó també altres expressions a la funció (per exemple: `mean(x)` o `a + b`):
+Existeix una altra manera de fer el mateix: `{% raw %}{{ }}{% endraw %}` (*embrace*). A diferència de `.data[[ ]]`, que rep el nom com a **text**, `{% raw %}{{ }}{% endraw %}` rep el nom **sense cometes**, escrit directament a la crida com si fos una variable normal. La principala diferencia entre metodes es que `{% raw %}{{ }}{% endraw %}` permet passar no només noms de columnes sinó també altres expressions a la funció (per exemple: `mean(x)` o `a + b`):
 
 
 ### Crear una columna nova
@@ -104,7 +104,7 @@ resumir(vendes_diaries,
 | Eina | Ús |
 |---|---|
 | `.data[[ ... ]]` | Llegeix una columna existent a partir del seu nom en text. Funciona dins de qualsevol verb (`group_by()`, `filter()`, `mutate()`...) quan el nom arriba com a paràmetre. |
-| `{{ }}` (*embrace*) | Fa el mateix que `.data[[ ]]`, però rep el nom sense cometes i permet passar també expressions senceres, no només noms de columna. Per exemple: `mean(x)` |
+| `{% raw %}{{ }}{% endraw %}` (*embrace*) | Fa el mateix que `.data[[ ]]`, però rep el nom sense cometes i permet passar també expressions senceres, no només noms de columna. Per exemple: `mean(x)` |
 | `"{ ... }" :=` | Crea una columna nova amb un nom que ve en text. S'utilitza dins de `mutate()` o `summarise()` quan el nom de la columna resultant també és un paràmetre. |
 | `all_of( ... )` | Llegeix diverses columnes a partir dels seus noms en text. S'utilitza sol amb verbs que "seleccionen columnes": `select()`, `rename()`, `arrange()`, `pull()`... |
 | `all_of( ... )` amb `across()` | Aplica una funció a diverses columnes, una per una. S'utilitza amb verbs que "calculen un valor" per columna: `summarise()`, `mutate()` amb `sum()`, `mean()`, etc. |
