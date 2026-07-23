@@ -98,3 +98,15 @@ resumir(vendes_diaries,
         seleccio = c("botiga", "vendes", "unitats"),
         suma = c("vendes", "unitats"))
 ```
+
+## Taula resum
+
+| Eina | Ús |
+|---|---|
+| `.data[[ ... ]]` | Llegeix una columna existent a partir del seu nom en text. Funciona dins de qualsevol verb (`group_by()`, `filter()`, `mutate()`...) quan el nom arriba com a paràmetre. |
+| `{{ }}` (*embrace*) | Fa el mateix que `.data[[ ]]`, però rep el nom sense cometes i permet passar també expressions senceres, no només noms de columna. Per exemple: `mean(x)` |
+| `"{ ... }" :=` | Crea una columna nova amb un nom que ve en text. S'utilitza dins de `mutate()` o `summarise()` quan el nom de la columna resultant també és un paràmetre. |
+| `all_of( ... )` | Llegeix diverses columnes a partir dels seus noms en text. S'utilitza sol amb verbs que "seleccionen columnes": `select()`, `rename()`, `arrange()`, `pull()`... |
+| `all_of( ... )` amb `across()` | Aplica una funció a diverses columnes, una per una. S'utilitza amb verbs que "calculen un valor" per columna: `summarise()`, `mutate()` amb `sum()`, `mean()`, etc. |
+
+En resum: Totes aquestes eines resolen el mateix conflicte: dplyr vol noms literals i les nostres funcions volen paràmetres. Un cop s'interioritza aquesta distinció, passar noms de columna deixa de ser un obstacle i es converteix en una part més d'escriure funcions amb dplyr.
