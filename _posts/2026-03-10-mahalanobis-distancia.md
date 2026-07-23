@@ -3,8 +3,6 @@ layout: post
 title: "Detecció d'Outliers Multivariants amb la Distància de Mahalanobis"
 tags:
   - estadistica
-  - python
-  - r
 excerpt: "Quan cada variable per separat sembla normal però la seva combinació és impossible, els outliers univariants no serveixen. Descobreix com la Distància de Mahalanobis detecta anomalies multivariants tenint en compte escales i correlacions."
 ---
 
