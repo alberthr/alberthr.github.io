@@ -3,8 +3,6 @@ layout: post
 title: "Detecció de Grups en Mostres Bimodals amb GMM"
 tags:
   - estadistica
-  - python
-  - r
 excerpt: "Quan una variable sembla tenir més d'una 'campana' (bimodal, trimodal...), un Gaussian Mixture Model permet estimar quants grups hi ha, a quin pertany cada observació i on és exactament el punt de tall entre grups."
 ---
 
