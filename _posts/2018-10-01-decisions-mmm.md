@@ -31,7 +31,7 @@ En una estructura multiplicativa, els factors de la baseline actuen com a multip
 
 $$\text{Vendes Base}_t = \beta_0 \cdot (\text{Preu}_t)^{\beta_1} \cdot (\text{Distribució}_t)^{\beta_2} \cdot \text{Estacionalitat}_t$$
 
-* **Com funciona:** L'estacionalitat esdevé un índex (ex: $1.3$ a l'agost, un 30% més; $0.7$ al gener, un 30% menys). 
+* **Com funciona:** L'estacionalitat esdevé un índex (ex: $$1.3$$ a l'agost, un 30% més; $$0.7$$ al gener, un 30% menys). 
 * **Per què és superior?** Captura les sinergies de manera natural. Si la teva distribució augmenta, l'índex del 30% extra de l'estiu s'aplicarà sobre aquesta nova base de vendes més gran, escalant el pic correctament. Una pujada de preu contraurà les vendes proporcionalment a la mida del mercat actual, no com una pèrdua lineal de paquets fixos.
 
 En resum, els models aditius, son més facils d'explicar, interpretar i implementar a l'hora d'asignar pesos a cada variable de la Baseline. Els models Multiplicatius son mes treballats i a la vegada mes correctes a l'hora d'entendre la lógica de com funciona la realitat. Si només ens importa el resultat final i un cop calculat el model només volem explicar el passat i no volem simular el futur, no sol haver-hi gaire diferencies entre les 2 metodologies. 
@@ -43,7 +43,7 @@ Un anunci vist avui pot generar una venda demà o la setmana vinent. Aquesta mem
 
 
 ### Decay
-Assumeix que l'impacte màxim de la publicitat es produeix **immediatament** (en el mateix moment de l'exposició) i decreix de manera exponencial al llarg del temps segons un factor de caiguda $\alpha$ (entre 0 i 1).
+Assumeix que l'impacte màxim de la publicitat es produeix **immediatament** (en el mateix moment de l'exposició) i decreix de manera exponencial al llarg del temps segons un factor de caiguda $$\alpha$$ (entre 0 i 1).
 
 $$Adstock_t = \alpha \cdot X_t + (1 - \alpha) \cdot Adstock_{t-1}$$
 

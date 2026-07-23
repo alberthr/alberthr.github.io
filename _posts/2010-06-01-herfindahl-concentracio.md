@@ -18,8 +18,8 @@ L’índex d’Herfindahl es calcula sumant els quadrats de la quota de mercat d
 $$H = \sum_{i=1}^{N} s_i^2$$
 
 on:
-- $s_i$ és la quota de mercat (en percentatge o en proporció) de l’empresa $i$.
-- $N$ és el nombre d’empreses en el mercat.
+- $$s_i$$ és la quota de mercat (en percentatge o en proporció) de l’empresa $$i$$.
+- $$N$$ és el nombre d’empreses en el mercat.
 
 Per a major precisió, sovint es treballa amb quotes en forma decimal (per exemple, 0,25 en lloc de 25%).
 

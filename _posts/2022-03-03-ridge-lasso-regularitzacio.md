@@ -24,7 +24,7 @@ Amb multicol·linealitat o un nombre elevat de variables, aquesta minimització 
 
 ## Ridge Regression (Regularització L2)
 
-Ridge afegeix a la funció objectiu la suma dels **quadrats** dels coeficients, multiplicada per un paràmetre $\lambda$ (o $\alpha$, segons la notació):
+Ridge afegeix a la funció objectiu la suma dels **quadrats** dels coeficients, multiplicada per un paràmetre $$\lambda$$ (o $$\alpha$$, segons la notació):
 
 $$\min_{\beta} \sum_{i=1}^{n} (y_i - X_i\beta)^2 + \lambda \sum_{j=1}^{p} \beta_j^2$$
 
@@ -50,21 +50,21 @@ La diferència es pot visualitzar geomètricament: la regió de valors permesos 
 
 ## Elastic Net: el millor (o el compromís) de tots dos mons
 
-**Elastic Net** combina totes dues penalitzacions amb un paràmetre addicional $\alpha \in [0,1]$ que reparteix el pes entre L1 i L2:
+**Elastic Net** combina totes dues penalitzacions amb un paràmetre addicional $$\alpha \in [0,1]$$ que reparteix el pes entre L1 i L2:
 
 $$\min_{\beta} \sum_{i=1}^{n} (y_i - X_i\beta)^2 + \lambda \left[ \alpha \sum_{j=1}^{p} |\beta_j| + (1-\alpha) \sum_{j=1}^{p} \beta_j^2 \right]$$
 
 - **Quan fer-lo servir:** quan hi ha grups de variables correlacionades (on Ridge és més estable) però també es vol l'efecte de selecció de variables de Lasso. És sovint una opció segura per defecte quan no es té clar quin dels dos mètodes convé més.
 
 
-## Com triar el valor de $\lambda$ (o $\alpha$)
+## Com triar el valor de $$\lambda$$ (o $$\alpha$$)
 
-El paràmetre de penalització no s'estima amb les mateixes dades d'entrenament del model: es tria mitjançant **validació creuada**, provant un rang de valors de $\lambda$ i quedant-se amb el que minimitza l'error en dades de validació (no vistes durant l'ajust dels coeficients per a cada $\lambda$ provat).
+El paràmetre de penalització no s'estima amb les mateixes dades d'entrenament del model: es tria mitjançant **validació creuada**, provant un rang de valors de $$\lambda$$ i quedant-se amb el que minimitza l'error en dades de validació (no vistes durant l'ajust dels coeficients per a cada $$\lambda$$ provat).
 
-- **$\lambda = 0$:** equival a la regressió OLS clàssica, sense penalització.
-- **$\lambda \to \infty$:** força tots els coeficients cap a zero (Ridge) o directament a zero (Lasso), deixant només el terme independent.
+- **$$\lambda = 0$$:** equival a la regressió OLS clàssica, sense penalització.
+- **$$\lambda \to \infty$$:** força tots els coeficients cap a zero (Ridge) o directament a zero (Lasso), deixant només el terme independent.
 
-El gràfic següent (conegut com a *"regularization path"*) il·lustra com evolucionen els coeficients d'un model amb 6 variables a mesura que augmenta $\lambda$: a Ridge (esquerra, conceptualment) tots els coeficients s'encongeixen de manera suau sense arribar mai a zero; a Lasso, els coeficients menys rellevants arriben a zero un darrere l'altre a mesura que $\lambda$ creix.
+El gràfic següent (conegut com a *"regularization path"*) il·lustra com evolucionen els coeficients d'un model amb 6 variables a mesura que augmenta $$\lambda$$: a Ridge (esquerra, conceptualment) tots els coeficients s'encongeixen de manera suau sense arribar mai a zero; a Lasso, els coeficients menys rellevants arriben a zero un darrere l'altre a mesura que $$\lambda$$ creix.
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -135,7 +135,7 @@ Aquest tipus de gràfic és, a la pràctica, una eina d'exploració útil per si
 
 ## Implementació pràctica
 
-A continuació es mostra com ajustar Ridge, Lasso i triar $\lambda$ per validació creuada, tant en Python com en R.
+A continuació es mostra com ajustar Ridge, Lasso i triar $$\lambda$$ per validació creuada, tant en Python com en R.
 
 ### Implementació en Python
 

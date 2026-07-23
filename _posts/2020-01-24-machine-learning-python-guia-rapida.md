@@ -60,7 +60,7 @@ coeficients = model_lr.coef_[0]
 
 ## KNN (K-Nearest Neighbors)
 
-Classifica (o prediu) un punt nou segons la classe majoritària (o la mitjana) dels $k$ punts més propers en l'espai de característiques. No té una fase d'"entrenament" real: es limita a emmagatzemar les dades i calcular distàncies en el moment de predir.
+Classifica (o prediu) un punt nou segons la classe majoritària (o la mitjana) dels $$k$$ punts més propers en l'espai de característiques. No té una fase d'"entrenament" real: es limita a emmagatzemar les dades i calcular distàncies en el moment de predir.
 
 * **Quan fer-lo servir:** conjunts de dades petits o mitjans, amb poques dimensions (pateix la "maledicció de la dimensionalitat" en espais d'alta dimensió), i quan la frontera de decisió no és lineal.
 * **Requisit important:** cal **escalar les variables** abans d'entrenar (`StandardScaler`), ja que KNN es basa en distàncies i variables amb escales molt diferents distorsionarien el resultat.
@@ -83,7 +83,7 @@ print("Accuracy KNN:", accuracy_score(y_test, prediccions))
 ```
 
 **Hiperparàmetres clau:**
-- `n_neighbors`: el nombre de veïns ($k$). Valors baixos → sobreajust; valors alts → model massa suau.
+- `n_neighbors`: el nombre de veïns ($$k$$). Valors baixos → sobreajust; valors alts → model massa suau.
 - `weights`: `'uniform'` (tots els veïns pesen igual) o `'distance'` (els veïns més propers pesen més).
 - `metric`: la distància utilitzada (`'minkowski'` per defecte, equivalent a euclidiana amb `p=2`).
 
@@ -250,7 +250,7 @@ print("Millor accuracy (CV):", cerca.best_score_)
 | Mètode | Interpretabilitat | Risc de sobreajust | Necessita escalar | Punt fort |
 |---|---|---|---|---|
 | Regressió Logística | Alta | Baix | Sí | Baseline ràpid i explicable |
-| KNN | Baixa | Alt (amb $k$ petit) | Sí | Senzill, sense fase d'entrenament |
+| KNN | Baixa | Alt (amb $$k$$ petit) | Sí | Senzill, sense fase d'entrenament |
 | Arbre de Decisió | Alta | Alt | No | Fàcil d'explicar i visualitzar |
 | Random Forest | Mitjana | Baix | No | Robust "de sèrie", poc ajust necessari |
 | Gradient Boosting | Baixa | Mitjà-alt si mal ajustat | No | Millor rendiment predictiu potencial |

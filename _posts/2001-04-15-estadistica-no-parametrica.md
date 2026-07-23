@@ -15,7 +15,7 @@ L'**estadística no paramètrica** agrupa el conjunt de mètodes que no depenen 
 
 Abans d'entrar en cada mètode, val la pena fixar el criteri de quan preferir-los davant d'un test clàssic:
 
-- **Mostra petita** (habitualment $n < 30$), on no es pot invocar el Teorema del Límit Central per assumir normalitat.
+- **Mostra petita** (habitualment $$n < 30$$), on no es pot invocar el Teorema del Límit Central per assumir normalitat.
 - **Distribució clarament esbiaixada** o amb outliers importants (temps de resposta, ingressos, temps d'espera...).
 - **Dades ordinals** (valoracions d'1 a 5, rànquings) en lloc de numèriques contínues, on la mitjana no té sentit ple.
 - **Variància molt diferent entre grups** (heterocedasticitat), que trenca un supòsit clau de l'ANOVA o el test t.
@@ -47,7 +47,7 @@ Un p-valor per sota de 0,05 indica que el canvi de disseny sí que ha reduït el
 1. **Es barregen totes les dades i s'ordenen** de més petita a més gran: 35, 38, 38, 41, 44, 45, 52, 61.
 2. **S'assigna un rang a cada valor** (la seva posició un cop ordenat; si hi ha empat, es reparteix la posició mitjana entre els empatats): 35→1, 38→2,5 (empat, es reparteix entre les posicions 2 i 3), 38→2,5, 41→4, 44→5, 45→6, 52→7, 61→8.
 3. **Se sumen els rangs de cada grup per separat.** Grup nou (35, 38, 41, 44) → 1+2,5+4+5 = 12,5. Grup antic (38, 45, 52, 61) → 2,5+6+7+8 = 23,5.
-4. **Es calcula l'estadístic U** amb $U = R_1 - \frac{n_1(n_1+1)}{2}$, on $R_1$ és la suma de rangs d'un grup i $n_1$ la seva mida: $U_{nou} = 12,5 - \frac{4 \times 5}{2} = 2,5$.
+4. **Es calcula l'estadístic U** amb $$U = R_1 - \frac{n_1(n_1+1)}{2}$$, on $$R_1$$ és la suma de rangs d'un grup i $$n_1$$ la seva mida: $$U_{nou} = 12,5 - \frac{4 \times 5}{2} = 2,5$$.
 5. **Es compara aquest valor de U** amb una taula de valors crítics (o, com fa `wilcox.test()`, es calcula directament el p-valor associat): un U molt baix indica que un grup té sistemàticament rangs més baixos que l'altre.
 
 ### Wilcoxon (el mateix grup, abans i després)
@@ -66,8 +66,8 @@ Un p-valor per sota de 0,05 indica que la millora general de vendes després de 
 
 1. **Es calcula la diferència** de cada parella (Després − Abans): +2, +2, +1, +1, +2.
 2. **S'ordenen els valors absoluts de les diferències** de més petit a més gran i se'ls assigna un rang: |1|→1, |1|→2 (empat, es reparteix: 1,5 i 1,5), |2|→3, |2|→4, |2|→5 (empat triple, es reparteix la posició mitjana 4 entre els tres).
-3. **Se separen els rangs segons el signe de la diferència original**, i se sumen per separat: com que totes les diferències són positives en aquest exemple, tots els rangs van al costat positiu ($W^+ = $ suma total) i $W^- = 0$.
-4. **L'estadístic W és el mínim entre $W^+$ i $W^-$**: en aquest cas, $W = 0$.
+3. **Se separen els rangs segons el signe de la diferència original**, i se sumen per separat: com que totes les diferències són positives en aquest exemple, tots els rangs van al costat positiu ($$W^+ = $$ suma total) i $$W^- = 0$$.
+4. **L'estadístic W és el mínim entre $$W^+$$ i $$W^-$$**: en aquest cas, $$W = 0$$.
 5. Un W molt baix (allunyat del que s'esperaria si les diferències fossin a l'atzar positives i negatives per igual) indica una millora sistemàtica, no atzar.
 
 
@@ -77,7 +77,7 @@ Ja tractat en detall (fórmula, gràfic i codi complet en R i Python) en un [alt
 
 **Exemple real:** una empresa de telecomunicacions vol saber si el temps de trucada dels clients del pla nou segueix el mateix patró general que el del pla antic (no només si la mitjana és diferent, sinó si tota la forma de la distribució ha canviat: potser ara hi ha més trucades molt curtes i també més de molt llargues).
 
-**Càlcul manual (idea general):** s'ordenen totes les dades de cada mostra i es calcula, per a cada valor possible, quin percentatge de cada mostra queda per sota d'aquest valor (la funció de distribució acumulada empírica). Es resta aquest percentatge entre les dues mostres a cada punt, i l'estadístic $D$ és la diferència més gran trobada en tot el recorregut. El post enllaçat mostra aquest procés pas a pas amb un gràfic.
+**Càlcul manual (idea general):** s'ordenen totes les dades de cada mostra i es calcula, per a cada valor possible, quin percentatge de cada mostra queda per sota d'aquest valor (la funció de distribució acumulada empírica). Es resta aquest percentatge entre les dues mostres a cada punt, i l'estadístic $$D$$ és la diferència més gran trobada en tot el recorregut. El post enllaçat mostra aquest procés pas a pas amb un gràfic.
 
 
 ## Comparar més de dos grups
@@ -100,7 +100,7 @@ kruskal.test(despesa ~ botiga)
 
 $$H = \frac{12}{N(N+1)} \sum_{i} \frac{R_i^2}{n_i} - 3(N+1)$$
 
-on $N$ és el nombre total d'observacions (9) i $R_i$, $n_i$ la suma de rangs i la mida de cada grup:
+on $$N$$ és el nombre total d'observacions (9) i $$R_i$$, $$n_i$$ la suma de rangs i la mida de cada grup:
 
 $$H = \frac{12}{9 \times 10}\left(\frac{6^2}{3} + \frac{15^2}{3} + \frac{24^2}{3}\right) - 3 \times 10 = \frac{12}{90}(12 + 75 + 192) - 30 = 37,2 - 30 = 7,2$$
 
@@ -140,13 +140,13 @@ cor.test(antiguitat, satisfaccio, method = "spearman")
 **Càlcul manual:**
 
 1. **Es converteix cada variable en rangs per separat.** Antiguitat ja està ordenada (rangs 1 a 8). Satisfacció (3,4,4,6,5,7,8,9) → rangs 1, 2,5, 2,5, 5, 4, 6, 7, 8 (el 4 apareix dues vegades i es reparteix la posició mitjana 2,5).
-2. **Es calcula la diferència de rangs ($d$) per a cada parella** i s'eleva al quadrat: per exemple, a la quarta observació, antiguitat té rang 4 i satisfacció rang 5, així que $d = -1$, $d^2 = 1$.
-3. **Se sumen tots els $d^2$.**
+2. **Es calcula la diferència de rangs ($$d$$) per a cada parella** i s'eleva al quadrat: per exemple, a la quarta observació, antiguitat té rang 4 i satisfacció rang 5, així que $$d = -1$$, $$d^2 = 1$$.
+3. **Se sumen tots els $$d^2$$.**
 4. **S'aplica la fórmula:**
 
 $$\rho = 1 - \frac{6\sum d_i^2}{n(n^2-1)}$$
 
-Amb $n=8$ observacions i la suma de $d^2$ calculada al pas anterior, $\rho$ dona un valor proper a 0,9, indicant una relació monòtona forta i positiva entre antiguitat i satisfacció.
+Amb $$n=8$$ observacions i la suma de $$d^2$$ calculada al pas anterior, $$\rho$$ dona un valor proper a 0,9, indicant una relació monòtona forta i positiva entre antiguitat i satisfacció.
 
 Existeix una alternativa a Spearman, la **correlació de Kendall**, que sol preferir-se amb mostres molt petites o quan hi ha molts valors repetits; en la pràctica, gairebé sempre és intercanviable amb Spearman (`cor.test(x, y, method = "kendall")`).
 
@@ -162,13 +162,13 @@ chisq.test(taula)
 
 **Càlcul manual** (amb la mateixa taula 2x2: 30 homes prefereixen A, 20 homes prefereixen B, 15 dones prefereixen A, 35 dones prefereixen B):
 
-1. **Es calcula la freqüència esperada de cada cel·la** si no hi hagués cap relació entre gènere i preferència: $E = \frac{\text{total fila} \times \text{total columna}}{\text{total general}}$. Per a "Home-A": $\frac{50 \times 45}{100} = 22,5$.
+1. **Es calcula la freqüència esperada de cada cel·la** si no hi hagués cap relació entre gènere i preferència: $$E = \frac{\text{total fila} \times \text{total columna}}{\text{total general}}$$. Per a "Home-A": $$\frac{50 \times 45}{100} = 22,5$$.
 2. **Es repeteix per a les 4 cel·les:** Home-B → 27,5; Dona-A → 22,5; Dona-B → 27,5.
 3. **Es compara cada freqüència observada amb l'esperada** amb la fórmula:
 
 $$\chi^2 = \sum \frac{(O-E)^2}{E}$$
 
-Per a Home-A: $\frac{(30-22,5)^2}{22,5} = 2,5$. Sumant les 4 cel·les s'obté un $\chi^2$ total al voltant de 9,9.
+Per a Home-A: $$\frac{(30-22,5)^2}{22,5} = 2,5$$. Sumant les 4 cel·les s'obté un $$\chi^2$$ total al voltant de 9,9.
 
 4. **Es compara aquest valor amb una distribució Chi-quadrat** amb 1 grau de llibertat (files−1 × columnes−1): un valor tan alt com 9,9 supera clarament el llindar de significació, indicant que la preferència **sí** depèn del gènere en aquest exemple.
 

@@ -57,7 +57,7 @@ $$F_1 = 2 \cdot \frac{\text{Precision} \cdot \text{Recall}}{\text{Precision} + \
 
 La mitjana harmònica de Precision i Recall (penalitza més que la mitjana aritmètica quan un dels dos valors és baix).
 
-- **Quan fer-la servir:** quan cal un únic número que resumeixi l'equilibri entre tots dos, especialment amb classes desbalancejades. Existeix també l'**F-beta**, una versió generalitzada que permet pesar més el Recall ($\beta > 1$) o la Precision ($\beta < 1$) segons convingui.
+- **Quan fer-la servir:** quan cal un únic número que resumeixi l'equilibri entre tots dos, especialment amb classes desbalancejades. Existeix també l'**F-beta**, una versió generalitzada que permet pesar més el Recall ($$\beta > 1$$) o la Precision ($$\beta < 1$$) segons convingui.
 
 ### Specificity (Especificitat)
 
@@ -68,7 +68,7 @@ L'equivalent del Recall però per a la classe negativa: de tots els casos realme
 
 ## La corba ROC i l'AUC
 
-Totes les mètriques anteriors depenen d'un **llindar de decisió** (normalment 0,5): per sobre, es classifica com a positiu; per sota, com a negatiu. La corba **ROC** (*Receiver Operating Characteristic*) mostra com canvien el Recall (eix Y, també anomenat *True Positive Rate*) i la taxa de falsos positius (eix X, *False Positive Rate* $= FP / (FP+VN)$) a mesura que aquest llindar es mou de 0 a 1.
+Totes les mètriques anteriors depenen d'un **llindar de decisió** (normalment 0,5): per sobre, es classifica com a positiu; per sota, com a negatiu. La corba **ROC** (*Receiver Operating Characteristic*) mostra com canvien el Recall (eix Y, també anomenat *True Positive Rate*) i la taxa de falsos positius (eix X, *False Positive Rate* $$= FP / (FP+VN)$$) a mesura que aquest llindar es mou de 0 a 1.
 
 $$AUC = \int_0^1 \text{TPR}(\text{FPR}) \, d(\text{FPR})$$
 
@@ -155,7 +155,7 @@ Amb classes molt **desbalancejades**, la corba ROC pot semblar bona fins i tot a
 
 $$\text{Log Loss} = -\frac{1}{n}\sum_{i=1}^{n} \left[ y_i \log(p_i) + (1-y_i)\log(1-p_i) \right]$$
 
-On $y_i$ és l'etiqueta real (0 o 1) i $p_i$ la probabilitat predita per al cas $i$.
+On $$y_i$$ és l'etiqueta real (0 o 1) i $$p_i$$ la probabilitat predita per al cas $$i$$.
 
 A diferència de les mètriques anteriors, que només miren l'etiqueta final (positiu/negatiu), el Log Loss avalua directament les **probabilitats predites**: penalitza molt fort les prediccions segures però equivocades (per exemple, predir 0,99 de probabilitat quan la resposta real és negativa).
 
@@ -197,7 +197,7 @@ $$MAPE = \frac{100\%}{n}\sum_{i=1}^{n} \left|\frac{y_i - \hat{y}_i}{y_i}\right|$
 
 Expressa l'error com a percentatge, cosa que en facilita la comparació entre variables amb escales molt diferents.
 
-- **Limitació important:** no es pot fer servir si $y_i$ pot valer 0 o valors molt propers a 0 (divisió per un nombre proper a zero dispara l'error percentual de manera artificial).
+- **Limitació important:** no es pot fer servir si $$y_i$$ pot valer 0 o valors molt propers a 0 (divisió per un nombre proper a zero dispara l'error percentual de manera artificial).
 
 ### R² (Coeficient de Determinació)
 
@@ -219,7 +219,7 @@ Quan no hi ha una etiqueta "correcta" coneguda (aprenentatge no supervisat), l'a
 
 ## Validació creuada: avaluar bé, no només amb la mètrica correcta
 
-Triar la mètrica adequada és necessari, però no suficient: cal avaluar-la sobre dades que el model no hagi vist durant l'entrenament. Un sol *train/test split* pot donar una estimació esbiaixada per atzar (bona o dolenta segons quines observacions han caigut al conjunt de test). La **validació creuada** (*k-fold cross-validation*) divideix les dades en $k$ blocs, entrena $k$ vegades (deixant cada vegada un bloc diferent fora com a test) i promeja el resultat, donant una estimació molt més robusta i, de pas, una idea de la variabilitat del rendiment del model.
+Triar la mètrica adequada és necessari, però no suficient: cal avaluar-la sobre dades que el model no hagi vist durant l'entrenament. Un sol *train/test split* pot donar una estimació esbiaixada per atzar (bona o dolenta segons quines observacions han caigut al conjunt de test). La **validació creuada** (*k-fold cross-validation*) divideix les dades en $$k$$ blocs, entrena $$k$$ vegades (deixant cada vegada un bloc diferent fora com a test) i promeja el resultat, donant una estimació molt més robusta i, de pas, una idea de la variabilitat del rendiment del model.
 
 
 ## Implementació pràctica

@@ -13,9 +13,9 @@ En l'àmbit de la ciència de dades o de l'estadística, sovint sorgeixen qüest
 
 El test de Kolmogorov-Smirnov és una prova estadística no paramètrica que s'utilitza per **comparar distribucions de variables contínues**.
 
-Es basa en la **Funció de Distribució Acumulada** (CDF, per les seves sigles en anglès). L'estadístic del test, anomenat $D$, representa la **distància màxima vertical** entre les dues funcions acumulades que es comparen.
+Es basa en la **Funció de Distribució Acumulada** (CDF, per les seves sigles en anglès). L'estadístic del test, anomenat $$D$$, representa la **distància màxima vertical** entre les dues funcions acumulades que es comparen.
 
-El gràfic següent mostra de manera visual com l'estadístic $D$ localitza el punt on les dues corbes presenten la separació més gran:
+El gràfic següent mostra de manera visual com l'estadístic $$D$$ localitza el punt on les dues corbes presenten la separació més gran:
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 

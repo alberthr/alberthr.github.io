@@ -22,7 +22,7 @@ La distància de Mahalanobis resol aquests dos problemes d'un sol cop:
 1. **Normalitza les escales:** transforma totes les variables perquè les diferències de magnitud no distorsionin el càlcul.
 2. **Té en compte la covariància (correlació):** avalua la distància d'un punt respecte al "centre de gravetat" de les dades (el vector de mitjanes), però tenint en compte la direcció en què es distribueixen els punts.
 
-Estadísticament, la distància de Mahalanobis al quadrat segueix una distribució **Chi-quadrat ($\chi^2$)**. Això permet establir un llindar matemàtic objectiu (per exemple, amb un nivell de significació del 5%) per dir: *"Qualsevol punt que superi aquesta distància té menys d'un 5% de probabilitats de pertànyer a aquest grup; per tant, és un outlier"*.
+Estadísticament, la distància de Mahalanobis al quadrat segueix una distribució **Chi-quadrat ($$\chi^2$$)**. Això permet establir un llindar matemàtic objectiu (per exemple, amb un nivell de significació del 5%) per dir: *"Qualsevol punt que superi aquesta distància té menys d'un 5% de probabilitats de pertànyer a aquest grup; per tant, és un outlier"*.
 
 
 ## Implementació pràctica

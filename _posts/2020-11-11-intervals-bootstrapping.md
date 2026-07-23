@@ -19,10 +19,10 @@ El terme prové de l'expressió anglesa *"to pull oneself up by one's bootstraps
 
 El funcionament és sorprenentment senzill i es resumeix en quatre passos:
 
-1. **Prendre la mostra original** de mida $n$.
-2. **Generar una nova submostra (pseudo-mostra)** de la mateixa mida $n$, agafant elements de la mostra original a l'atzar **amb reposició** (un mateix element es pot repetir diverses vegades en la nova submostra).
+1. **Prendre la mostra original** de mida $$n$$.
+2. **Generar una nova submostra (pseudo-mostra)** de la mateixa mida $$n$$, agafant elements de la mostra original a l'atzar **amb reposició** (un mateix element es pot repetir diverses vegades en la nova submostra).
 3. **Calcular l'estadístic** d'interès (la mitjana, la mediana, la variància, un coeficient de regressió, etc.) sobre aquesta submostra.
-4. **Repetir aquest procés milers de vegades** (per exemple, $B = 10.000$).
+4. **Repetir aquest procés milers de vegades** (per exemple, $$B = 10.000$$).
 
 Al final del procés, s'obtenen 10.000 estimacions de l'estadístic. La distribució d'aquestes 10.000 estimacions (anomenada distribució *bootstrap*) simula la distribució mostral real. Per trobar l'interval de confiança al 95%, només cal buscar els percentils 2,5 i 97,5 d'aquesta col·lecció de resultats.
 
@@ -37,7 +37,7 @@ El *bootstrapping* és especialment útil en situacions com:
 
 ## Implementació pràctica: Interval de Confiança per a la Mediana
 
-Es considera una mostra petita ($n=30$) del temps que triguen els usuaris a registrar-se a una aplicació. Les dades estan molt esbiaixades (molts usuaris triguen poc, uns pocs triguen molt), i l'objectiu és calcular l'IC al 95% per a la **mediana**.
+Es considera una mostra petita ($$n=30$$) del temps que triguen els usuaris a registrar-se a una aplicació. Les dades estan molt esbiaixades (molts usuaris triguen poc, uns pocs triguen molt), i l'objectiu és calcular l'IC al 95% per a la **mediana**.
 
 A continuació es mostra com resoldre-ho tant en Python com en R.
 

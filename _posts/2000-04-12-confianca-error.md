@@ -20,7 +20,7 @@ Per il·lustrar la diferència, es pot considerar un cas pràctic: una enquesta 
 El **marge d'error** determina l'extensió de l'interval al voltant de l'estimador puntual (la mitjana de la mostra). Representa la quantitat màxima que es preveu que el resultat de la mostra difereixi del valor real de la població.
 
 * En el cas esmentat, un marge d'error de 3 punts defineix un radi de seguretat.
-* L'interval de confiança resultant s'estableix formalment entre $75 - 3$ i $75 + 3$, és a dir, l'interval **[72, 78]**.
+* L'interval de confiança resultant s'estableix formalment entre $$75 - 3$$ i $$75 + 3$$, és a dir, l'interval **[72, 78]**.
 
 El marge d'error és, per tant, una mesura de la **precisió** de l'estimació. Com més estret és aquest marge, més precisa és la forquilla de valors calculada.
 
@@ -38,21 +38,21 @@ El nivell de confiança mesura la **seguretat estadística de l'algoritme o mèt
 
 ## Relació matemàtica i dependència
 
-La connexió entre ambdós elements es regeix per fórmules estadístiques determinades. Per a l'estimació d'una mitjana poblacional en una distribució normal, la fórmula del marge d'error ($ME$) s'expressa com:
+La connexió entre ambdós elements es regeix per fórmules estadístiques determinades. Per a l'estimació d'una mitjana poblacional en una distribució normal, la fórmula del marge d'error ($$ME$$) s'expressa com:
 
 $$ME = z \cdot \frac{\sigma}{\sqrt{n}}$$
 
 On:
-* $z$ és el valor crític de la distribució normal estàndard, directament determinat pel **nivell de confiança** (per a un 95% de confiança, $z \approx 1,96$; per a un 99%, $z \approx 2,58$).
-* $\sigma$ és la desviació estàndard de la població (variabilitat intrínseca de les dades).
-* $n$ es correspon amb la mida de la mostra.
+* $$z$$ és el valor crític de la distribució normal estàndard, directament determinat pel **nivell de confiança** (per a un 95% de confiança, $$z \approx 1,96$$; per a un 99%, $$z \approx 2,58$$).
+* $$\sigma$$ és la desviació estàndard de la població (variabilitat intrínseca de les dades).
+* $$n$$ es correspon amb la mida de la mostra.
 
 ### L'equilibri en el disseny experimental
 
 L'equació demostra que hi ha una dependència mútua entre les variables que obliga a fer concessions de disseny:
 
-1. **L'augment de la confiança penalitza la precisió:** Si es desitja augmentar el nivell de confiança (del 95% al 99%) sense modificar la mostra, el valor crític $z$ s'eleva. Com que actua com a multiplicador, el marge d'error ($ME$) s'amplia de manera automatitzada. Un interval més segur requereix ser més ample, perdent precisió.
-2. **L'optimització del marge d'error requereix més dades:** L'única variable matemàtica que permet reduir el marge d'error (estrènyer l'interval) mantenint el mateix nivell de confiança és la mida de la mostra ($n$). Atès que es troba al denominador com a arrel quadrada ($\sqrt{n}$), per reduir el marge d'error a la meitat és necessari quadruplicar el volum de la mostra.
+1. **L'augment de la confiança penalitza la precisió:** Si es desitja augmentar el nivell de confiança (del 95% al 99%) sense modificar la mostra, el valor crític $$z$$ s'eleva. Com que actua com a multiplicador, el marge d'error ($$ME$$) s'amplia de manera automatitzada. Un interval més segur requereix ser més ample, perdent precisió.
+2. **L'optimització del marge d'error requereix més dades:** L'única variable matemàtica que permet reduir el marge d'error (estrènyer l'interval) mantenint el mateix nivell de confiança és la mida de la mostra ($$n$$). Atès que es troba al denominador com a arrel quadrada ($$\sqrt{n}$$), per reduir el marge d'error a la meitat és necessari quadruplicar el volum de la mostra.
 
 
 ## Resum de diferències
@@ -60,10 +60,10 @@ L'equació demostra que hi ha una dependència mútua entre les variables que ob
 | Mètrica | Marge d'Error | Nivell de Confiança |
 | :--- | :--- | :--- |
 | **Dimensió analitzada** | Mesura la **precisió** (mida de l'interval). | Mesura la **fiabilitat** (percentatge d'èxit del mètode). |
-| **Expressió formal** | Unitats de la variable o percentatges ($\pm 3\%$). | Percentatge de probabilitat teòrica ($95\%$, $99\%$). |
+| **Expressió formal** | Unitats de la variable o percentatges ($$\pm 3\%$$). | Percentatge de probabilitat teòrica ($$95\%$$, $$99\%$$). |
 | **Objectiu en l'experiment** | Minimitzar-lo tant com sigui possible. | Maximitzar-lo tant com sigui possible. |
-| **Efecte de modificació** | Reduir-lo sense variar la $n$ rebaixa la confiança. | Augmentar-lo amplia l'interval (marge d'error). |
+| **Efecte de modificació** | Reduir-lo sense variar la $$n$$ rebaixa la confiança. | Augmentar-lo amplia l'interval (marge d'error). |
 
 ## Conclusió
 
-El disseny de qualsevol prova o anàlisi estadística implica un intercanvi rigorós entre el nivell de confiança acceptat i el marge d'error tolerable. No és possible establir valors arbitraris de màxima precisió i màxima fiabilitat de manera gratuïta; la viabilitat del càlcul dependrà directament del volum de dades capturat en la mostra ($n$).
+El disseny de qualsevol prova o anàlisi estadística implica un intercanvi rigorós entre el nivell de confiança acceptat i el marge d'error tolerable. No és possible establir valors arbitraris de màxima precisió i màxima fiabilitat de manera gratuïta; la viabilitat del càlcul dependrà directament del volum de dades capturat en la mostra ($$n$$).

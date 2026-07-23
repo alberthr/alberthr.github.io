@@ -25,19 +25,19 @@ Aquest mètode és una autèntica navalla suïssa en la ciència de dades i s'ut
 * **Inferència estadística per remostreig:** el [Bootstrapping]({% post_url 2020-11-11-intervals-bootstrapping %}) n'és un cas particular, on en lloc de simular des d'un model teòric conegut, se simula remostrejant amb reposició les pròpies dades observades per aproximar la distribució d'un estadístic.
 
 
-## Implementació pràctica: Estimació de $\pi$
+## Implementació pràctica: Estimació de $$\pi$$
 
-La millor manera d'entendre el Mètode de Montecarlo és amb un exemple visual clàssic: **estimar el valor del número $\pi$** fent servir només llançaments de dards aleatoris.
+La millor manera d'entendre el Mètode de Montecarlo és amb un exemple visual clàssic: **estimar el valor del número $$\pi$$** fent servir només llançaments de dards aleatoris.
 
-Es considera un quadrat de costat $2r$ que conté un cercle inscrit de radi $r$. Si es llancen "dards" de manera completament aleatòria dins del quadrat, la probabilitat que caiguin dins del cercle depèn de la relació entre les seves àrees:
+Es considera un quadrat de costat $$2r$$ que conté un cercle inscrit de radi $$r$$. Si es llancen "dards" de manera completament aleatòria dins del quadrat, la probabilitat que caiguin dins del cercle depèn de la relació entre les seves àrees:
 
 $$\frac{\text{Àrea del cercle}}{\text{Àrea del quadrat}} = \frac{\pi r^2}{(2r)^2} = \frac{\pi}{4}$$
 
-Per tant, simulant milers de punts aleatoris, es pot estimar $\pi$ com:
+Per tant, simulant milers de punts aleatoris, es pot estimar $$\pi$$ com:
 
 $$\pi \approx 4 \times \frac{\text{Punts dins del cercle}}{\text{Punts totals}}$$
 
-A continuació es genera un milió de punts aleatoris dins d'un quadrat de costat 2, es compten els que cauen dins del cercle inscrit i s'aplica la fórmula anterior per estimar $\pi$, tant en Python com en R.
+A continuació es genera un milió de punts aleatoris dins d'un quadrat de costat 2, es compten els que cauen dins del cercle inscrit i s'aplica la fórmula anterior per estimar $$\pi$$, tant en Python com en R.
 
 ### Implementació en Python
 
@@ -94,4 +94,4 @@ cat(sprintf("Estimació de Pi amb %d simulacions: %f\n", n, resultat))
 
 ## Conclusió
 
-L'exemple de $\pi$ és senzill a propòsit, però il·lustra la idea central del Mètode de Montecarlo: quan un problema no té una solució analítica directa, o aquesta és massa complexa d'obtenir, simular-lo un nombre suficient de vegades i observar com convergeix el resultat pot ser una alternativa igual de vàlida, i sovint més senzilla d'implementar, que resoldre'l amb fórmules tancades.
+L'exemple de $$\pi$$ és senzill a propòsit, però il·lustra la idea central del Mètode de Montecarlo: quan un problema no té una solució analítica directa, o aquesta és massa complexa d'obtenir, simular-lo un nombre suficient de vegades i observar com convergeix el resultat pot ser una alternativa igual de vàlida, i sovint més senzilla d'implementar, que resoldre'l amb fórmules tancades.

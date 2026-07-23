@@ -19,10 +19,10 @@ A diferència d'una regressió clàssica que intenta ajustar una única fórmula
 
 ## Com funciona "per dins"?
 
-L'algoritme dibuixa la línia de tendència d'esquerra a dreta. Per determinar l'alçada de la corba en un punt específic del gràfic (anomenat punt $X$), LOESS segueix aquests quatre passos:
+L'algoritme dibuixa la línia de tendència d'esquerra a dreta. Per determinar l'alçada de la corba en un punt específic del gràfic (anomenat punt $$X$$), LOESS segueix aquests quatre passos:
 
-1. **Defineix el "veïnat" (controlat pel paràmetre `span`):** l'algoritme mira als costats del punt $X$ i selecciona un percentatge de les dades més properes. Amb un `span = 0.2`, LOESS agafa només el 20% de les dades totals (les més properes). Amb `span = 0.8`, fa servir el 80% de totes les dades del gràfic.
-2. **Aplica un sistema de pes (Ponderació):** no tots els punts del veïnat importen igual. LOESS aplica una funció matemàtica (normalment la funció *tricúbica*) per donar **més pes als punts que estan tocant a $X$** i menys pes als que estan allunyats, als límits del veïnat.
+1. **Defineix el "veïnat" (controlat pel paràmetre `span`):** l'algoritme mira als costats del punt $$X$$ i selecciona un percentatge de les dades més properes. Amb un `span = 0.2`, LOESS agafa només el 20% de les dades totals (les més properes). Amb `span = 0.8`, fa servir el 80% de totes les dades del gràfic.
+2. **Aplica un sistema de pes (Ponderació):** no tots els punts del veïnat importen igual. LOESS aplica una funció matemàtica (normalment la funció *tricúbica*) per donar **més pes als punts que estan tocant a $$X$$** i menys pes als que estan allunyats, als límits del veïnat.
 3. **Calcula una regressió local:** amb aquest petit grup de dades ponderades, calcula una regressió lineal o quadràtica. Com que els punts propers tenen més pes, la línia es veu fortament atreta cap a ells.
 4. **Connecta els punts:** l'algoritme repeteix aquest procés per a cada posició al llarg de tot l'eix. Finalment, uneix tots els petits resultats locals per formar una corba suau i contínua.
 

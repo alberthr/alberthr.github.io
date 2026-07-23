@@ -17,34 +17,34 @@ Originalment formulada per descriure fenòmens bioquímics, l'Equació de Hill s
 $$y = E_{max} \cdot \frac{x^n}{EC_{50}^n + x^n}$$
 
 ### Propietats dels paràmetres:
-* **$E_{max}$ (Sostre Màxim):** Representa l'asímptota horitzontal de la funció, és a dir, el límit teòric de resposta davant d'una inversió infinita.
-* **$EC_{50}$ (Punt Mitjà de Transició):** Indica la quantitat de GRPs o inversió necessària per assolir exactament el $50\%$ del sostre màxim ($E_{max}/2$). Defineix la inèrcia inicial del canal.
-* **$n$ (Exponent de Hill):** Regula la curvatura. Quan $n > 1$, la funció descriu una forma sigmoide (en "S") molt estricta, ideal per a fenòmens on es requereix acumulació d'impactes abans d'observar una reacció significativa.
+* **$$E_{max}$$ (Sostre Màxim):** Representa l'asímptota horitzontal de la funció, és a dir, el límit teòric de resposta davant d'una inversió infinita.
+* **$$EC_{50}$$ (Punt Mitjà de Transició):** Indica la quantitat de GRPs o inversió necessària per assolir exactament el $$50\%$$ del sostre màxim ($$E_{max}/2$$). Defineix la inèrcia inicial del canal.
+* **$$n$$ (Exponent de Hill):** Regula la curvatura. Quan $$n > 1$$, la funció descriu una forma sigmoide (en "S") molt estricta, ideal per a fenòmens on es requereix acumulació d'impactes abans d'observar una reacció significativa.
 
 
 ## Logística de Nelder Modificada
 
-La variant coneguda habitualment en entorns corporatius com a "Logística Modificada" és una adaptació del **Model Logístic de Nelder** de tres paràmetres, alterada algebraicament perquè la intercepció es produeixi estrictament en l'origen $(0,0)$. En una corba logística estàndard, un pressupost de zero genera un resultat positiu ($y > 0$); aquesta modificació aplica una penalització exponencial al numerador per resoldre aquesta incoherència conceptual.
+La variant coneguda habitualment en entorns corporatius com a "Logística Modificada" és una adaptació del **Model Logístic de Nelder** de tres paràmetres, alterada algebraicament perquè la intercepció es produeixi estrictament en l'origen $$(0,0)$$. En una corba logística estàndard, un pressupost de zero genera un resultat positiu ($$y > 0$$); aquesta modificació aplica una penalització exponencial al numerador per resoldre aquesta incoherència conceptual.
 
 $$y = K \cdot \frac{1 - e^{-\frac{x}{\beta}}}{1 + \theta \cdot e^{-\frac{x}{\beta}}}$$
 
 ### Propietats dels paràmetres:
-* **$K$ (Sostre de Capacitat):** L'asímptota de saturació del mercat o del canal (equivalent a l'$E_{max}$ de Hill). Representa el percentatge màxim de cobertura neta assolible per aquell mitjà.
-* **$\beta$ (Constant de Velocitat en GRPs):** Actua com el denominador dins l'exponent. Defineix el volum nominal de GRPs requerit pel canal per desplegar la seva acceleració cap al sostre de saturació. A major valor de $\beta$, més lenta és la corba.
-* **$\theta$ (Factor d'Asimetria de Nelder):** Controla la natura del tram inicial. Si $\theta > 0$, es genera una lleugera forma en "S" progressiva. Si $\theta = 0$, la funció col·lapsa exactament en un model clàssic de rendiments decreixents exponencials pur ($y = K(1-e^{-x/\beta})$), eliminant qualsevol inèrcia inicial.
+* **$$K$$ (Sostre de Capacitat):** L'asímptota de saturació del mercat o del canal (equivalent a l'$$E_{max}$$ de Hill). Representa el percentatge màxim de cobertura neta assolible per aquell mitjà.
+* **$$\beta$$ (Constant de Velocitat en GRPs):** Actua com el denominador dins l'exponent. Defineix el volum nominal de GRPs requerit pel canal per desplegar la seva acceleració cap al sostre de saturació. A major valor de $$\beta$$, més lenta és la corba.
+* **$$\theta$$ (Factor d'Asimetria de Nelder):** Controla la natura del tram inicial. Si $$\theta > 0$$, es genera una lleugera forma en "S" progressiva. Si $$\theta = 0$$, la funció col·lapsa exactament en un model clàssic de rendiments decreixents exponencials pur ($$y = K(1-e^{-x/\beta})$$), eliminant qualsevol inèrcia inicial.
 
 
 ## El model exponencial simple
 
-Quan no cal capturar cap efecte de llindar ni cap asimetria en l'arrencada, la tercera opció habitual és el **model exponencial simple** (o exponencial negativa), la corba de rendiments decreixents purs que ja apareix com a cas particular de Nelder quan $\theta = 0$:
+Quan no cal capturar cap efecte de llindar ni cap asimetria en l'arrencada, la tercera opció habitual és el **model exponencial simple** (o exponencial negativa), la corba de rendiments decreixents purs que ja apareix com a cas particular de Nelder quan $$\theta = 0$$:
 
 $$y = a \cdot \left(1 - e^{-b \cdot x}\right)$$
 
 ### Propietats dels paràmetres:
-* **$a$ (Asímptota):** El valor màxim al qual tendeix $y$ quan la inversió creix indefinidament, equivalent a l'$E_{max}$ de Hill i a la $K$ de Nelder.
-* **$b$ (Velocitat d'aproximació):** Controla la rapidesa amb què la corba s'acosta a l'asímptota. Com més gran és $b$, més ràpid es satura el canal.
+* **$$a$$ (Asímptota):** El valor màxim al qual tendeix $$y$$ quan la inversió creix indefinidament, equivalent a l'$$E_{max}$$ de Hill i a la $$K$$ de Nelder.
+* **$$b$$ (Velocitat d'aproximació):** Controla la rapidesa amb què la corba s'acosta a l'asímptota. Com més gran és $$b$$, més ràpid es satura el canal.
 
-La diferència clau respecte als altres dos models és que **només té 2 paràmetres**, enfront dels 3 de Hill ($E_{max}$, $EC_{50}$, $n$) i dels 3 de Nelder ($K$, $\beta$, $\theta$). No té cap paràmetre per controlar ni el punt d'inflexió (com $EC_{50}$ a Hill) ni l'asimetria del tram inicial (com $\theta$ a Nelder): la corba sempre creix més ràpid a l'origen i es va frenant de manera contínua, mai amb forma de S. És, de fet, la forma matemàtica que es dedueix directament d'un procés de Poisson en cobertura publicitària: assumint impactes distribuïts aleatòriament, la probabilitat d'haver rebut almenys un impacte després d'una pressió $x$ té exactament aquesta expressió.
+La diferència clau respecte als altres dos models és que **només té 2 paràmetres**, enfront dels 3 de Hill ($$E_{max}$$, $$EC_{50}$$, $$n$$) i dels 3 de Nelder ($$K$$, $$\beta$$, $$\theta$$). No té cap paràmetre per controlar ni el punt d'inflexió (com $$EC_{50}$$ a Hill) ni l'asimetria del tram inicial (com $$\theta$$ a Nelder): la corba sempre creix més ràpid a l'origen i es va frenant de manera contínua, mai amb forma de S. És, de fet, la forma matemàtica que es dedueix directament d'un procés de Poisson en cobertura publicitària: assumint impactes distribuïts aleatòriament, la probabilitat d'haver rebut almenys un impacte després d'una pressió $$x$$ té exactament aquesta expressió.
 
 ### Quan té sentit fer-lo servir
 
@@ -60,11 +60,11 @@ L'elecció entre els tres models s'ha de basar en la natura física del fenomen 
 
 ### Idoneïtat de Nelder Modificada per a la Cobertura (Reach)
 La **cobertura neta** es caracteritza per una eficiència màxima en el tram inicial: el primer GRP capturarà exclusivament audiència nova. A mesura que augmenta la pressió publicitària, la probabilitat de duplicar impactes s'eleva, de manera que el creixement marginal decreix de forma immediata des del primer instant.
-* **Comportament:** Ajustant el paràmetre d'asimetria $\theta$ a valors nuls ($\theta = 0$), la fórmula de Nelder col·lapsa en una corba de rendiments decreixents purs. Replica amb exactitud aquesta arrencada vertical i el seu posterior aplanament, essent un model matemàtic ideal per a la cobertura massiva.
+* **Comportament:** Ajustant el paràmetre d'asimetria $$\theta$$ a valors nuls ($$\theta = 0$$), la fórmula de Nelder col·lapsa en una corba de rendiments decreixents purs. Replica amb exactitud aquesta arrencada vertical i el seu posterior aplanament, essent un model matemàtic ideal per a la cobertura massiva.
 
 ### Idoneïtat de Hill per a les Vendes
 A diferència de la cobertura, el comportament de les **vendes** o la conversió de marca sol requerir freqüència d'impacte. Un volum baix d'inversió amb prou feines altera el comportament del consumidor; es necessita aconseguir una **massa crítica** o llindar de record perquè la intenció de compra s'activi.
-* **Comportament:** L'exponent $n$ de Hill manté la corba plana prop de l'origen durant els primers trams de despesa, accelerant-se de forma sigmoide un cop superat el llindar de reactivitat del mercat.
+* **Comportament:** L'exponent $$n$$ de Hill manté la corba plana prop de l'origen durant els primers trams de despesa, accelerant-se de forma sigmoide un cop superat el llindar de reactivitat del mercat.
 
 ### Idoneïtat del model exponencial simple per a canals secundaris o amb poques dades
 Quan el canal analitzat no té prou volum d'observacions per justificar un model de 3 paràmetres, o quan no hi ha cap hipòtesi de negoci que reclami capturar un llindar o una asimetria concreta, el model exponencial simple ofereix un ajust raonable amb menys risc de sobreajustament.
