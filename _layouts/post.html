@@ -49,6 +49,12 @@ layout: default
         {% if p.url != page.url %}
           {% assign common = p.tags | intersect: page.tags %}
           {% if common.size > 0 %}
+            {% comment %}
+              Puntuació = nombre de tags compartits, sense pesos. Un post que
+              comparteix un tag amb el post actual sempre entra a la llista de
+              candidats; el que decideix quins es mostren és només que en
+              comparteixi més o menys.
+            {% endcomment %}
             {% assign related = related | push: p %}
             {% assign related_scores = related_scores | push: common.size %}
           {% endif %}
@@ -58,15 +64,31 @@ layout: default
       {% for p in related %}
         {% assign idx = forloop.index0 %}
         {% assign score = related_scores[idx] %}
-        {% assign entry = score | append: "|" | append: idx %}
+        {% comment %}
+          Clau d'ordenació: puntuació (amb zero-padding perquè l'ordenació de
+          strings sigui correcta), data del post com a desempat determinista, i
+          l'índex al final només per poder recuperar el post.
+        {% endcomment %}
+        {% assign score_padded = score | plus: 100000 %}
+        {% assign date_key = p.date | date: "%s" %}
+        {% assign entry = score_padded | append: "-" | append: date_key | append: "-" | append: idx %}
         {% assign related_sorted = related_sorted | push: entry %}
       {% endfor %}
       {% assign related_sorted = related_sorted | sort | reverse %}
       {% assign related_final = "" | split: "" %}
-      {% for entry in related_sorted limit:3 %}
-        {% assign parts = entry | split: "|" %}
-        {% assign idx = parts[1] | plus: 0 %}
-        {% assign related_final = related_final | push: related[idx] %}
+      {% assign added = 0 %}
+      {% assign last_score = "" %}
+      {% for entry in related_sorted %}
+        {% assign parts = entry | split: "-" %}
+        {% assign this_score = parts[0] %}
+        {% if added < 3 or this_score == last_score %}
+          {% assign idx = parts[2] | plus: 0 %}
+          {% assign related_final = related_final | push: related[idx] %}
+          {% assign added = added | plus: 1 %}
+          {% assign last_score = this_score %}
+        {% else %}
+          {% break %}
+        {% endif %}
       {% endfor %}
       {% assign related = related_final %}
       {% if related.size > 0 %}
