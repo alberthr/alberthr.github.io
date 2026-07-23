@@ -3,8 +3,7 @@ layout: post
 title: "Basket Analysis amb l'Algoritme Apriori"
 tags:
   - estadistica
-  - python
-  - r
+  - algoritmes
 excerpt: "L'anàlisi de la cistella de la compra descobreix relacions ocultes en grans volums de transaccions. S'analitza com l'algoritme Apriori optimitza la cerca de regles mitjançant mètriques de suport, confiança i lift, amb codi complet en Python i R."
 ---
 
