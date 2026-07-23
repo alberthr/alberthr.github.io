@@ -3,7 +3,6 @@ layout: post
 title: "Mètodes d'Avaluació de Resultats en Machine Learning"
 tags:
   - machine-learning
-  - estadistica
   - python
 excerpt: "Guia completa de les mètriques per avaluar models de classificació, regressió i clustering: matriu de confusió, precision/recall, ROC-AUC, MAE/RMSE/R², validació creuada, amb fórmules, gràfics i codi."
 ---
