@@ -2,9 +2,7 @@
 layout: post
 title: "El Mètode de Montecarlo: Simular per Resoldre l'Irresoluble"
 tags:
-  - probabilitat
-  - python
-  - r
+  - estadistica
 excerpt: "Quan un problema és massa complex per resoldre's analíticament, simular-lo milers de vegades pot ser la solució. Una introducció al Mètode de Montecarlo i les seves aplicacions, amb l'exemple clàssic d'estimar el valor de π."
 ---
 
