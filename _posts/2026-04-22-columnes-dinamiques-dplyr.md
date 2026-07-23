@@ -8,7 +8,7 @@ excerpt: "Quan es fa servir dplyr dins de funcions pròpies, el nom de columna s
 
 Quan es fa servir `dplyr` dins de funcions pròpies, apareix sovint el mateix problema: el nom de la columna sobre la qual s'agrupa, es calcula o es resumeix no està fixat al codi, sinó que es passa com a paràmetre.
 
-`dplyr` està pensat per escriure's amb noms de columna literals (`group_by(botiga)`, `mutate(total = preu * unitats)`...). Aquesta sintaxi és molt còmoda per escriure codi a mà, però es torna un problema quan el nom de la columna arriba com a paràmetre d'una funció.
+Les funcions de `dplyr` estàn pensades per treballar amb noms de columna literals (`group_by(botiga)`, `mutate(total = preu * unitats)`...). Aquesta sintaxi és molt còmoda per escriure codi a mà, però es torna un problema quan el nom de la columna arriba com a paràmetre d'una funció.
 
 Aquest article se centra en **passar noms de columna**, i mostra, amb exemples, una manera senzilla i consistent de resoldre-ho.
 
