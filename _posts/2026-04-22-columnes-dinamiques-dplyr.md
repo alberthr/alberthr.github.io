@@ -63,7 +63,7 @@ agrupar(vendes_diaries, "dia")
 
 `.data[[columna]]` li diu a `dplyr`: "busca la columna el nom de la qual és el texte que hi ha dins de la variable `columna`". Funciona exactament igual dins de `select()`, `filter()`, `arrange()`, `mutate()` o qualsevol altre verb:
 
-Existeix una altra manera de fer el mateix: `{{ }}` (*embrace*). A diferència de `.data[[ ]]`, que rep el nom com a **texte**, `{{ }}` rep el nom **sense cometes**, escrit directament a la crida com si fos una variable normal. La principala diferencia entre metodes es que `{{ }}` permet passar no només noms de columnes si no també altres expressions a la funció (per exemple: `mean(x)` o `a + b`):
+Existeix una altra manera de fer el mateix: `{{ }}` (*embrace*). A diferència de `.data[[ ]]`, que rep el nom com a **texte**, `{{ }}` rep el nom **sense cometes**, escrit directament a la crida com si fos una variable normal. La principala diferencia entre metodes es que `{{ }}` permet passar no només noms de columnes sinó també altres expressions a la funció (per exemple: `mean(x)` o `a + b`):
 
 
 ### Crear una columna nova
