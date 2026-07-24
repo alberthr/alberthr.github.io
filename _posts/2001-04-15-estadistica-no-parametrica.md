@@ -187,10 +187,9 @@ Ja tractat en detall en un [altre post]({% post_url 2020-11-11-intervals-bootstr
 Tècnica de remostreig relacionada amb el bootstrap: en lloc de mostrejar amb reposició, es **redistribueixen aleatòriament les etiquetes de grup** entre les observacions, es recalcula l'estadístic d'interès milers de vegades, i es compara el valor observat original amb aquesta distribució simulada sota la hipòtesi nul·la.
 
 **Exemple real:** Imagina que provem un curs ràpid i volem veure si funciona.
-
-- Grupo A (Control - Sense curs): 10 alumnes: Notes finals `[5, 6, 5, 4, 6, 7, 5, 4, 6, 5]`  (Mitjana = \(5.3\))
-- Grupo B (Experimental - Amb curs): 10 alumnes. `[7, 8, 6, 7, 8, 9, 7, 6, 8, 7]`  (Mitjana = \(7.3\))
-- La diferencia real entre les mitjes dels nostres grups originals es: \(\text{Media}_{B}-\text{Media}_{A}=7.3-5.3=\mathbf{2.0}\text{\ puntos}\)
+- **Grupo A (Control - Sense curs):** 10 alumnes: Notes finals [5, 6, 5, 4, 6, 7, 5, 4, 6, 5] *(Mitjana = 5.3)*
+- **Grupo B (Experimental - Amb curs):** 10 alumnes: Notes finals [7, 8, 6, 7, 8, 9, 7, 6, 8, 7] *(Mitjana = 7.3)*
+- La diferència real entre les mitjanes dels nostres grups originals és:  \[\text{Media}_B - \text{Media}_A = 7.3 - 5.3 = \mathbf{2.0} \text{ punts}\]
 
 **Càlcul manual**
 
