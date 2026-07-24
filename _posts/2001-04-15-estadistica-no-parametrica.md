@@ -197,7 +197,7 @@ Tècnica de remostreig relacionada amb el bootstrap: en lloc de mostrejar amb re
 2. **Repartir a l’atzar:** Tornem a dividir aquests 20 números a l’atzar en dos grups falsos de 10 notes cadascun.
 3. **Calcular la diferència falsa:** Calculem la diferència de mitjanes d’aquests dos nous grups barrejats.
 4. **Repetir moltes vegades:** Fem aquest procés milers de vegades per veure quantes vegades la diferència a l’atzar és igual o superior a la nostra original de 2.0.
-5. **Resultat (Valor p):** Si de 10.000 barreges a l’atzar, només en 5 ocasions surt una diferència de 2.0 o més, el valor $$p = 7 / 10000 = 0,0005$$ (0,07%). Com que és un nombre molt petit (menor al 5%), deduïm que el curs sí que té efecte i que no ha estat una casualitat.
+5. **Resultat (Valor p):** Si de 10.000 barreges a l’atzar, només en 5 ocasions surt una diferència de 2.0 o més, el valor $$p = 7 / 10000$$ (0,07%). Com que és un nombre molt petit (menor al 5%), deduïm que el curs sí que té efecte i que no ha estat una casualitat.
 
 
 ## Regressió no paramètrica: LOESS
