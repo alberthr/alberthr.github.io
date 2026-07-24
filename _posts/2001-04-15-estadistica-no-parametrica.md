@@ -186,8 +186,19 @@ Ja tractat en detall en un [altre post]({% post_url 2020-11-11-intervals-bootstr
 
 Tècnica de remostreig relacionada amb el bootstrap: en lloc de mostrejar amb reposició, es **redistribueixen aleatòriament les etiquetes de grup** entre les observacions, es recalcula l'estadístic d'interès milers de vegades, i es compara el valor observat original amb aquesta distribució simulada sota la hipòtesi nul·la.
 
-- **Quan fer-los servir:** com a alternativa molt flexible i intuïtiva al test t o a l'ANOVA, especialment amb mostres petites, ja que no depenen de cap supòsit distribucional i es poden aplicar a pràcticament qualsevol estadístic.
-- **Càlcul manual:** tampoc aplicable, pel mateix motiu que el bootstrapping: requereix milers de repeticions simulades.
+**Exemple real:** Imagina que provem un curs ràpid i volem veure si funciona.
+
+- Grupo A (Control - Sense curs): 10 alumnes: Notes finals `[5, 6, 5, 4, 6, 7, 5, 4, 6, 5]`  (Mitjana = \(5.3\))
+- Grupo B (Experimental - Amb curs): 10 alumnes. `[7, 8, 6, 7, 8, 9, 7, 6, 8, 7]`  (Mitjana = \(7.3\))
+- La diferencia real entre les mitjes dels nostres grups originals es: \(\text{Media}_{B}-\text{Media}_{A}=7.3-5.3=\mathbf{2.0}\text{\ puntos}\)
+
+**Càlcul manual**
+
+1. Unir i barrejar: Juntem les 20 notes en una sola llista sense importar a quin grup pertanyen: `[5, 6, 5, 4, 6, 7, 5, 4, 6, 5, 7, 8, 6, 7, 8, 9, 7, 6, 8, 7]`.
+2. Repartir a l’atzar: Tornem a dividir aquests 20 números a l’atzar en dos grups falsos de 10 notes cadascun.
+3. Calcular la diferència falsa: Calculem la diferència de mitjanes d’aquests dos nous grups barrejats.
+4. Repetir moltes vegades: Fem aquest procés milers de vegades per veure quantes vegades la diferència a l’atzar és igual o superior a la nostra original de 2.0.
+5. Resultat (Valor p): Si de 10.000 barreges a l’atzar, només en 5 ocasions surt una diferència de 2.0 o més, el valor `p = 7 / 10000 = 0,0005 (0,07%)`. Com que és un nombre molt petit (menor al 5%), deduïm que el curs sí que té efecte i que no ha estat una casualitat.
 
 
 ## Regressió no paramètrica: LOESS
