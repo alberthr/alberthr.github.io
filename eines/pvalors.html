@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=&apos;http://www.w3.org/2000/svg&apos; viewBox=&apos;0 0 64 64&apos;%3E%3Crect width=&apos;64&apos; height=&apos;64&apos; rx=&apos;14&apos; fill=&apos;%231e293b&apos;/%3E%3Cpath d=&apos;M10 44 Q20 12 32 12 T54 44&apos; stroke=&apos;%233b82f6&apos; stroke-width=&apos;3&apos; fill=&apos;none&apos; stroke-linecap=&apos;round&apos; opacity=&apos;0.6&apos;/%3E%3Crect x=&apos;38&apos; y=&apos;20&apos; width=&apos;16&apos; height=&apos;24&apos; fill=&apos;%233b82f6&apos; opacity=&apos;0.35&apos;/%3E%3C/svg%3E">
 <title>Calculadora de p-valors</title>
-<meta name="description" content="Calculadora de p-valors per als tests Z (normal), t-Student i chi-quadrat, amb representació gràfica de la distribució.">
+<meta name="description" content="Calculadora de p-valors per als tests Z (normal), t-Student, chi-quadrat i binomial, amb representació gràfica de la distribució.">
 <style>
   body { background-color: #f8fafc; margin: 0; padding: 20px 0; }
 </style>
@@ -222,14 +222,82 @@
     margin-bottom: 22px;
   }
   .cpv-help strong { color: var(--cc-dark); }
+
+  /* ---- Gràfic de barres (test binomial) ---- */
+  .cpv-bin-chart-area {
+    display: flex;
+    align-items: flex-end;
+    height: 220px;
+    border-left: 1px solid var(--cc-border);
+    border-bottom: 1px solid var(--cc-border);
+    gap: 1px;
+    padding: 0 2px;
+    position: relative;
+  }
+  .cpv-bin-bar-wrapper {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    position: relative;
+    min-width: 2px;
+  }
+  .cpv-bin-bar {
+    width: 100%;
+    background-color: var(--cc-border);
+    transition: background-color 0.15s ease;
+  }
+  .cpv-bin-bar.in-tail { background-color: rgba(59, 130, 246, 0.35); }
+  .cpv-bin-bar.is-observed { background-color: var(--cc-dark); min-height: 2px; }
+
+  .cpv-bin-bar-wrapper:hover .cpv-bin-bar { background-color: var(--cc-primary) !important; }
+  .cpv-bin-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-6px);
+    background: var(--cc-dark);
+    color: #fff;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.1s ease;
+    z-index: 10;
+    line-height: 1.3;
+    text-align: center;
+    border-radius: 4px;
+  }
+  .cpv-bin-tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 4px solid transparent;
+    border-top-color: var(--cc-dark);
+  }
+  .cpv-bin-bar-wrapper:hover .cpv-bin-tooltip { opacity: 1; }
+
+  .cpv-bin-axis-x {
+    display: flex;
+    margin-top: 6px;
+    font-size: 10.5px;
+    color: var(--cc-text-light);
+    padding: 0 2px;
+  }
+  .cpv-bin-axis-tick { flex: 1; text-align: center; }
 </style>
 
-<div class="cpv-title">Calculadora de p-valors (Z, t-Student, chi-quadrat)</div>
+<div class="cpv-title">Calculadora de p-valors (Z, t-Student, chi-quadrat, binomial)</div>
 
 <div class="cpv-tabs" id="cpv-tabs">
   <button class="cpv-tab active" data-test="z">Z (Normal)</button>
   <button class="cpv-tab" data-test="t">t-Student</button>
   <button class="cpv-tab" data-test="chi2">Chi-quadrat</button>
+  <button class="cpv-tab" data-test="binom">Binomial</button>
 </div>
 
 <!-- Selector de mode (només Z i t) -->
@@ -242,7 +310,7 @@
 
 <div class="cpv-result-row">
   <div class="cpv-result-card">
-    <div class="lab">Estadístic</div>
+    <div class="lab" id="cpv-lab-stat">Estadístic</div>
     <div class="val" id="cpv-out-stat">—</div>
   </div>
   <div class="cpv-result-card">
@@ -255,9 +323,15 @@
   </div>
 </div>
 
-<div class="cpv-chart-wrap">
+<div class="cpv-chart-wrap" id="cpv-continuous-chart-wrap">
   <div class="cpv-chart" id="cpv-chart"></div>
   <div id="cpv-chart-legend"></div>
+</div>
+
+<div class="cpv-chart-wrap" id="cpv-binom-chart-wrap" style="display:none;">
+  <div class="cpv-bin-chart-area" id="cpv-bin-bars"></div>
+  <div class="cpv-bin-axis-x" id="cpv-bin-ticks"></div>
+  <div id="cpv-bin-legend" style="font-size:11.5px;color:#64748b;margin-top:10px;line-height:1.5;"></div>
 </div>
 
 <table class="cpv-thresh-table" id="cpv-thresh-table">
@@ -273,7 +347,7 @@
   Model: <code>p = P(X &ge; |estadístic|)</code> (dues cues per Z i t; una cua a la dreta per chi-quadrat, ús habitual en tests d'independència/bondat d'ajust).
 </div>
 
-<div class="cpv-note" style="margin-top:10px;">
+<div class="cpv-note" id="cpv-note-zt" style="margin-top:10px;">
   La t-Student amb mostres grans convergeix a la normal; s'utilitza quan no es coneix la desviació estàndard poblacional (σ) i s'ha d'estimar a partir de la mostra (s).
 </div>
 
@@ -389,6 +463,15 @@
     return p.toFixed(4);
   }
 
+  /* ---------- Funcions per al test binomial ---------- */
+  function logChoose(n, k){ return gammln(n+1) - gammln(k+1) - gammln(n-k+1); }
+  function binomPmf(k, n, p){
+    if(k < 0 || k > n) return 0;
+    if(p <= 0) return k === 0 ? 1 : 0;
+    if(p >= 1) return k === n ? 1 : 0;
+    return Math.exp(logChoose(n, k) + k*Math.log(p) + (n-k)*Math.log(1-p));
+  }
+
   /* ---------- Estat ---------- */
   var state = { test: 'z', mode: 'stat' };
 
@@ -397,12 +480,21 @@
   var modeBtns = document.querySelectorAll('.cpv-mode-btn');
   var grid = $('cpv-grid');
 
+  var continuousWrap = $('cpv-continuous-chart-wrap');
+  var binomWrap = $('cpv-binom-chart-wrap');
+  var threshTable = $('cpv-thresh-table');
+  var noteZT = $('cpv-note-zt');
+
   tabs.forEach(function(tab){
     tab.addEventListener('click', function(){
       tabs.forEach(function(t){ t.classList.remove('active'); });
       tab.classList.add('active');
       state.test = tab.getAttribute('data-test');
-      modeRow.style.display = (state.test === 'chi2') ? 'none' : 'flex';
+      modeRow.style.display = (state.test === 'chi2' || state.test === 'binom') ? 'none' : 'flex';
+      continuousWrap.style.display = (state.test === 'binom') ? 'none' : 'block';
+      binomWrap.style.display = (state.test === 'binom') ? 'block' : 'none';
+      threshTable.style.display = (state.test === 'binom') ? 'none' : 'table';
+      noteZT.style.display = (state.test === 'z' || state.test === 't') ? 'block' : 'none';
       buildForm();
       calc();
     });
@@ -460,6 +552,13 @@
     } else if(state.test === 'chi2'){
       html += fieldHtml('cpv-chi-stat', 'Estadístic χ²', '18.31', 'step="0.01" min="0"');
       html += fieldHtml('cpv-chi-df', 'Graus de llibertat', '10', 'step="1" min="1"');
+    } else if(state.test === 'binom'){
+      html += fieldHtml('cpv-bin-n', 'Mida de la mostra (n)', '20', 'step="1" min="1"');
+      html += fieldHtml('cpv-bin-x', 'Èxits observats (x)', '15', 'step="1" min="0"');
+      html += fieldHtml('cpv-bin-p0', 'p sota H&#8320;', '0.5', 'step="0.001" min="0.001" max="0.999"');
+      html += selectHtml('cpv-bin-tail', 'Hipòtesi alternativa', [
+        {v:'two', l:'Bilateral (p ≠ p₀)'}, {v:'right', l:'Cua dreta P(X≥x) (p > p₀)'}, {v:'left', l:'Cua esquerra P(X≤x) (p < p₀)'}
+      ], 'two');
     }
     grid.innerHTML = html;
     grid.querySelectorAll('input, select').forEach(function(el){
@@ -604,6 +703,48 @@
     $('cpv-chart-legend').innerHTML = legendHtml;
   }
 
+  /* ---------- Gràfic de barres (binomial) ---------- */
+  var binBarsEl = $('cpv-bin-bars'), binTicksEl = $('cpv-bin-ticks'), binLegendEl = $('cpv-bin-legend');
+
+  function drawBinomChart(pmfs, n, x, tail, included){
+    binBarsEl.innerHTML = '';
+    binTicksEl.innerHTML = '';
+    var maxP = Math.max.apply(null, pmfs);
+    if(maxP <= 0) maxP = 1;
+
+    for(var i=0;i<pmfs.length;i++){
+      var pctHeight = (pmfs[i]/maxP)*100;
+      var inTail = tail === 'right' ? i >= x : tail === 'left' ? i <= x : included[i];
+
+      var wrapper = document.createElement('div');
+      wrapper.className = 'cpv-bin-bar-wrapper';
+
+      var bar = document.createElement('div');
+      bar.className = 'cpv-bin-bar';
+      if(inTail) bar.classList.add('in-tail');
+      if(i === x) bar.classList.add('is-observed');
+      bar.style.height = pctHeight + '%';
+
+      var tooltip = document.createElement('div');
+      tooltip.className = 'cpv-bin-tooltip';
+      tooltip.innerHTML = 'k = ' + i + '<br>P(X=k) = ' + fmtP(pmfs[i]);
+
+      wrapper.appendChild(bar);
+      wrapper.appendChild(tooltip);
+      binBarsEl.appendChild(wrapper);
+    }
+
+    var step = Math.max(1, Math.round(pmfs.length/10));
+    for(var j=0;j<pmfs.length;j++){
+      var tick = document.createElement('div');
+      tick.className = 'cpv-bin-axis-tick';
+      tick.textContent = (j % step === 0 || j === pmfs.length-1) ? j : '';
+      binTicksEl.appendChild(tick);
+    }
+
+    binLegendEl.innerHTML = 'La barra fosca és el valor observat (x). Les barres blaves clares són la regió considerada en el p-valor; passa el cursor per cada barra per veure P(X=k).';
+  }
+
   /* ---------- Càlcul principal ---------- */
   function calc(){
     var statValue, pValue, df, kind = state.test, tail = 'two';
@@ -653,20 +794,62 @@
         tail = 'right';
         note.innerHTML = 'Model: <code>p = P(χ² &ge; estadístic)</code>, cua dreta de la distribució chi-quadrat amb <code>df</code> graus de llibertat (test d\'independència / bondat d\'ajust).';
         drawChart('chi2', {df: df}, statValue, tail);
+
+      } else if(kind === 'binom'){
+        var nB = parseInt($('cpv-bin-n').value, 10);
+        var xB = parseInt($('cpv-bin-x').value, 10);
+        var p0B = parseFloat($('cpv-bin-p0').value);
+        tail = $('cpv-bin-tail').value;
+
+        if(!isFinite(nB) || nB < 1 || !isFinite(xB) || xB < 0 || xB > nB || !isFinite(p0B) || p0B <= 0 || p0B >= 1){
+          throw new Error('invalid binomial inputs');
+        }
+
+        var pmfs = [];
+        for(var k=0;k<=nB;k++) pmfs.push(binomPmf(k, nB, p0B));
+
+        var pGreater = 0, pLess = 0;
+        for(var kg=xB; kg<=nB; kg++) pGreater += pmfs[kg];
+        for(var kl=0; kl<=xB; kl++) pLess += pmfs[kl];
+        pGreater = Math.min(1, pGreater);
+        pLess = Math.min(1, pLess);
+
+        var pxB = pmfs[xB];
+        var tol = 1 + 1e-7;
+        var pTwo = 0;
+        var included = [];
+        for(var kt=0; kt<=nB; kt++){
+          if(pmfs[kt] <= pxB*tol){ pTwo += pmfs[kt]; included.push(true); }
+          else included.push(false);
+        }
+        pTwo = Math.min(1, pTwo);
+
+        pValue = (tail === 'right') ? pGreater : (tail === 'left') ? pLess : pTwo;
+        statValue = xB;
+
+        note.innerHTML = 'Model: test binomial exacte. <code>P(X=k) = C(n,k)&middot;p&#8320;^k&middot;(1&minus;p&#8320;)^(n&minus;k)</code>. ' +
+          (tail === 'right' ? 'p-valor = <code>P(X &ge; x)</code>' : tail === 'left' ? 'p-valor = <code>P(X &le; x)</code>' :
+          'p-valor bilateral = suma de <code>P(X=k)</code> per a tots els k amb probabilitat &le; a la de x observat.');
+
+        drawBinomChart(pmfs, nB, xB, tail, included);
+
       }
 
-      outStat.textContent = fmt(statValue, 3);
+      outStat.textContent = (kind === 'binom') ? statValue : fmt(statValue, 3);
       outP.textContent = fmtP(pValue);
       outSig.textContent = (pValue < 0.05) ? 'Sí (p < 0.05)' : 'No (p ≥ 0.05)';
       outSig.style.color = (pValue < 0.05) ? '#1e40af' : '#475569';
+      $('cpv-lab-stat').textContent = (kind === 'binom') ? 'Èxits observats (x)' : 'Estadístic';
 
-      // critical values table
-      var kFn = (kind==='z') ? function(a){ return invNorm(1 - (tail==='two'? a/2 : a)); } :
-                (kind==='t') ? function(a){ return invT(1 - (tail==='two'? a/2 : a), df); } :
-                function(a){ return invChi2(1-a, df); };
-      $('cpv-crit-010').textContent = fmt(kFn(0.10), 3);
-      $('cpv-crit-005').textContent = fmt(kFn(0.05), 3);
-      $('cpv-crit-001').textContent = fmt(kFn(0.01), 3);
+      // critical values table (no aplica al binomial)
+      if(kind !== 'binom'){
+        var kFn = (kind==='z') ? function(a){ return invNorm(1 - (tail==='two'? a/2 : a)); } :
+                  (kind==='t') ? function(a){ return invT(1 - (tail==='two'? a/2 : a), df); } :
+                  function(a){ return invChi2(1-a, df); };
+        $('cpv-crit-010').textContent = fmt(kFn(0.10), 3);
+        $('cpv-crit-005').textContent = fmt(kFn(0.05), 3);
+        $('cpv-crit-001').textContent = fmt(kFn(0.01), 3);
+      }
 
     } catch(e){
       outStat.textContent = '—'; outP.textContent = '—'; outSig.textContent = '—';
