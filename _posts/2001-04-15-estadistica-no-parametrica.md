@@ -14,13 +14,7 @@ L'**estadística no paramètrica** agrupa el conjunt de mètodes que no depenen 
 
 ## Quan utilitzar-los
 
-Abans d'entrar en cada mètode, val la pena fixar el criteri de quan preferir-los davant d'un test clàssic:
-
-- **Mostra petita** (habitualment $$n < 30$$), on no es pot invocar el Teorema del Límit Central per assumir normalitat.
-- **Distribució clarament esbiaixada** o amb outliers importants (temps de resposta, ingressos, temps d'espera...).
-- **Dades ordinals** (valoracions d'1 a 5, rànquings) en lloc de numèriques contínues, on la mitjana no té sentit ple.
-- **Variància molt diferent entre grups** (heterocedasticitat), que trenca un supòsit clau de l'ANOVA o el test t.
-- **Manca de coneixement previ** sobre la forma de la distribució subjacent.
+Abans d'entrar en cada mètode, val la pena fixar el criteri de quan preferir-los davant d'un test clàssic: amb **mostra petita** (habitualment $$n < 30$$, on no es pot invocar el Teorema del Límit Central per assumir normalitat), amb **distribucions esbiaixades o amb outliers importants** (temps de resposta, ingressos, temps d'espera...), amb **dades ordinals** (valoracions d'1 a 5, rànquings) on la mitjana no té sentit ple, amb **variància molt diferent entre grups** (heterocedasticitat, que trenca un supòsit clau de l'ANOVA o el test t), o quan simplement hi ha **manca de coneixement previ** sobre la forma de la distribució subjacent.
 
 El cost d'aquesta robustesa és, generalment, una **pèrdua de potència estadística**: si les dades sí que compleixen els supòsits d'un test paramètric, el test no paramètric equivalent necessita més mostra per detectar el mateix efecte. Per això la recomanació habitual és fer servir el test paramètric quan els seus supòsits es compleixen raonablement, i reservar el no paramètric per quan no és així.
 
@@ -33,7 +27,7 @@ En lloc de comparar mitjanes com fa un test t, tots dos mètodes ordenen totes l
 
 ### Mann-Whitney U (grups independents)
 
-**Exemple real:** una botiga online canvia el disseny de la pàgina de pagament i vol saber si els clients completen la compra més ràpid amb el disseny nou. Es mesura el temps (en segons) de 15 clients amb el disseny antic i 15 amb el nou. Els temps tenen alguns valors molt alts (clients que es distreuen o dubten), cosa que fa que la mitjana no sigui gaire representativa — per això, en lloc d'un test t, es fa servir Mann-Whitney per comparar si els temps del grup nou tendeixen a ser més baixos.
+**Exemple real:** una botiga online canvia el disseny de la pàgina de pagament i vol saber si els clients completen la compra més ràpid amb el disseny nou. Es mesura el temps (en segons) de 15 clients amb cada disseny; com que hi ha outliers que distorsionen la mitjana, es fa servir Mann-Whitney en lloc d'un test t.
 
 ```r
 temps_antic <- c(45, 52, 38, 61, 49, 55, 70, 43, 58, 47, 90, 51, 44, 63, 48)
@@ -76,7 +70,7 @@ Un p-valor per sota de 0,05 indica que la millora general de vendes després de 
 
 Ja tractat en detall (fórmula, gràfic i codi complet en R i Python) en un [altre post]({% post_url 2022-08-02-kolmogorov-smirnov %}). A diferència de Mann-Whitney, que només mira si un grup tendeix a tenir valors més alts que l'altre, el K-S detecta **qualsevol** diferència de forma entre dues distribucions (mitjana, dispersió, asimetria...), no només un desplaçament.
 
-**Exemple real:** una empresa de telecomunicacions vol saber si el temps de trucada dels clients del pla nou segueix el mateix patró general que el del pla antic (no només si la mitjana és diferent, sinó si tota la forma de la distribució ha canviat: potser ara hi ha més trucades molt curtes i també més de molt llargues).
+**Exemple real:** una empresa de telecomunicacions vol saber si el temps de trucada dels clients del pla nou segueix el mateix patró que el del pla antic, no només si la mitjana és diferent sinó si tota la forma de la distribució ha canviat.
 
 **Càlcul manual (idea general):** s'ordenen totes les dades de cada mostra i es calcula, per a cada valor possible, quin percentatge de cada mostra queda per sota d'aquest valor (la funció de distribució acumulada empírica). Es resta aquest percentatge entre les dues mostres a cada punt, i l'estadístic $$D$$ és la diferència més gran trobada en tot el recorregut. El post enllaçat mostra aquest procés pas a pas amb un gràfic.
 
@@ -123,7 +117,19 @@ valoracions <- matrix(c(
 friedman.test(valoracions)
 ```
 
-**Càlcul manual (idea general):** per a cada usuari, es converteixen les seves 3 valoracions en rangs (1 a la pitjor versió per a ell, 3 a la millor). Se sumen els rangs de cada versió entre tots els usuaris, i com més diferents siguin aquestes sumes entre versions, més gran serà l'estadístic resultant (que després es compara, igual que a Kruskal-Wallis, amb una distribució Chi-quadrat).
+**Càlcul manual:**
+
+1. **Es converteixen les valoracions de cada usuari en rangs**, d'1 (pitjor per a ell) a 3 (millor), per separat per a cada fila. Usuari 1 (6, 8, 7) → VersioA=1, VersioB=3, VersioC=2. Es procedeix igual per a la resta; quan hi ha empat (usuari 4: 6, 8, 8) es reparteix la posició mitjana (VersioB=2,5, VersioC=2,5).
+2. **Se sumen els rangs de cada versió entre tots els usuaris:** VersioA = 6,5, VersioB = 17,5, VersioC = 12.
+3. **S'aplica la fórmula de l'estadístic Q:**
+
+$$Q = \frac{12}{nk(k+1)} \sum_{i} R_i^2 - 3n(k+1)$$
+
+on $$n$$ és el nombre d'usuaris (6), $$k$$ el nombre de versions (3) i $$R_i$$ la suma de rangs de cada versió:
+
+$$Q = \frac{12}{6 \times 3 \times 4}\left(6,5^2 + 17,5^2 + 12^2\right) - 3 \times 6 \times 4 = \frac{12}{72}(492,5) - 72 = 82,08 - 72 = 10,08$$
+
+4. **Es compara Q amb una distribució Chi-quadrat** amb (nombre de versions − 1) graus de llibertat (aquí, 2): un valor de Q de 10,08 supera el llindar de significació de 0,05 (5,99), indicant que almenys una versió agrada sistemàticament més o menys que les altres.
 
 
 ## Associació i correlació
@@ -188,17 +194,19 @@ Ja tractat en detall en un [altre post]({% post_url 2020-11-11-intervals-bootstr
 Tècnica de remostreig relacionada amb el bootstrap: en lloc de mostrejar amb reposició, es **redistribueixen aleatòriament les etiquetes de grup** entre les observacions, es recalcula l'estadístic d'interès milers de vegades, i es compara el valor observat original amb aquesta distribució simulada sota la hipòtesi nul·la.
 
 **Exemple real:** Imagina que provem un curs ràpid i volem veure si funciona.
-- **Grupo A (Control - Sense curs):** 10 alumnes: Notes finals $$[5, 6, 5, 4, 6, 7, 5, 4, 6, 5]$$ *(Mitjana = 5.3)*
-- **Grupo B (Experimental - Amb curs):** 10 alumnes: Notes finals $$[7, 8, 6, 7, 8, 9, 7, 6, 8, 7]$$ *(Mitjana = 7.3)*
-- La diferència real entre les mitjanes dels nostres grups originals és: $${Mitjana}_B - {Mitjana}_A = 7.3 - 5.3 = 2.0$$ punts.
+
+- **Grup A (Control, sense curs):** 10 alumnes amb notes finals 5, 6, 5, 4, 6, 7, 5, 4, 6, 5 (mitjana = 5,3).
+- **Grup B (Experimental, amb curs):** 10 alumnes amb notes finals 7, 8, 6, 7, 8, 9, 7, 6, 8, 7 (mitjana = 7,3).
+
+La diferència real entre les mitjanes dels grups originals és $$\bar{x}_B - \bar{x}_A = 7,3 - 5,3 = 2,0$$ punts.
 
 **Càlcul manual**
 
-1. **Unir i barrejar:** Juntem les 20 notes en una sola llista sense importar a quin grup pertanyen: $$[5, 6, 5, 4, 6, 7, 5, 4, 6, 5, 7, 8, 6, 7, 8, 9, 7, 6, 8, 7]$$.
-2. **Repartir a l’atzar:** Tornem a dividir aquests 20 números a l’atzar en dos grups falsos de 10 notes cadascun.
-3. **Calcular la diferència falsa:** Calculem la diferència de mitjanes d’aquests dos nous grups barrejats.
-4. **Repetir moltes vegades:** Fem aquest procés milers de vegades per veure quantes vegades la diferència a l’atzar és igual o superior a la nostra original de 2.0.
-5. **Resultat (Valor p):** Si de 10.000 barreges a l’atzar, només en 7 ocasions surt una diferència de 2.0 o més, el valor $$p = 7 / 10000$$ (0,07%). Com que és un nombre molt petit (menor al 5%), deduïm que el curs sí que té efecte i que no ha estat una casualitat.
+1. **Unir i barrejar:** s'ajunten les 20 notes en una sola llista, sense distingir de quin grup provenen.
+2. **Repartir a l'atzar:** es tornen a dividir aquests 20 valors a l'atzar en dos grups falsos de 10 notes cadascun.
+3. **Calcular la diferència falsa:** es calcula la diferència de mitjanes d'aquests dos grups barrejats.
+4. **Repetir moltes vegades:** es repeteix el procés milers de vegades per veure quantes vegades la diferència a l'atzar iguala o supera l'original de 2,0.
+5. **Resultat (valor p):** si de 10.000 barreges a l'atzar només 7 donen una diferència de 2,0 o més, el valor $$p = 7/10000$$ (0,07%); com que és molt inferior al 5%, es conclou que el curs sí que té efecte real.
 
 
 ## Regressió no paramètrica: LOESS
