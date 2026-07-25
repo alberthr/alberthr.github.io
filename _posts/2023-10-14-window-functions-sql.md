@@ -3,6 +3,7 @@ layout: post
 title: "Resum ràpid de les Funcions de Finestra a SQL"
 tags:
   - sql
+  - cheatsheet
 excerpt: "Panoràmica completa de les funcions de finestra (window functions) en SQL: rànquing, agregació, desplaçament i valors de posició, amb la sintaxi PARTITION BY, ORDER BY, la definició del frame amb ROWS/RANGE i molt més."
 ---
 

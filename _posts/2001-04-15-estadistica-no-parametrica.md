@@ -3,6 +3,7 @@ layout: post
 title: "Principals Mètodes d'Estadística No Paramètrica"
 tags:
   - estadistica
+  - cheatsheet
 excerpt: "Quan les dades no compleixen els supòsits d'un test clàssic (normalitat, mostra gran, escala d'interval), l'estadística no paramètrica ofereix alternatives robustes. Panoràmica dels mètodes principals, amb exemples reals i càlcul manual, i de quan fer-los servir."
 ---
 

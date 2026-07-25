@@ -4,6 +4,7 @@ title: "Machine Learning en Python: Guia Ràpida de Consulta"
 tags:
   - python
   - machine-learning
+  - cheatsheet  
 excerpt: "Codi de referència ràpida per als algoritmes de Machine Learning més habituals en Python amb scikit-learn: KNN, Arbres de Decisió, Random Forest i Gradient Boosting. Pensat per tenir a mà a l'hora de fer un exercici."
 ---
 

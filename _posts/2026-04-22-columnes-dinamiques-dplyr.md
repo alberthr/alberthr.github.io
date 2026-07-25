@@ -3,6 +3,7 @@ layout: post
 title: "Parametritzar Columnes Dinàmiques a dplyr"
 tags:
   - r
+  - cheatsheet
 excerpt: "Quan es fa servir dplyr dins de funcions pròpies, el nom de columna sovint no és fix sinó un paràmetre. Una manera senzilla i consistent de fer-ho, amb un exemple de dades per a cada cas."
 ---
 
