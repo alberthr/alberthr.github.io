@@ -1,7 +1,8 @@
 ---
+layout: none
 permalink: /robots.txt
 ---
 User-agent: *
 Allow: /
 
-Sitemap: {{ site.url }}{{ site.baseurl }}/sitemap.xml
+Sitemap: https://alberthr.github.io/sitemap.xml
