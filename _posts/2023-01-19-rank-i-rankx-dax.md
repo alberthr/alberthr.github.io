@@ -2,10 +2,7 @@
 layout: post
 title: "Com fer servir RANK i RANKX a DAX sense morir en l'intent"
 tags:
-  - dax
   - powerbi
-  - business-intelligence
-  - modelitzacio
 excerpt: "La diferència entre RANK i RANKX a DAX i la guia pràctica per crear mesures de rànquing correctes evitant els errors de context més habituals."
 ---
 
