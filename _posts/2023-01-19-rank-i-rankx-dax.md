@@ -1,49 +1,28 @@
 ---
 layout: post
-title: "Com fer servir RANK i RANKX a DAX sense morir en l'intent"
+title: "Diferències i Patrons d'Ús de RANK i RANKX a DAX"
 tags:
-  - dax
   - powerbi
-  - business-intelligence
-  - modelitzacio
-excerpt: "La diferència entre RANK i RANKX a DAX i la guia pràctica per crear mesures de rànquing correctes evitant els errors de context més habituals."
+excerpt: "Comparativa pràctica entre RANKX i RANK a DAX: diferències, sintaxi i exemples per calcular rànquings generals i per categoria de producte a Power BI, amb els resultats esperats de cada patró i com aplicar-los en informes reals."
 ---
 
-El càlcul de rànquings en entorns de modelat de dades mitjançant DAX (Data Analysis Expressions) sol presentar reptes conceptuals associats a l'avaluació del context de filtre i a la transició de context. La coexistència de la funció iterativa tradicional `RANKX` i de la funció de finestra més recent `RANK` requereix compondre adequadament els patrons de formulació per evitar resultats incorrectes o ineficiències de rendiment.
+Calcular rànquings a DAX (Data Analysis Expressions) obliga a entendre bé sobre quin conjunt d'elements s'està comparant cada fila. Hi ha dues maneres de fer-ho: la funció iterativa clàssica `RANKX` i la funció de finestra `RANK`. Aquest post compara totes dues i mostra com implementar-les correctament.
 
 ## Diferències Clau entre RANKX i RANK
 
-La diferència fonamental entre ambdues funcions rau en l'arquitectura d'avaluació interna:
-
-* **`RANKX` (Funció iterativa):** Avalua una expressió per a cada fila d'una taula especificada. Opera realitzant un recorregut fila a fila, on es calcula el valor de referència i es compara respecte al conjunt d'avaluació definit.
-* **`RANK` (Funció de finestra):** Introduïda per simplificar les operacions basades en relacions d'ordre, calcula el rang directament sobre un conjunt de dades definit mitjançant clàusules de partició i ordenació (`ORDERBY`, `PARTITIONBY`), reduint la necessitat de gestionar la transició de context de manera manual.
+* **`RANKX` (Funció iterativa):** Recorre una taula fila a fila. Per cada fila calcula el valor de referència i el compara amb la resta del conjunt indicat.
+* **`RANK` (Funció de finestra):** Calcula el rang directament sobre un conjunt de dades definit amb clàusules de partició i ordenació (`ORDERBY`, `PARTITIONBY`), sense necessitat d'indicar manualment quin és el conjunt de comparació.
 
 | Característica | RANKX | RANK |
 | :--- | :--- | :--- |
 | **Tipus de funció** | Iterador (`X-function`) | Funció de finestra |
 | **Sintaxi principal** | `RANKX(Taula, Expressió, [Valor], [Ordre], [Ties])` | `RANK([Densitat], [Relació], [ORDERBY()], [Blanks], [PARTITIONBY()])` |
-| **Avaluació de context** | Requerix `ALL` o `ALLSELECTED` per modificar el context de filtre | Utilitza relacions primitives o taules directes dins de `ORDERBY` |
-| **Transició de Context** | Automàtica quan s'invoca una mesura dins l'expressió | Implicitament gestionada per la finestra definitòria |
-
-## Casos d'Ús, Errors Habituals i el paper de HASONEVALUE
-
-Un dels errors més comuns en utilitzar `RANKX` dins d'una mesura és obtenir el valor `1` de forma constant per a totes les files de la matriu o taula visual.
-
-Això passa quan el primer argument de `RANKX` és la taula actual del context de fila sense cap modificador de filtre (per exemple, la taula `Productes` directament). Com que el visual avalua la mesura filtre a filtre (un sol producte per fila), la taula sobre la qual itera `RANKX` conté un únic element, fent que el rànquing d'aquest element respecte a si mateix sigui sempre `1`.
-
-Per evitar-ho, cal expandir el context d'avaluació utilitzant `ALL` (per calcular el rànquing absolut en tot el model) o `ALLSELECTED` (per calcular el rànquing respecte als elements actualment filtrats al report).
-
-### El paper de HASONEVALUE
-
-La funció `HASONEVALUE(Columna)` comprova si el context de filtre actual ha reduït els valors d'una columna a exactament un de sol. 
-
-Això és fonamental en les mesures de rànquing per dues raons principals:
-1. **Control de la fila de Totals:** A la fila de totals o subtotals d'un visual, la columna filtrada conté múltiples valors. Si s'executa el rànquing en aquesta fila, el càlcul no té sentit i pot retornar un resultat confús o erroni. `HASONEVALUE` permet retornar `BLANK()` directament en aquests nivells d'agregació.
-2. **Context d'Avaluació Correcte:** Garanteix que la fórmula només s'executi quan l'element que es vol ranquejar està clarament definit a la fila actual.
+| **Conjunt de comparació** | Cal indicar-lo amb `ALL` o `ALLSELECTED` | S'indica amb `ORDERBY` i, opcionalment, `PARTITIONBY` |
+| **Recàlcul per fila** | Automàtic quan s'invoca una mesura dins l'expressió | Ja incorporat en el funcionament de la finestra |
 
 ## Dades d'Exemple per a la Implementació
 
-Per tal d'il·lustrar el comportament de les fórmules, es considera la taula anomenada `VendesProducte` amb les dades següents:
+Per il·lustrar el comportament de les fórmules, es fa servir la taula `VendesProducte`:
 
 | Categoria | Producte | ImportVendes |
 | :--- | :--- | :--- |
@@ -59,11 +38,15 @@ Es defineix la mesura base de suma d'import:
 Total Vendes = SUM(VendesProducte[ImportVendes])
 ```
 
-## Implementació Pràctica
+Es fa servir una mesura i no la columna `ImportVendes` directament perquè `RANKX` recorre la taula fila a fila i, per a cada fila, ha de recalcular el total corresponent només a aquell producte. Si s'hi posés la columna directament, el valor no es recalcularia i sortiria el mateix número a totes les files. Una mesura, en canvi, sí que es recalcula per a cada fila.
+
+De fet, dins de `RANKX` es podria substituir `[Total Vendes]` per `SUM(VendesProducte[ImportVendes])` directament i el resultat seria idèntic. Fer-la servir com a mesura (`[Total Vendes]`) és útil sobretot per reutilitzar-la en altres càlculs sense repetir la fórmula. Si a més es vol aplicar-hi algun filtre addicional (per exemple, excloure una categoria concreta), llavors es podria fer servir `CALCULATE`.
+
+## Implementació Pràctica de Mesures de Rànquing
 
 ### Patró 1: Rànquing Clàssic amb `RANKX`
 
-Per ranquejar els productes en funció del volum de vendes mantenint el filtre extern de la pantalla o aplicant `ALLSELECTED`:
+Per ranquejar els productes segons el volum de vendes mantenint el filtre extern de la pantalla (o aplicant `ALLSELECTED`):
 
 ```dax
 Rang Producte RANKX = 
@@ -80,11 +63,6 @@ IF(
 )
 ```
 
-En aquesta formulació:
-1. `HASONEVALUE(VendesProducte[Producte])` verifica que el visual estigui avaluant un únic producte per fila.
-2. `ALLSELECTED(VendesProducte[Producte])` extreu la llista de tots els productes visibles en el context actual.
-3. `[Total Vendes]` provoca la transició de context, avaluant la suma de vendes per a cadascun dels productes de la llista iterada.
-
 #### Resultat esperat de la mesura `Rang Producte RANKX`:
 
 | Producte | Total Vendes | Rang Producte RANKX |
@@ -96,7 +74,9 @@ En aquesta formulació:
 | Llum | 50 | 5 |
 | **Total** | **2400** | **BLANK** |
 
-Si es requereix calcular el rànquing de productes separat per cada Categoria (és a dir, reiniciar el rànquing dins de cada grup), s'ajusta el conjunt sobre el qual itera `RANKX` utilitzant `ALLEXCEPT`:
+`HASONEVALUE(VendesProducte[Producte])` comprova que a la fila actual hi ha un sol producte seleccionat. A la fila de Total hi ha tots els productes barrejats, i ranquejar-los junts no vol dir res, per això la mesura hi retorna `BLANK()`. Si no s'hi posessin `ALL` o `ALLSELECTED` dins de `RANKX`, cada fila només es compararia amb ella mateixa i el rànquing sortiria sempre 1.
+
+Si es vol calcular el rànquing de productes separat per cada Categoria (reiniciant el rànquing dins de cada grup), cal ajustar el conjunt sobre el qual itera `RANKX` amb `ALLEXCEPT`:
 
 ```dax
 Rang Producte per Categoria RANKX = 
@@ -125,7 +105,7 @@ IF(
 
 ### Patró 2: Rànquing Modern amb `RANK`
 
-La funció `RANK` permet expressar la lògica d'ordenació de manera declarativa utilitzant la sintaxi de funcions de finestra:
+La funció `RANK` permet expressar la mateixa lògica de manera declarativa, amb sintaxi de funció de finestra:
 
 ```dax
 Rang Producte RANK = 
@@ -140,7 +120,7 @@ IF(
 )
 ```
 
-Per executar la mateixa lògica de rànquing per particions (per Categoria) amb la funció `RANK`, s'afegeix la clàusula `PARTITIONBY`:
+Per fer el mateix rànquing per particions (per Categoria), s'afegeix la clàusula `PARTITIONBY`:
 
 ```dax
 Rang Producte per Categoria RANK = 
@@ -157,4 +137,4 @@ IF(
 )
 ```
 
-L'ús de `PARTITIONBY` evita la necessitat de manipular complexament els filtres mitjançant `ALLEXCEPT` o `CALCULATE`, oferint un codi més estructurat i directe de mantenir en models complexos.
+
