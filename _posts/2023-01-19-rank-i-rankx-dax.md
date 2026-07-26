@@ -1,9 +1,9 @@
 ---
 layout: post
-title: "Com fer servir RANK i RANKX a DAX sense morir en l'intent"
+title: "Diferències i Patrons d'Ús de RANK i RANKX a DAX"
 tags:
   - powerbi
-excerpt: "La diferència entre RANK i RANKX a DAX i la guia pràctica per crear mesures de rànquing correctes evitant els errors de context més habituals."
+excerpt: "Anàlisi comparativa entre les funcions RANK i RANKX a DAX, la transició de context i la gestió de filtres per a la construcció de mesures de rànquing robustes i sense errors en entorns de Power BI i models analítics."
 ---
 
 El càlcul de rànquings en entorns de modelat de dades mitjançant DAX (Data Analysis Expressions) sol presentar reptes conceptuals associats a l'avaluació del context de filtre i a la transició de context. La coexistència de la funció iterativa tradicional `RANKX` i de la funció de finestra més recent `RANK` requereix compondre adequadament els patrons de formulació per evitar resultats incorrectes o ineficiències de rendiment.
