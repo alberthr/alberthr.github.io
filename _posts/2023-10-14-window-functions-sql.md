@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Guia ràpida: Funcions de Finestra a SQL"
+title: "Guia ràpida de Window Functions a SQL"
 tags:
   - sql
   - cheatsheet
