@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Guia ràpida: Parametritzar Columnes a dplyr"
+title: "Guia ràpida sobre com parametritzar Columnes a dplyr"
 tags:
   - r
   - cheatsheet
