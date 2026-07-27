@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Resum ràpid de les Funcions de Finestra a SQL"
+title: "Guia ràpida: Funcions de Finestra a SQL"
 tags:
   - sql
   - cheatsheet
