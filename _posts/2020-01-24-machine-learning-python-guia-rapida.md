@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Guia ràpida: Machine Learning a Python"
+title: "Guia ràpida de Machine Learning a Python"
 tags:
   - python
   - machine-learning
