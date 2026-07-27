@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Guia ràpida de Markdown: Format de textes pas a pas"
+title: "Guia ràpida Markdown: Format de textes pas a pas"
 tags:
   - cheatsheet
 excerpt: "Resum ràpid de la sintaxi bàsica de Markdown: text, capçaleres, llistes, enllaços, taules, blocs de codi i notes al peu. Inclou també com escriure fórmules matemàtiques amb notació LaTeX i com es renderitzen segons la sortida."
